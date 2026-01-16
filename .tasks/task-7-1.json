@@ -2,7 +2,7 @@
   "id": "task-7-1",
   "title": "Add magic link management features",
   "phase": "7. Polish",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-4-2"],
   "description": "Add UX improvements for managing magic links.",
   "files": [

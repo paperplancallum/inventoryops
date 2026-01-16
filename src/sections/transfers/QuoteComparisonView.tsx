@@ -13,6 +13,7 @@ import {
   Download,
   Eye,
   Award,
+  AlertTriangle,
 } from 'lucide-react'
 import type { ShippingQuote, ShippingQuoteStatus } from '@/sections/shipping-quotes/types'
 import { createClient } from '@/lib/supabase/client'
@@ -51,6 +52,21 @@ const statusConfig: Record<ShippingQuoteStatus, { label: string; color: string; 
     color: 'bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300',
     icon: XCircle,
   },
+}
+
+// Helper to check quote expiry status
+function getQuoteExpiryStatus(validUntil: string | null): { isExpired: boolean; isExpiringSoon: boolean; daysUntilExpiry: number | null } {
+  if (!validUntil) return { isExpired: false, isExpiringSoon: false, daysUntilExpiry: null }
+
+  const expiryDate = new Date(validUntil)
+  const now = new Date()
+  const daysUntilExpiry = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+
+  return {
+    isExpired: expiryDate < now,
+    isExpiringSoon: !(expiryDate < now) && daysUntilExpiry <= 3,
+    daysUntilExpiry: expiryDate >= now ? daysUntilExpiry : null,
+  }
 }
 
 export function QuoteComparisonView({
@@ -128,18 +144,20 @@ export function QuoteComparisonView({
     })
   }, [quotes, sortField, sortDirection, showRejected])
 
-  // Find lowest quote among submitted ones
+  // Find lowest quote among submitted ones (excluding expired)
   const lowestQuote = useMemo(() => {
-    const submittedQuotes = quotes.filter(
-      (q) => (q.status === 'submitted' || q.status === 'selected') && q.totalAmount !== null
+    const validSubmittedQuotes = quotes.filter(
+      (q) => (q.status === 'submitted' || q.status === 'selected') &&
+        q.totalAmount !== null &&
+        !getQuoteExpiryStatus(q.validUntil).isExpired
     )
-    if (submittedQuotes.length === 0) return null
-    return submittedQuotes.reduce((lowest, q) => {
+    if (validSubmittedQuotes.length === 0) return null
+    return validSubmittedQuotes.reduce((lowest, q) => {
       if (!lowest || (q.totalAmount ?? Infinity) < (lowest.totalAmount ?? Infinity)) {
         return q
       }
       return lowest
-    }, submittedQuotes[0])
+    }, validSubmittedQuotes[0])
   }, [quotes])
 
   // Calculate average
@@ -268,7 +286,8 @@ export function QuoteComparisonView({
           const isLowest = lowestQuote?.id === quote.id
           const isSelected = quote.status === 'selected' || quote.id === selectedQuoteId
           const isExpanded = expandedQuoteId === quote.id
-          const canSelect = quote.status === 'submitted' && !selectedQuoteId
+          const expiryStatus = getQuoteExpiryStatus(quote.validUntil)
+          const canSelect = quote.status === 'submitted' && !selectedQuoteId && !expiryStatus.isExpired
 
           return (
             <div
@@ -276,6 +295,10 @@ export function QuoteComparisonView({
               className={`rounded-lg border overflow-hidden transition-colors ${
                 isSelected
                   ? 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20'
+                  : expiryStatus.isExpired
+                  ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20'
+                  : expiryStatus.isExpiringSoon
+                  ? 'border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20'
                   : quote.status === 'rejected'
                   ? 'border-stone-200 dark:border-stone-700 bg-stone-50/50 dark:bg-stone-800/50 opacity-60'
                   : 'border-stone-200 dark:border-stone-600 bg-white dark:bg-stone-700/50'
@@ -296,7 +319,7 @@ export function QuoteComparisonView({
                         <StatusIcon className="w-3 h-3" />
                         {config.label}
                       </span>
-                      {isLowest && quote.status !== 'selected' && (
+                      {isLowest && quote.status !== 'selected' && !expiryStatus.isExpired && (
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
                           <Award className="w-3 h-3" />
                           Lowest
@@ -306,6 +329,22 @@ export function QuoteComparisonView({
                         <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300">
                           <CheckCircle className="w-3 h-3" />
                           Winner
+                        </span>
+                      )}
+                      {expiryStatus.isExpired && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300">
+                          <XCircle className="w-3 h-3" />
+                          Expired
+                        </span>
+                      )}
+                      {expiryStatus.isExpiringSoon && (
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
+                          <AlertTriangle className="w-3 h-3" />
+                          {expiryStatus.daysUntilExpiry === 0
+                            ? 'Expires today'
+                            : expiryStatus.daysUntilExpiry === 1
+                            ? 'Expires tomorrow'
+                            : `Expires in ${expiryStatus.daysUntilExpiry} days`}
                         </span>
                       )}
                     </div>
@@ -382,8 +421,8 @@ export function QuoteComparisonView({
                           Select
                         </button>
                       )}
-                      {/* Allow changing selection if this is rejected but there's a selected quote */}
-                      {quote.status === 'rejected' && hasExistingSelection && (
+                      {/* Allow changing selection if this is rejected but there's a selected quote, and not expired */}
+                      {quote.status === 'rejected' && hasExistingSelection && !expiryStatus.isExpired && (
                         <button
                           onClick={() => handleSelectClick(quote)}
                           className="px-3 py-1.5 text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded transition-colors"

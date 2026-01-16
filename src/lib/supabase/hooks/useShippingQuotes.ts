@@ -293,7 +293,7 @@ export function useShippingQuotes() {
         results.push({
           quoteId: quote.id,
           shippingAgentId: agentId,
-          shippingAgentName: (quote.shipping_agent as { name: string })?.name || '',
+          shippingAgentName: (quote.shipping_agent as unknown as { name: string } | null)?.name || '',
           magicLinkToken: token,
           magicLinkUrl,
           tokenExpiresAt: expiresAt.toISOString(),

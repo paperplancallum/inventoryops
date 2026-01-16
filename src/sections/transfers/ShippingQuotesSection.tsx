@@ -9,13 +9,16 @@ import {
   Clock,
   XCircle,
   AlertCircle,
+  AlertTriangle,
   ExternalLink,
   ChevronDown,
   ChevronUp,
+  RefreshCw,
 } from 'lucide-react'
 import type { ShippingQuote, ShippingQuoteStatus } from '@/sections/shipping-quotes/types'
 import { useShippingQuotes } from '@/lib/supabase/hooks/useShippingQuotes'
 import { SelectQuoteConfirmDialog } from './SelectQuoteConfirmDialog'
+import { MagicLinkActions } from './MagicLinkActions'
 
 interface ShippingQuotesSectionProps {
   transferId: string
@@ -25,6 +28,22 @@ interface ShippingQuotesSectionProps {
   onSelectQuote?: (quoteId: string) => void
   onViewQuoteDetails?: (quote: ShippingQuote) => void
   onQuoteSelected?: () => void // Callback after a quote is selected
+  onRequestUpdatedQuote?: (agentId: string) => void // Request new quote from same agent
+}
+
+// Helper to check quote expiry status
+function getQuoteExpiryStatus(validUntil: string | null): { isExpired: boolean; isExpiringSoon: boolean; daysUntilExpiry: number | null } {
+  if (!validUntil) return { isExpired: false, isExpiringSoon: false, daysUntilExpiry: null }
+
+  const expiryDate = new Date(validUntil)
+  const now = new Date()
+  const daysUntilExpiry = Math.ceil((expiryDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24))
+
+  return {
+    isExpired: expiryDate < now,
+    isExpiringSoon: !( expiryDate < now) && daysUntilExpiry <= 3,
+    daysUntilExpiry: expiryDate >= now ? daysUntilExpiry : null,
+  }
 }
 
 const statusConfig: Record<ShippingQuoteStatus, { label: string; color: string; icon: typeof Clock }> = {
@@ -58,6 +77,7 @@ export function ShippingQuotesSection({
   onSelectQuote,
   onViewQuoteDetails,
   onQuoteSelected,
+  onRequestUpdatedQuote,
 }: ShippingQuotesSectionProps) {
   const [expanded, setExpanded] = useState(true)
   const [quotes, setQuotes] = useState<ShippingQuote[]>([])
@@ -121,10 +141,11 @@ export function ShippingQuotesSection({
     })}`
   }
 
-  // Find selected quote and lowest quote
+  // Find selected quote and lowest quote (excluding expired)
   const selectedQuote = quotes.find(q => q.status === 'selected')
   const submittedQuotes = quotes.filter(q => q.status === 'submitted' || q.status === 'selected')
-  const lowestQuote = submittedQuotes.reduce<ShippingQuote | null>((lowest, q) => {
+  const validSubmittedQuotes = submittedQuotes.filter(q => !getQuoteExpiryStatus(q.validUntil).isExpired)
+  const lowestQuote = validSubmittedQuotes.reduce<ShippingQuote | null>((lowest, q) => {
     if (!q.totalAmount) return lowest
     if (!lowest || !lowest.totalAmount) return q
     return q.totalAmount < lowest.totalAmount ? q : lowest
@@ -132,6 +153,8 @@ export function ShippingQuotesSection({
 
   const pendingCount = quotes.filter(q => q.status === 'pending').length
   const submittedCount = submittedQuotes.length
+  const expiredCount = submittedQuotes.filter(q => getQuoteExpiryStatus(q.validUntil).isExpired).length
+  const validCount = submittedCount - expiredCount
 
   return (
     <section className="bg-white dark:bg-stone-800 rounded-lg border border-stone-200 dark:border-stone-700 overflow-hidden">
@@ -241,6 +264,8 @@ export function ShippingQuotesSection({
                 const StatusIcon = config.icon
                 const isLowest = lowestQuote?.id === quote.id && quote.status !== 'selected'
                 const isSelected = quote.status === 'selected'
+                const expiryStatus = getQuoteExpiryStatus(quote.validUntil)
+                const canSelect = quote.status === 'submitted' && !expiryStatus.isExpired
 
                 return (
                   <div
@@ -248,6 +273,10 @@ export function ShippingQuotesSection({
                     className={`rounded-lg border p-3 transition-colors ${
                       isSelected
                         ? 'border-green-300 dark:border-green-700 bg-green-50 dark:bg-green-900/20'
+                        : expiryStatus.isExpired && quote.status !== 'pending'
+                        ? 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20'
+                        : expiryStatus.isExpiringSoon && quote.status !== 'pending'
+                        ? 'border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20'
                         : 'border-stone-200 dark:border-stone-600 bg-stone-50 dark:bg-stone-700/50 hover:border-stone-300 dark:hover:border-stone-500'
                     }`}
                   >
@@ -262,9 +291,25 @@ export function ShippingQuotesSection({
                             <StatusIcon className="w-3 h-3" />
                             {config.label}
                           </span>
-                          {isLowest && !isSelected && (
+                          {isLowest && !isSelected && !expiryStatus.isExpired && (
                             <span className="inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
                               Lowest
+                            </span>
+                          )}
+                          {expiryStatus.isExpired && quote.status !== 'pending' && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300">
+                              <XCircle className="w-3 h-3" />
+                              Expired
+                            </span>
+                          )}
+                          {expiryStatus.isExpiringSoon && quote.status !== 'pending' && (
+                            <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
+                              <AlertTriangle className="w-3 h-3" />
+                              {expiryStatus.daysUntilExpiry === 0
+                                ? 'Expires today'
+                                : expiryStatus.daysUntilExpiry === 1
+                                ? 'Expires tomorrow'
+                                : `Expires in ${expiryStatus.daysUntilExpiry} days`}
                             </span>
                           )}
                         </div>
@@ -300,7 +345,7 @@ export function ShippingQuotesSection({
 
                       {/* Actions */}
                       <div className="flex items-center gap-1.5">
-                        {quote.status === 'submitted' && (
+                        {canSelect && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
@@ -311,8 +356,8 @@ export function ShippingQuotesSection({
                             Select
                           </button>
                         )}
-                        {/* Allow changing selection if this is rejected but there's a selected quote */}
-                        {quote.status === 'rejected' && selectedQuote && (
+                        {/* Allow changing selection if this is rejected but there's a selected quote, and not expired */}
+                        {quote.status === 'rejected' && selectedQuote && !expiryStatus.isExpired && (
                           <button
                             onClick={(e) => {
                               e.stopPropagation()
@@ -321,6 +366,19 @@ export function ShippingQuotesSection({
                             className="px-2.5 py-1 text-xs font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-100 dark:hover:bg-stone-700 border border-stone-300 dark:border-stone-600 rounded transition-colors"
                           >
                             Change to this
+                          </button>
+                        )}
+                        {/* Request updated quote for expired quotes */}
+                        {expiryStatus.isExpired && quote.status !== 'pending' && onRequestUpdatedQuote && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              onRequestUpdatedQuote(quote.shippingAgentId)
+                            }}
+                            className="inline-flex items-center gap-1 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-300 bg-amber-100 dark:bg-amber-900/30 hover:bg-amber-200 dark:hover:bg-amber-900/50 rounded transition-colors"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            Request New
                           </button>
                         )}
                         <button
@@ -335,6 +393,21 @@ export function ShippingQuotesSection({
                         </button>
                       </div>
                     </div>
+
+                    {/* Magic Link Actions for pending quotes */}
+                    {quote.status === 'pending' && quote.magicLinkToken && quote.tokenExpiresAt && (
+                      <div className="mt-3 pt-3 border-t border-stone-200 dark:border-stone-600">
+                        <MagicLinkActions
+                          magicLinkUrl={`${typeof window !== 'undefined' ? window.location.origin : ''}/quote/${quote.magicLinkToken}`}
+                          tokenExpiresAt={quote.tokenExpiresAt}
+                          shippingAgentName={quote.shippingAgentName || 'Unknown Agent'}
+                          shippingAgentEmail={quote.shippingAgentEmail}
+                          status="pending"
+                          variant="compact"
+                          className="justify-end"
+                        />
+                      </div>
+                    )}
 
                     {/* Line items preview (collapsed) */}
                     {quote.lineItems.length > 0 && quote.status !== 'pending' && (
@@ -366,7 +439,10 @@ export function ShippingQuotesSection({
                   <span className="text-stone-500 dark:text-stone-400">
                     {pendingCount > 0 && `${pendingCount} awaiting response`}
                     {pendingCount > 0 && submittedCount > 0 && ' · '}
-                    {submittedCount > 0 && `${submittedCount} quotes received`}
+                    {submittedCount > 0 && `${validCount} valid quote${validCount !== 1 ? 's' : ''}`}
+                    {expiredCount > 0 && (
+                      <span className="text-red-500 dark:text-red-400"> · {expiredCount} expired</span>
+                    )}
                   </span>
                   {lowestQuote && lowestQuote.totalAmount && !selectedQuote && (
                     <span className="text-stone-600 dark:text-stone-300">
@@ -376,8 +452,19 @@ export function ShippingQuotesSection({
                 </div>
               )}
 
-              {/* Warning if no quote selected but quotes available */}
-              {!selectedQuote && submittedCount > 0 && (
+              {/* Warning if all received quotes are expired */}
+              {!selectedQuote && submittedCount > 0 && validCount === 0 && (
+                <div className="mt-3 flex items-start gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+                  <XCircle className="w-4 h-4 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                  <div className="text-xs text-red-700 dark:text-red-300">
+                    <p className="font-medium">All quotes have expired</p>
+                    <p className="mt-0.5">Request new quotes from shipping agents to continue.</p>
+                  </div>
+                </div>
+              )}
+
+              {/* Warning if no quote selected but valid quotes available */}
+              {!selectedQuote && validCount > 0 && (
                 <div className="mt-3 flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                   <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
                   <div className="text-xs text-amber-700 dark:text-amber-300">

@@ -2,7 +2,7 @@
   "id": "task-7-2",
   "title": "Handle quote expiry gracefully",
   "phase": "7. Polish",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-7-1"],
   "description": "Add proper handling and UI for expired quotes.",
   "files": [
