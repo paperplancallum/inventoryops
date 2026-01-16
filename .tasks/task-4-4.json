@@ -1,0 +1,35 @@
+{
+  "id": "task-4-4",
+  "title": "Create ManualQuoteEntryForm",
+  "phase": "4. Internal UI - Quote Management",
+  "status": "pending",
+  "dependsOn": ["task-4-1"],
+  "description": "Create form for manually entering quotes received via email or other channels.",
+  "files": [
+    "src/sections/transfers/ManualQuoteEntryForm.tsx"
+  ],
+  "implementation": [
+    "Create ManualQuoteEntryForm component",
+    "Shipping agent selector dropdown",
+    "Total amount + currency",
+    "Valid until date",
+    "Optional line items (add/remove rows)",
+    "PDF upload for quote document",
+    "Notes field",
+    "Option to link to additional transfers (for grouping)",
+    "'Add Quote' button",
+    "Use same hook methods as portal"
+  ],
+  "acceptance_criteria": [
+    "Can create quote for any shipping agent",
+    "PDF upload works",
+    "Can add line items",
+    "Quote appears in section after save",
+    "Can link quote to multiple transfers"
+  ],
+  "verification": [
+    "Enter manual quote with all fields",
+    "Verify in database",
+    "Check quote appears in section"
+  ]
+}

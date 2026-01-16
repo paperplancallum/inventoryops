@@ -1,0 +1,39 @@
+{
+  "id": "task-2-3",
+  "title": "Create useShippingQuotes hook",
+  "phase": "2. TypeScript Types & Hooks",
+  "status": "completed",
+  "dependsOn": ["task-2-1", "task-1-5"],
+  "description": "Create Supabase hook for all shipping quote CRUD operations including magic link and selection logic.",
+  "files": [
+    "src/lib/supabase/hooks/useShippingQuotes.ts",
+    "src/lib/supabase/hooks/index.ts"
+  ],
+  "implementation": [
+    "Create useShippingQuotes hook with Supabase client",
+    "fetchQuotesForTransfer(transferId) - get all quotes for a transfer",
+    "fetchQuotesForTransfers(transferIds[]) - for grouped quotes",
+    "createQuote(input) - create new quote (manual entry)",
+    "createQuoteRequest(agentIds[], transferIds[]) - generate magic links for agents",
+    "generateMagicLink() - utility to create unique token",
+    "updateQuote(id, input) - update quote details",
+    "submitQuoteViaPortal(token, input) - for agent portal submission",
+    "selectWinningQuote(quoteId) - mark as selected, reject others for same transfers",
+    "uploadQuotePdf(quoteId, file) - upload to storage bucket",
+    "deleteQuote(id)",
+    "validateMagicLink(token) - check if valid and not expired",
+    "Export from index.ts"
+  ],
+  "acceptance_criteria": [
+    "All CRUD operations work correctly",
+    "Magic link generation creates unique tokens",
+    "Selection logic rejects other quotes for same transfers",
+    "PDF upload works with storage bucket",
+    "Proper error handling throughout"
+  ],
+  "verification": [
+    "Run: npx tsc --noEmit",
+    "Manual test each operation via UI (after UI built)",
+    "Check database for correct data after operations"
+  ]
+}

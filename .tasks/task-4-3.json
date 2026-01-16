@@ -1,0 +1,34 @@
+{
+  "id": "task-4-3",
+  "title": "Create RequestQuotesDialog - bulk transfers",
+  "phase": "4. Internal UI - Quote Management",
+  "status": "pending",
+  "dependsOn": ["task-4-2"],
+  "description": "Enable requesting quotes for multiple transfers at once from the transfer list page.",
+  "files": [
+    "src/sections/transfers/BulkRequestQuotesDialog.tsx",
+    "src/app/(app)/transfers/page.tsx"
+  ],
+  "implementation": [
+    "Create BulkRequestQuotesDialog component",
+    "Accepts array of transfer IDs",
+    "Shows summary of selected transfers",
+    "Same agent selection as single transfer dialog",
+    "Generates one quote request per agent covering all transfers",
+    "Add checkbox selection to transfer list page",
+    "Add 'Request Quotes' bulk action button",
+    "Only show button when transfers selected"
+  ],
+  "acceptance_criteria": [
+    "Can select multiple transfers from list",
+    "Bulk action button appears with selection",
+    "Dialog shows selected transfers",
+    "Quote links cover all selected transfers",
+    "Works correctly with junction table"
+  ],
+  "verification": [
+    "Select 3 transfers, request quotes",
+    "Verify quotes linked to all 3 transfers",
+    "Access portal and see all transfer details"
+  ]
+}

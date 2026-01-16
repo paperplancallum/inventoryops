@@ -1,0 +1,28 @@
+{
+  "id": "task-1-5",
+  "title": "Create storage bucket and update transfers table",
+  "phase": "1. Database Schema",
+  "status": "completed",
+  "dependsOn": ["task-1-1"],
+  "description": "Create storage bucket for quote/invoice PDFs and add quote confirmation tracking to transfers.",
+  "files": [
+    "supabase/migrations/YYYYMMDDHHMMSS_shipping_storage_and_transfer_update.sql"
+  ],
+  "implementation": [
+    "Create 'shipping-documents' storage bucket via migration or manually",
+    "Set bucket policies: authenticated users can upload/read",
+    "Add quote_confirmed_at (timestamptz) column to transfers table",
+    "This column gates when transfer can move to in-transit status"
+  ],
+  "acceptance_criteria": [
+    "Storage bucket exists and accessible",
+    "Can upload PDF files to bucket",
+    "transfers.quote_confirmed_at column exists",
+    "Existing transfers unaffected (null value)"
+  ],
+  "verification": [
+    "Run: supabase db push",
+    "Test file upload to bucket via Supabase dashboard",
+    "Verify transfers table has new column"
+  ]
+}

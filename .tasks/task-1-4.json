@@ -1,0 +1,31 @@
+{
+  "id": "task-1-4",
+  "title": "Create shipping_invoices and line_items tables",
+  "phase": "1. Database Schema",
+  "status": "completed",
+  "dependsOn": ["task-1-1"],
+  "description": "Create tables for tracking actual shipping invoices from winning quote agents, with variance tracking.",
+  "files": [
+    "supabase/migrations/YYYYMMDDHHMMSS_create_shipping_invoices.sql"
+  ],
+  "implementation": [
+    "Create shipping_invoices table",
+    "Fields: id (uuid), shipping_quote_id (uuid FK to winning quote), invoice_number (text), invoice_date (date), due_date (date), currency (text), total_amount (numeric), notes (text), pdf_path (text), status (enum: received/approved/paid), created_at, updated_at",
+    "Create shipping_invoice_status enum type",
+    "Create shipping_invoice_line_items table",
+    "Line item fields: id, shipping_invoice_id (FK), description, amount, sort_order, created_at",
+    "RLS policies for both tables",
+    "Add computed column or view for variance (invoice.total - quote.total)"
+  ],
+  "acceptance_criteria": [
+    "Both tables created successfully",
+    "Invoice linked to winning quote",
+    "Variance can be calculated",
+    "RLS policies in place"
+  ],
+  "verification": [
+    "Run: supabase db push",
+    "Test creating invoice linked to quote",
+    "Verify variance calculation"
+  ]
+}

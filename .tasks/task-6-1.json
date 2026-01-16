@@ -1,0 +1,32 @@
+{
+  "id": "task-6-1",
+  "title": "Add quote status check to transfer workflow",
+  "phase": "6. Transfer Workflow Integration",
+  "status": "pending",
+  "dependsOn": ["task-4-6"],
+  "description": "Prevent transfers from moving to in-transit without confirmed quote.",
+  "files": [
+    "src/lib/supabase/hooks/useTransfers.ts"
+  ],
+  "implementation": [
+    "Modify updateTransferStatus function",
+    "Before allowing status change to 'in-transit':",
+    "  - Check if transfer.quote_confirmed_at is set",
+    "  - If not, throw error or return validation message",
+    "Create helper: canTransferMove(transfer) -> boolean",
+    "Create helper: getTransferBlockers(transfer) -> string[]",
+    "Allow earlier statuses without quote (production can continue)",
+    "Only gate physical movement stages"
+  ],
+  "acceptance_criteria": [
+    "Cannot change to in-transit without confirmed quote",
+    "Earlier status changes still work",
+    "Clear error message when blocked",
+    "Helper functions work correctly"
+  ],
+  "verification": [
+    "Try to move transfer without quote - should fail",
+    "Confirm quote and try again - should succeed",
+    "Test various status transitions"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "id": "task-5-2",
+  "title": "Create ShippingInvoiceForm",
+  "phase": "5. Internal UI - Invoice Management",
+  "status": "pending",
+  "dependsOn": ["task-5-1", "task-4-6"],
+  "description": "Create form for recording shipping invoices from winning quote agents.",
+  "files": [
+    "src/sections/invoices/ShippingInvoiceForm.tsx"
+  ],
+  "implementation": [
+    "Create ShippingInvoiceForm component (dialog or page)",
+    "Dropdown to select winning quote (pre-fills agent)",
+    "Show quoted amount for reference",
+    "Invoice number input",
+    "Invoice date and due date pickers",
+    "Total amount input (actual invoice amount)",
+    "Real-time variance calculation display",
+    "Optional line items",
+    "PDF upload for invoice document",
+    "Status selector",
+    "Notes field"
+  ],
+  "acceptance_criteria": [
+    "Can only link to selected (winning) quotes",
+    "Quoted amount shown for comparison",
+    "Variance calculated in real-time",
+    "PDF upload works",
+    "Invoice saved correctly"
+  ],
+  "verification": [
+    "Create invoice for a winning quote",
+    "Verify variance calculation",
+    "Check PDF stored in bucket",
+    "Verify invoice in database"
+  ]
+}

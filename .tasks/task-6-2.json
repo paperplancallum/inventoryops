@@ -1,0 +1,36 @@
+{
+  "id": "task-6-2",
+  "title": "Update transfer detail page with quote integration",
+  "phase": "6. Transfer Workflow Integration",
+  "status": "pending",
+  "dependsOn": ["task-6-1", "task-5-3"],
+  "description": "Show quote requirement and shipping cost summary on transfer detail.",
+  "files": [
+    "src/app/(app)/transfers/[id]/page.tsx"
+  ],
+  "implementation": [
+    "Add quote requirement indicator banner",
+    "  - 'Quote Required' if no quotes",
+    "  - 'Awaiting Quotes' if pending",
+    "  - 'Quote Confirmed' with amount if selected",
+    "Add shipping cost summary card:",
+    "  - Quoted amount",
+    "  - Actual invoice amount (if exists)",
+    "  - Variance display",
+    "Link to shipping invoice if exists",
+    "Show blocker message if trying to move without quote",
+    "Integrate ShippingQuotesSection in appropriate location"
+  ],
+  "acceptance_criteria": [
+    "Quote status clearly visible",
+    "Cost summary accurate",
+    "Blocker message helpful",
+    "Links to invoice work",
+    "Layout is clean and logical"
+  ],
+  "verification": [
+    "View transfer at various quote stages",
+    "Verify cost summary with invoice",
+    "Check variance display"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "id": "task-1-1",
+  "title": "Create shipping_quotes table migration",
+  "phase": "1. Database Schema",
+  "status": "completed",
+  "dependsOn": [],
+  "description": "Create the shipping_quotes table with all necessary fields for tracking quote requests and submissions.",
+  "files": [
+    "supabase/migrations/YYYYMMDDHHMMSS_create_shipping_quotes.sql"
+  ],
+  "implementation": [
+    "Create migration file with shipping_quotes table",
+    "Fields: id (uuid), shipping_agent_id (FK), magic_link_token (text, unique, nullable), token_expires_at (timestamptz), status (enum: pending/submitted/selected/rejected), submitted_at (timestamptz), valid_until (date), currency (text, default USD), total_amount (numeric), notes (text), pdf_path (text), created_by (uuid FK to auth.users, nullable for portal submissions), created_at, updated_at",
+    "Create shipping_quote_status enum type",
+    "Add RLS policies for authenticated users",
+    "Add indexes on shipping_agent_id, status, magic_link_token"
+  ],
+  "acceptance_criteria": [
+    "Migration runs without errors",
+    "Table created with all columns and correct types",
+    "RLS enabled with appropriate policies",
+    "Foreign key to shipping_agents exists",
+    "Unique constraint on magic_link_token"
+  ],
+  "verification": [
+    "Run: supabase db push",
+    "Verify table in Supabase dashboard",
+    "Test RLS by querying as authenticated user"
+  ]
+}

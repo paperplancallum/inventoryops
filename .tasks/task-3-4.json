@@ -1,0 +1,35 @@
+{
+  "id": "task-3-4",
+  "title": "Create portal success and error states",
+  "phase": "3. Agent Portal (Public)",
+  "status": "pending",
+  "dependsOn": ["task-3-3"],
+  "description": "Create clear feedback states for the agent portal experience.",
+  "files": [
+    "src/sections/agent-portal/PortalStates.tsx",
+    "src/app/quotes/[token]/page.tsx"
+  ],
+  "implementation": [
+    "Create PortalStates component with variants:",
+    "  - Loading: spinner while validating token",
+    "  - Success: 'Quote submitted successfully' with checkmark",
+    "  - Expired: 'This link has expired' with contact info",
+    "  - Invalid: 'Invalid link' message",
+    "  - AlreadySubmitted: read-only view of submitted quote",
+    "Add company branding/logo to portal",
+    "Professional styling matching main app theme",
+    "Include contact info for support"
+  ],
+  "acceptance_criteria": [
+    "All states render correctly",
+    "Success state shows confirmation clearly",
+    "Already submitted shows their quote details",
+    "Error states are helpful not confusing",
+    "Portal looks professional and trustworthy"
+  ],
+  "verification": [
+    "Test each state manually",
+    "Get feedback on UX from user",
+    "Test on mobile viewport"
+  ]
+}

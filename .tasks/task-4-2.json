@@ -1,0 +1,34 @@
+{
+  "id": "task-4-2",
+  "title": "Create RequestQuotesDialog - single transfer",
+  "phase": "4. Internal UI - Quote Management",
+  "status": "pending",
+  "dependsOn": ["task-4-1"],
+  "description": "Create dialog for requesting quotes from shipping agents for a single transfer.",
+  "files": [
+    "src/sections/transfers/RequestQuotesDialog.tsx"
+  ],
+  "implementation": [
+    "Create RequestQuotesDialog component",
+    "Multi-select list of shipping agents (with search)",
+    "Show agent details (name, contact)",
+    "Option to add transfers to request (for grouping)",
+    "'Generate Links' button",
+    "After generation: show list of magic links with copy buttons",
+    "Link expiry info (e.g., 'Links expire in 7 days')",
+    "Option to send via email (mailto: link)"
+  ],
+  "acceptance_criteria": [
+    "Can select multiple agents",
+    "Magic links generated successfully",
+    "Can copy individual links",
+    "Links stored in database",
+    "Dialog closes and section refreshes"
+  ],
+  "verification": [
+    "Open dialog from transfer page",
+    "Select agents and generate links",
+    "Verify links work in incognito",
+    "Check database for quote records"
+  ]
+}

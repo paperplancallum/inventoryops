@@ -1,0 +1,34 @@
+{
+  "id": "task-3-3",
+  "title": "Add PDF upload to agent portal",
+  "phase": "3. Agent Portal (Public)",
+  "status": "pending",
+  "dependsOn": ["task-3-2"],
+  "description": "Add PDF upload capability to the quote submission form.",
+  "files": [
+    "src/sections/agent-portal/QuotePdfUpload.tsx",
+    "src/sections/agent-portal/QuoteSubmissionForm.tsx"
+  ],
+  "implementation": [
+    "Create QuotePdfUpload component",
+    "Drag-and-drop zone or click to select file",
+    "File type validation (PDF only, max 10MB)",
+    "Upload progress indicator",
+    "Preview: show filename and size after upload",
+    "Remove/replace uploaded file option",
+    "Integrate into QuoteSubmissionForm",
+    "Upload to shipping-documents bucket via hook"
+  ],
+  "acceptance_criteria": [
+    "Can upload PDF files",
+    "Rejects non-PDF files with clear message",
+    "Shows upload progress",
+    "Can preview/remove uploaded file",
+    "File stored in correct bucket path"
+  ],
+  "verification": [
+    "Test uploading various file types",
+    "Verify PDF in Supabase storage",
+    "Test file size limits"
+  ]
+}

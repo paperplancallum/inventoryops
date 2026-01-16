@@ -1,0 +1,28 @@
+{
+  "id": "task-1-3",
+  "title": "Create shipping_quote_line_items table",
+  "phase": "1. Database Schema",
+  "status": "completed",
+  "dependsOn": ["task-1-1"],
+  "description": "Create table for optional line item breakdown on shipping quotes.",
+  "files": [
+    "supabase/migrations/YYYYMMDDHHMMSS_create_shipping_quote_line_items.sql"
+  ],
+  "implementation": [
+    "Create migration file with shipping_quote_line_items table",
+    "Fields: id (uuid), shipping_quote_id (uuid FK), description (text), amount (numeric), sort_order (int), created_at (timestamptz)",
+    "FK to shipping_quotes with CASCADE DELETE",
+    "RLS policies for authenticated users"
+  ],
+  "acceptance_criteria": [
+    "Migration runs without errors",
+    "Table created with all columns",
+    "Cascade delete works when parent quote deleted",
+    "Can insert multiple line items per quote"
+  ],
+  "verification": [
+    "Run: supabase db push",
+    "Test inserting quote with line items",
+    "Verify line items deleted when quote deleted"
+  ]
+}

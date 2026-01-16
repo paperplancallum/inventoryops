@@ -1,0 +1,29 @@
+{
+  "id": "task-1-2",
+  "title": "Create shipping_quote_transfers junction table",
+  "phase": "1. Database Schema",
+  "status": "completed",
+  "dependsOn": ["task-1-1"],
+  "description": "Create junction table linking shipping quotes to one or more transfers (for consolidated shipments).",
+  "files": [
+    "supabase/migrations/YYYYMMDDHHMMSS_create_shipping_quote_transfers.sql"
+  ],
+  "implementation": [
+    "Create migration file with shipping_quote_transfers table",
+    "Fields: shipping_quote_id (uuid FK), transfer_id (uuid FK), created_at (timestamptz)",
+    "Composite primary key on (shipping_quote_id, transfer_id)",
+    "FK constraints with CASCADE DELETE",
+    "RLS policies matching parent tables"
+  ],
+  "acceptance_criteria": [
+    "Migration runs without errors",
+    "Junction table created with composite PK",
+    "Cascade delete works correctly",
+    "Can link one quote to multiple transfers"
+  ],
+  "verification": [
+    "Run: supabase db push",
+    "Test inserting quote linked to multiple transfers",
+    "Test cascade delete when quote is deleted"
+  ]
+}

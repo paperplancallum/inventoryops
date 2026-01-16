@@ -1,0 +1,34 @@
+{
+  "id": "task-4-1",
+  "title": "Create ShippingQuotesSection component",
+  "phase": "4. Internal UI - Quote Management",
+  "status": "pending",
+  "dependsOn": ["task-2-3"],
+  "description": "Create the main section component displaying quotes for a transfer.",
+  "files": [
+    "src/sections/transfers/ShippingQuotesSection.tsx",
+    "src/app/(app)/transfers/[id]/page.tsx"
+  ],
+  "implementation": [
+    "Create ShippingQuotesSection component",
+    "Props: transferId (or transferIds for grouped)",
+    "Fetch quotes using useShippingQuotes hook",
+    "Display quote cards showing: agent name, status badge, amount, submitted date",
+    "Highlight selected quote prominently",
+    "Empty state: 'No quotes yet - Request quotes from shipping agents'",
+    "Add section to transfer detail page",
+    "Header with 'Request Quotes' button"
+  ],
+  "acceptance_criteria": [
+    "Section renders on transfer detail page",
+    "Shows all quotes for the transfer",
+    "Selected quote visually distinct",
+    "Empty state is helpful",
+    "Status badges show correct colors"
+  ],
+  "verification": [
+    "View transfer with no quotes",
+    "Add quotes manually to DB and verify display",
+    "Check selected quote highlighting"
+  ]
+}

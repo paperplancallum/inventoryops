@@ -1,0 +1,34 @@
+{
+  "id": "task-5-1",
+  "title": "Add ShippingInvoicesSection to invoices page",
+  "phase": "5. Internal UI - Invoice Management",
+  "status": "pending",
+  "dependsOn": ["task-2-4"],
+  "description": "Create section for shipping invoices within the existing invoices area.",
+  "files": [
+    "src/sections/invoices/ShippingInvoicesSection.tsx",
+    "src/app/(app)/invoices-and-payments/page.tsx"
+  ],
+  "implementation": [
+    "Create ShippingInvoicesSection component",
+    "Add as tab or section in invoices page",
+    "List shipping invoices with columns: invoice #, agent, transfer(s), amount, variance, status, date",
+    "Status badges (received/approved/paid)",
+    "Variance indicator (green if under quote, red if over)",
+    "Link to related transfer(s)",
+    "Empty state with helpful message",
+    "Add 'New Shipping Invoice' button"
+  ],
+  "acceptance_criteria": [
+    "Section appears in invoices area",
+    "Lists all shipping invoices",
+    "Variance displayed clearly",
+    "Links to transfers work",
+    "Consistent with existing invoice UI patterns"
+  ],
+  "verification": [
+    "Navigate to invoices page",
+    "Verify section/tab visible",
+    "Add shipping invoice and verify display"
+  ]
+}

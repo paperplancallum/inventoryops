@@ -1,0 +1,34 @@
+{
+  "id": "task-4-5",
+  "title": "Create QuoteComparisonView",
+  "phase": "4. Internal UI - Quote Management",
+  "status": "pending",
+  "dependsOn": ["task-4-4"],
+  "description": "Create a comparison view to easily evaluate quotes side-by-side.",
+  "files": [
+    "src/sections/transfers/QuoteComparisonView.tsx"
+  ],
+  "implementation": [
+    "Create QuoteComparisonView component",
+    "Table or card-based side-by-side comparison",
+    "Show for each quote: agent, amount, valid until, status",
+    "Highlight lowest amount",
+    "Show line item breakdown if available",
+    "PDF preview/download links",
+    "Sort by amount, date, or agent",
+    "Filter by status (hide rejected)",
+    "Can expand to see full details"
+  ],
+  "acceptance_criteria": [
+    "Clear comparison of all quotes",
+    "Lowest price highlighted",
+    "Can view/download PDFs",
+    "Line items visible when available",
+    "Sorting and filtering work"
+  ],
+  "verification": [
+    "Add 3+ quotes with varying amounts",
+    "Verify comparison view accuracy",
+    "Test sorting and filtering"
+  ]
+}

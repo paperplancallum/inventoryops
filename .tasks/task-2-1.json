@@ -1,0 +1,31 @@
+{
+  "id": "task-2-1",
+  "title": "Create TypeScript types for shipping quotes",
+  "phase": "2. TypeScript Types & Hooks",
+  "status": "completed",
+  "dependsOn": ["task-1-1", "task-1-2", "task-1-3"],
+  "description": "Define TypeScript types and interfaces for shipping quotes system.",
+  "files": [
+    "src/lib/supabase/types/shipping-quotes.ts",
+    "src/lib/supabase/types/index.ts"
+  ],
+  "implementation": [
+    "Create ShippingQuoteStatus enum ('pending' | 'submitted' | 'selected' | 'rejected')",
+    "Create ShippingQuote interface matching DB schema",
+    "Create ShippingQuoteTransfer interface for junction",
+    "Create ShippingQuoteLineItem interface",
+    "Create ShippingQuoteWithDetails type (quote + agent + transfers + line items)",
+    "Create form types: CreateShippingQuoteInput, UpdateShippingQuoteInput",
+    "Export all types from index.ts"
+  ],
+  "acceptance_criteria": [
+    "All types defined and exported",
+    "Types match database schema exactly",
+    "No TypeScript errors",
+    "Form types support both manual and portal submission"
+  ],
+  "verification": [
+    "Run: npx tsc --noEmit",
+    "Import types in a test file to verify exports"
+  ]
+}

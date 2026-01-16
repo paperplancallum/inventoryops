@@ -1,0 +1,33 @@
+{
+  "id": "task-6-3",
+  "title": "Update transfer list with quote status",
+  "phase": "6. Transfer Workflow Integration",
+  "status": "pending",
+  "dependsOn": ["task-6-2", "task-4-3"],
+  "description": "Add quote status indicators and filtering to transfer list page.",
+  "files": [
+    "src/app/(app)/transfers/page.tsx"
+  ],
+  "implementation": [
+    "Add quote status column/indicator to transfer list",
+    "Icons/badges: no quotes, pending, confirmed",
+    "Add filter dropdown: 'Quote Status'",
+    "  - All",
+    "  - Needs Quotes",
+    "  - Quotes Pending",
+    "  - Quote Confirmed",
+    "Ensure bulk select for quote requests works",
+    "Show shipping cost in list if confirmed"
+  ],
+  "acceptance_criteria": [
+    "Quote status visible in list",
+    "Filtering works correctly",
+    "Bulk selection for quotes works",
+    "Performance acceptable with many transfers"
+  ],
+  "verification": [
+    "View transfer list with various quote statuses",
+    "Test each filter option",
+    "Bulk select and request quotes"
+  ]
+}

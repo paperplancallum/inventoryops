@@ -1,0 +1,37 @@
+{
+  "id": "task-2-4",
+  "title": "Create useShippingInvoices hook",
+  "phase": "2. TypeScript Types & Hooks",
+  "status": "completed",
+  "dependsOn": ["task-2-2", "task-1-5"],
+  "description": "Create Supabase hook for shipping invoice operations with variance calculation.",
+  "files": [
+    "src/lib/supabase/hooks/useShippingInvoices.ts",
+    "src/lib/supabase/hooks/index.ts"
+  ],
+  "implementation": [
+    "Create useShippingInvoices hook with Supabase client",
+    "fetchInvoiceForQuote(quoteId) - get invoice for a winning quote",
+    "fetchAllShippingInvoices() - list all shipping invoices",
+    "fetchInvoiceWithVariance(invoiceId) - include calculated variance",
+    "createInvoice(input) - create invoice linked to winning quote",
+    "updateInvoice(id, input) - update invoice details",
+    "updateInvoiceStatus(id, status) - change status",
+    "uploadInvoicePdf(invoiceId, file) - upload to storage",
+    "calculateVariance(quoteAmount, invoiceAmount) - utility function",
+    "deleteInvoice(id)",
+    "Export from index.ts"
+  ],
+  "acceptance_criteria": [
+    "All CRUD operations work correctly",
+    "Variance calculation is accurate",
+    "Invoice must link to a selected quote",
+    "PDF upload works",
+    "Status transitions work correctly"
+  ],
+  "verification": [
+    "Run: npx tsc --noEmit",
+    "Test variance calculation with sample data",
+    "Manual test operations after UI built"
+  ]
+}

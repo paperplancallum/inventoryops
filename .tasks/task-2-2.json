@@ -1,0 +1,31 @@
+{
+  "id": "task-2-2",
+  "title": "Create TypeScript types for shipping invoices",
+  "phase": "2. TypeScript Types & Hooks",
+  "status": "completed",
+  "dependsOn": ["task-1-4"],
+  "description": "Define TypeScript types and interfaces for shipping invoices.",
+  "files": [
+    "src/lib/supabase/types/shipping-invoices.ts",
+    "src/lib/supabase/types/index.ts"
+  ],
+  "implementation": [
+    "Create ShippingInvoiceStatus enum ('received' | 'approved' | 'paid')",
+    "Create ShippingInvoice interface matching DB schema",
+    "Create ShippingInvoiceLineItem interface",
+    "Create ShippingInvoiceWithDetails type (invoice + quote + line items)",
+    "Create VarianceInfo type { quoted: number, actual: number, variance: number, percentChange: number }",
+    "Create form types: CreateShippingInvoiceInput, UpdateShippingInvoiceInput",
+    "Export all types from index.ts"
+  ],
+  "acceptance_criteria": [
+    "All types defined and exported",
+    "Types match database schema",
+    "Variance type captures all needed calculations",
+    "No TypeScript errors"
+  ],
+  "verification": [
+    "Run: npx tsc --noEmit",
+    "Import types in a test file to verify exports"
+  ]
+}

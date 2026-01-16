@@ -1,0 +1,34 @@
+{
+  "id": "task-3-1",
+  "title": "Create agent portal route and layout",
+  "phase": "3. Agent Portal (Public)",
+  "status": "pending",
+  "dependsOn": ["task-2-3"],
+  "description": "Create public route for shipping agents to submit quotes via magic link.",
+  "files": [
+    "src/app/quotes/[token]/page.tsx",
+    "src/app/quotes/layout.tsx"
+  ],
+  "implementation": [
+    "Create /quotes/layout.tsx - minimal public layout (no auth, no nav)",
+    "Create /quotes/[token]/page.tsx - main portal page",
+    "On mount: validate token via useShippingQuotes.validateMagicLink",
+    "Fetch quote data to show transfer details to agent",
+    "Handle states: loading, valid, expired, invalid, already_submitted",
+    "Show relevant transfer info (origin, destination, cargo details)",
+    "Ensure route is excluded from auth middleware"
+  ],
+  "acceptance_criteria": [
+    "Route accessible without authentication",
+    "Valid token shows quote form",
+    "Invalid/expired token shows error message",
+    "Already submitted shows read-only view",
+    "Transfer details displayed for context"
+  ],
+  "verification": [
+    "Generate a test magic link",
+    "Access /quotes/[token] in incognito browser",
+    "Verify no auth redirect",
+    "Test with expired/invalid tokens"
+  ]
+}

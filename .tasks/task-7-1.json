@@ -1,0 +1,35 @@
+{
+  "id": "task-7-1",
+  "title": "Add magic link management features",
+  "phase": "7. Polish",
+  "status": "pending",
+  "dependsOn": ["task-4-2"],
+  "description": "Add UX improvements for managing magic links.",
+  "files": [
+    "src/sections/transfers/MagicLinkActions.tsx",
+    "src/sections/transfers/RequestQuotesDialog.tsx"
+  ],
+  "implementation": [
+    "Create MagicLinkActions component",
+    "Copy link button with toast confirmation",
+    "Show link expiry date/time",
+    "Regenerate expired link button",
+    "Email option: mailto: link with prefilled subject and body",
+    "  - Subject: 'Quote Request for Transfer [#]'",
+    "  - Body: 'Please submit your quote using this link: [URL]'",
+    "Show link status: pending, submitted, expired",
+    "Resend option for pending links"
+  ],
+  "acceptance_criteria": [
+    "Can copy links easily",
+    "Toast confirms copy",
+    "Can regenerate expired links",
+    "Email link opens mail client correctly",
+    "Status clearly shown"
+  ],
+  "verification": [
+    "Test copy functionality",
+    "Test email link in mail client",
+    "Regenerate an expired link"
+  ]
+}

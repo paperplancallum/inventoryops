@@ -1,0 +1,37 @@
+{
+  "id": "task-3-2",
+  "title": "Create quote submission form component",
+  "phase": "3. Agent Portal (Public)",
+  "status": "pending",
+  "dependsOn": ["task-3-1"],
+  "description": "Build the form component for agents to submit their quotes.",
+  "files": [
+    "src/sections/agent-portal/QuoteSubmissionForm.tsx"
+  ],
+  "implementation": [
+    "Create QuoteSubmissionForm component",
+    "Total amount input (required) with currency selector",
+    "Valid until date picker",
+    "Optional line items section:",
+    "  - Add/remove line item rows",
+    "  - Each row: description + amount",
+    "  - Auto-sum line items and compare to total",
+    "Notes/comments textarea",
+    "Submit button with loading state",
+    "Form validation before submit",
+    "Call useShippingQuotes.submitQuoteViaPortal on submit"
+  ],
+  "acceptance_criteria": [
+    "Form validates required fields",
+    "Can submit with just total amount",
+    "Can add multiple line items",
+    "Line items sum displayed and compared to total",
+    "Currency selection works",
+    "Form submits successfully"
+  ],
+  "verification": [
+    "Test form with various inputs",
+    "Submit quote and verify in database",
+    "Test validation messages"
+  ]
+}

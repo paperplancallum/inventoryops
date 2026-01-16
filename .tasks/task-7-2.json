@@ -1,0 +1,34 @@
+{
+  "id": "task-7-2",
+  "title": "Handle quote expiry gracefully",
+  "phase": "7. Polish",
+  "status": "pending",
+  "dependsOn": ["task-7-1"],
+  "description": "Add proper handling and UI for expired quotes.",
+  "files": [
+    "src/sections/transfers/ShippingQuotesSection.tsx",
+    "src/sections/transfers/QuoteComparisonView.tsx"
+  ],
+  "implementation": [
+    "Add visual indicator for expired quotes (past valid_until)",
+    "Show 'Expired' badge in red",
+    "Filter out expired quotes from selection options",
+    "Option to 'Request Updated Quote' from same agent",
+    "Show expiry warning for quotes expiring soon (< 3 days)",
+    "Auto-refresh quote status on page load",
+    "Consider expired quotes in comparison view but mark clearly"
+  ],
+  "acceptance_criteria": [
+    "Expired quotes clearly marked",
+    "Cannot select expired quote as winner",
+    "Can request new quote from same agent",
+    "Warning for soon-to-expire quotes",
+    "No confusing states"
+  ],
+  "verification": [
+    "Create quote with past valid_until date",
+    "Verify expired display",
+    "Try to select expired quote (should fail)",
+    "Request new quote from same agent"
+  ]
+}

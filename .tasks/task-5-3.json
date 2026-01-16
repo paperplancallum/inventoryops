@@ -1,0 +1,33 @@
+{
+  "id": "task-5-3",
+  "title": "Create VarianceDisplay component",
+  "phase": "5. Internal UI - Invoice Management",
+  "status": "pending",
+  "dependsOn": ["task-5-2"],
+  "description": "Create reusable component for displaying quote vs actual invoice variance.",
+  "files": [
+    "src/sections/invoices/ShippingVarianceDisplay.tsx"
+  ],
+  "implementation": [
+    "Create ShippingVarianceDisplay component",
+    "Props: quotedAmount, actualAmount, currency",
+    "Show: Quoted | Actual | Variance ($) | Variance (%)",
+    "Color coding: green if actual <= quoted, red if over",
+    "Optional: line item comparison if both have breakdown",
+    "Compact variant for list views",
+    "Expanded variant for detail views",
+    "Use in invoice form, list, and transfer detail"
+  ],
+  "acceptance_criteria": [
+    "Accurate variance calculation",
+    "Clear color coding",
+    "Works at different sizes",
+    "Handles missing line items gracefully",
+    "Currency formatting correct"
+  ],
+  "verification": [
+    "Test with various amounts",
+    "Verify under/over styling",
+    "Check percentage calculation"
+  ]
+}

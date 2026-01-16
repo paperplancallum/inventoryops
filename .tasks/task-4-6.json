@@ -1,0 +1,35 @@
+{
+  "id": "task-4-6",
+  "title": "Create quote selection UI",
+  "phase": "4. Internal UI - Quote Management",
+  "status": "pending",
+  "dependsOn": ["task-4-5"],
+  "description": "Add ability to select a winning quote and reject others.",
+  "files": [
+    "src/sections/transfers/ShippingQuotesSection.tsx",
+    "src/sections/transfers/QuoteComparisonView.tsx"
+  ],
+  "implementation": [
+    "Add 'Select as Winner' button to quote cards",
+    "Confirmation dialog: 'Select [Agent] quote for $X? Other quotes will be rejected.'",
+    "Call useShippingQuotes.selectWinningQuote",
+    "Update UI to show selected quote prominently",
+    "Show rejected badge on other quotes",
+    "Update transfer.quote_confirmed_at timestamp",
+    "Disable selection once a winner is chosen",
+    "Option to change selection (with warning)"
+  ],
+  "acceptance_criteria": [
+    "Can select a winning quote",
+    "Other quotes marked as rejected",
+    "Transfer quote_confirmed_at updated",
+    "UI reflects selection state",
+    "Confirmation prevents accidental selection"
+  ],
+  "verification": [
+    "Select a quote from multiple options",
+    "Verify other quotes rejected",
+    "Check transfer record updated",
+    "Try to select another (see warning)"
+  ]
+}
