@@ -2,7 +2,7 @@
   "id": "task-6-2",
   "title": "Update transfer detail page with quote integration",
   "phase": "6. Transfer Workflow Integration",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-6-1", "task-5-3"],
   "description": "Show quote requirement and shipping cost summary on transfer detail.",
   "files": [

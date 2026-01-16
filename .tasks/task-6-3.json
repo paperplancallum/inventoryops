@@ -2,7 +2,7 @@
   "id": "task-6-3",
   "title": "Update transfer list with quote status",
   "phase": "6. Transfer Workflow Integration",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-6-2", "task-4-3"],
   "description": "Add quote status indicators and filtering to transfer list page.",
   "files": [

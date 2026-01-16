@@ -2,7 +2,7 @@
   "id": "task-6-1",
   "title": "Add quote status check to transfer workflow",
   "phase": "6. Transfer Workflow Integration",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-4-6"],
   "description": "Prevent transfers from moving to in-transit without confirmed quote.",
   "files": [
