@@ -2,7 +2,7 @@
   "id": "task-3-1",
   "title": "Create agent portal route and layout",
   "phase": "3. Agent Portal (Public)",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-2-3"],
   "description": "Create public route for shipping agents to submit quotes via magic link.",
   "files": [

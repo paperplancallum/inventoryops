@@ -2,7 +2,7 @@
   "id": "task-3-3",
   "title": "Add PDF upload to agent portal",
   "phase": "3. Agent Portal (Public)",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-3-2"],
   "description": "Add PDF upload capability to the quote submission form.",
   "files": [

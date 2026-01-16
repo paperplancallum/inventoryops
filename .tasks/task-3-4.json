@@ -2,7 +2,7 @@
   "id": "task-3-4",
   "title": "Create portal success and error states",
   "phase": "3. Agent Portal (Public)",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-3-3"],
   "description": "Create clear feedback states for the agent portal experience.",
   "files": [

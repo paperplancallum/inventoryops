@@ -2,7 +2,7 @@
   "id": "task-3-2",
   "title": "Create quote submission form component",
   "phase": "3. Agent Portal (Public)",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-3-1"],
   "description": "Build the form component for agents to submit their quotes.",
   "files": [
