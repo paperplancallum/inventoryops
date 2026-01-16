@@ -2,7 +2,7 @@
   "id": "task-5-1",
   "title": "Add ShippingInvoicesSection to invoices page",
   "phase": "5. Internal UI - Invoice Management",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-2-4"],
   "description": "Create section for shipping invoices within the existing invoices area.",
   "files": [

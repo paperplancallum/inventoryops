@@ -2,7 +2,7 @@
   "id": "task-5-3",
   "title": "Create VarianceDisplay component",
   "phase": "5. Internal UI - Invoice Management",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-5-2"],
   "description": "Create reusable component for displaying quote vs actual invoice variance.",
   "files": [

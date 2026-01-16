@@ -2,7 +2,7 @@
   "id": "task-5-2",
   "title": "Create ShippingInvoiceForm",
   "phase": "5. Internal UI - Invoice Management",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-5-1", "task-4-6"],
   "description": "Create form for recording shipping invoices from winning quote agents.",
   "files": [
