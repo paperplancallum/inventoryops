@@ -2,7 +2,7 @@
   "id": "task-4-3",
   "title": "Create RequestQuotesDialog - bulk transfers",
   "phase": "4. Internal UI - Quote Management",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-4-2"],
   "description": "Enable requesting quotes for multiple transfers at once from the transfer list page.",
   "files": [

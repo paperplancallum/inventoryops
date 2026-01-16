@@ -2,7 +2,7 @@
   "id": "task-4-1",
   "title": "Create ShippingQuotesSection component",
   "phase": "4. Internal UI - Quote Management",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-2-3"],
   "description": "Create the main section component displaying quotes for a transfer.",
   "files": [

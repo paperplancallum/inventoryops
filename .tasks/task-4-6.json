@@ -2,7 +2,7 @@
   "id": "task-4-6",
   "title": "Create quote selection UI",
   "phase": "4. Internal UI - Quote Management",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-4-5"],
   "description": "Add ability to select a winning quote and reject others.",
   "files": [

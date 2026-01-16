@@ -2,7 +2,7 @@
   "id": "task-4-4",
   "title": "Create ManualQuoteEntryForm",
   "phase": "4. Internal UI - Quote Management",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-4-1"],
   "description": "Create form for manually entering quotes received via email or other channels.",
   "files": [

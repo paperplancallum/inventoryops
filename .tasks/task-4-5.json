@@ -2,7 +2,7 @@
   "id": "task-4-5",
   "title": "Create QuoteComparisonView",
   "phase": "4. Internal UI - Quote Management",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-4-4"],
   "description": "Create a comparison view to easily evaluate quotes side-by-side.",
   "files": [

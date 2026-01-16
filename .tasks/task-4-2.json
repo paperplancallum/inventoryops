@@ -2,7 +2,7 @@
   "id": "task-4-2",
   "title": "Create RequestQuotesDialog - single transfer",
   "phase": "4. Internal UI - Quote Management",
-  "status": "pending",
+  "status": "completed",
   "dependsOn": ["task-4-1"],
   "description": "Create dialog for requesting quotes from shipping agents for a single transfer.",
   "files": [
