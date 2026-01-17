@@ -1,0 +1,435 @@
+{
+  "magicLinks": [
+    {
+      "id": "ml-001",
+      "tokenHash": "a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6",
+      "linkedEntityType": "purchase-order",
+      "linkedEntityId": "po-2024-0042",
+      "linkedEntityName": "PO-2024-0042",
+      "purpose": "invoice-submission",
+      "status": "active",
+      "createdAt": "2024-01-15T10:30:00Z",
+      "expiresAt": "2024-02-14T10:30:00Z",
+      "sentAt": "2024-01-15T10:35:00Z",
+      "firstViewedAt": "2024-01-15T14:22:00Z",
+      "submittedAt": null,
+      "revokedAt": null,
+      "recipientEmail": "invoices@guangzhoumfg.cn",
+      "recipientName": "Li Wei",
+      "recipientRole": "Supplier",
+      "createdByUserId": "user-001",
+      "createdByUserName": "Sarah Chen",
+      "submissionData": null,
+      "notes": "Supplier confirmed they will submit by end of week",
+      "events": [
+        {
+          "id": "evt-001",
+          "magicLinkId": "ml-001",
+          "eventType": "created",
+          "timestamp": "2024-01-15T10:30:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-001",
+          "triggeredByUserName": "Sarah Chen"
+        },
+        {
+          "id": "evt-002",
+          "magicLinkId": "ml-001",
+          "eventType": "sent",
+          "timestamp": "2024-01-15T10:35:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": { "emailProvider": "sendgrid" },
+          "triggeredByUserId": "user-001",
+          "triggeredByUserName": "Sarah Chen"
+        },
+        {
+          "id": "evt-003",
+          "magicLinkId": "ml-001",
+          "eventType": "viewed",
+          "timestamp": "2024-01-15T14:22:00Z",
+          "ipAddress": "203.0.113.xxx",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0",
+          "metadata": {},
+          "triggeredByUserId": null,
+          "triggeredByUserName": null
+        }
+      ]
+    },
+    {
+      "id": "ml-002",
+      "tokenHash": "b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7",
+      "linkedEntityType": "purchase-order",
+      "linkedEntityId": "po-2024-0038",
+      "linkedEntityName": "PO-2024-0038",
+      "purpose": "invoice-submission",
+      "status": "submitted",
+      "createdAt": "2024-01-10T09:00:00Z",
+      "expiresAt": "2024-02-09T09:00:00Z",
+      "sentAt": "2024-01-10T09:05:00Z",
+      "firstViewedAt": "2024-01-10T11:30:00Z",
+      "submittedAt": "2024-01-12T08:45:00Z",
+      "revokedAt": null,
+      "recipientEmail": "accounts@shenzhentech.com",
+      "recipientName": "Zhang Ming",
+      "recipientRole": "Supplier",
+      "createdByUserId": "user-002",
+      "createdByUserName": "Mike Johnson",
+      "submissionData": {
+        "lineItems": [
+          { "lineItemId": "li-001", "submittedUnitCost": 12.50, "notes": null },
+          { "lineItemId": "li-002", "submittedUnitCost": 8.75, "notes": "Price increase due to material costs" }
+        ],
+        "additionalCosts": [
+          { "type": "handling", "description": "Special packaging", "amount": 150.00 }
+        ],
+        "supplierNotes": "Invoice attached. Payment terms: Net 30",
+        "submittedByName": "Zhang Ming",
+        "submittedByEmail": "accounts@shenzhentech.com"
+      },
+      "notes": "",
+      "events": [
+        {
+          "id": "evt-010",
+          "magicLinkId": "ml-002",
+          "eventType": "created",
+          "timestamp": "2024-01-10T09:00:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-002",
+          "triggeredByUserName": "Mike Johnson"
+        },
+        {
+          "id": "evt-011",
+          "magicLinkId": "ml-002",
+          "eventType": "sent",
+          "timestamp": "2024-01-10T09:05:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-002",
+          "triggeredByUserName": "Mike Johnson"
+        },
+        {
+          "id": "evt-012",
+          "magicLinkId": "ml-002",
+          "eventType": "viewed",
+          "timestamp": "2024-01-10T11:30:00Z",
+          "ipAddress": "198.51.100.xxx",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+          "metadata": {},
+          "triggeredByUserId": null,
+          "triggeredByUserName": null
+        },
+        {
+          "id": "evt-013",
+          "magicLinkId": "ml-002",
+          "eventType": "form_started",
+          "timestamp": "2024-01-12T08:30:00Z",
+          "ipAddress": "198.51.100.xxx",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+          "metadata": {},
+          "triggeredByUserId": null,
+          "triggeredByUserName": null
+        },
+        {
+          "id": "evt-014",
+          "magicLinkId": "ml-002",
+          "eventType": "submitted",
+          "timestamp": "2024-01-12T08:45:00Z",
+          "ipAddress": "198.51.100.xxx",
+          "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+          "metadata": { "invoiceTotal": 5420.00 },
+          "triggeredByUserId": null,
+          "triggeredByUserName": null
+        }
+      ]
+    },
+    {
+      "id": "ml-003",
+      "tokenHash": "c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8",
+      "linkedEntityType": "transfer",
+      "linkedEntityId": "tf-2024-0015",
+      "linkedEntityName": "TF-2024-0015",
+      "purpose": "document-upload",
+      "status": "active",
+      "createdAt": "2024-01-18T14:00:00Z",
+      "expiresAt": "2024-01-25T14:00:00Z",
+      "sentAt": "2024-01-18T14:10:00Z",
+      "firstViewedAt": null,
+      "submittedAt": null,
+      "revokedAt": null,
+      "recipientEmail": "docs@globalfreight.com",
+      "recipientName": "James Wilson",
+      "recipientRole": "Freight Forwarder",
+      "createdByUserId": "user-001",
+      "createdByUserName": "Sarah Chen",
+      "submissionData": null,
+      "notes": "Awaiting BOL and customs docs for Shenzhen-LA shipment",
+      "events": [
+        {
+          "id": "evt-020",
+          "magicLinkId": "ml-003",
+          "eventType": "created",
+          "timestamp": "2024-01-18T14:00:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-001",
+          "triggeredByUserName": "Sarah Chen"
+        },
+        {
+          "id": "evt-021",
+          "magicLinkId": "ml-003",
+          "eventType": "sent",
+          "timestamp": "2024-01-18T14:10:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-001",
+          "triggeredByUserName": "Sarah Chen"
+        }
+      ]
+    },
+    {
+      "id": "ml-004",
+      "tokenHash": "d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9",
+      "linkedEntityType": "transfer",
+      "linkedEntityId": "tf-2024-0012",
+      "linkedEntityName": "TF-2024-0012",
+      "purpose": "document-upload",
+      "status": "submitted",
+      "createdAt": "2024-01-05T11:00:00Z",
+      "expiresAt": "2024-01-12T11:00:00Z",
+      "sentAt": "2024-01-05T11:15:00Z",
+      "firstViewedAt": "2024-01-05T16:00:00Z",
+      "submittedAt": "2024-01-06T09:30:00Z",
+      "revokedAt": null,
+      "recipientEmail": "shipping@pacificlogistics.hk",
+      "recipientName": "David Chan",
+      "recipientRole": "Shipping Agent",
+      "createdByUserId": "user-003",
+      "createdByUserName": "Emily Rodriguez",
+      "submissionData": {
+        "documents": [
+          { "type": "bill-of-lading", "fileName": "BOL-TF2024-0012.pdf", "fileUrl": "/uploads/bol-tf2024-0012.pdf", "notes": null },
+          { "type": "packing-list", "fileName": "PackingList-TF2024-0012.pdf", "fileUrl": "/uploads/packing-tf2024-0012.pdf", "notes": null },
+          { "type": "customs-declaration", "fileName": "CustomsDeclaration.pdf", "fileUrl": "/uploads/customs-tf2024-0012.pdf", "notes": "HS codes verified" }
+        ],
+        "trackingUpdates": [
+          { "carrier": "OOCL", "trackingNumber": "OOLU1234567890", "status": "In Transit" }
+        ],
+        "actualPickupDate": "2024-01-04",
+        "actualDeliveryDate": null,
+        "notes": "Container departed Hong Kong port on schedule",
+        "submittedByName": "David Chan",
+        "submittedByEmail": "shipping@pacificlogistics.hk"
+      },
+      "notes": "",
+      "events": [
+        {
+          "id": "evt-030",
+          "magicLinkId": "ml-004",
+          "eventType": "created",
+          "timestamp": "2024-01-05T11:00:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-003",
+          "triggeredByUserName": "Emily Rodriguez"
+        },
+        {
+          "id": "evt-031",
+          "magicLinkId": "ml-004",
+          "eventType": "sent",
+          "timestamp": "2024-01-05T11:15:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-003",
+          "triggeredByUserName": "Emily Rodriguez"
+        },
+        {
+          "id": "evt-032",
+          "magicLinkId": "ml-004",
+          "eventType": "viewed",
+          "timestamp": "2024-01-05T16:00:00Z",
+          "ipAddress": "203.0.113.xxx",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+          "metadata": {},
+          "triggeredByUserId": null,
+          "triggeredByUserName": null
+        },
+        {
+          "id": "evt-033",
+          "magicLinkId": "ml-004",
+          "eventType": "submitted",
+          "timestamp": "2024-01-06T09:30:00Z",
+          "ipAddress": "203.0.113.xxx",
+          "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
+          "metadata": { "documentCount": 3 },
+          "triggeredByUserId": null,
+          "triggeredByUserName": null
+        }
+      ]
+    },
+    {
+      "id": "ml-005",
+      "tokenHash": "e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0",
+      "linkedEntityType": "purchase-order",
+      "linkedEntityId": "po-2024-0025",
+      "linkedEntityName": "PO-2024-0025",
+      "purpose": "invoice-submission",
+      "status": "expired",
+      "createdAt": "2023-12-01T08:00:00Z",
+      "expiresAt": "2023-12-31T08:00:00Z",
+      "sentAt": "2023-12-01T08:05:00Z",
+      "firstViewedAt": "2023-12-01T12:00:00Z",
+      "submittedAt": null,
+      "revokedAt": null,
+      "recipientEmail": "billing@oldvendor.com",
+      "recipientName": "Tom Smith",
+      "recipientRole": "Supplier",
+      "createdByUserId": "user-002",
+      "createdByUserName": "Mike Johnson",
+      "submissionData": null,
+      "notes": "Supplier never submitted - follow up required",
+      "events": [
+        {
+          "id": "evt-040",
+          "magicLinkId": "ml-005",
+          "eventType": "created",
+          "timestamp": "2023-12-01T08:00:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-002",
+          "triggeredByUserName": "Mike Johnson"
+        },
+        {
+          "id": "evt-041",
+          "magicLinkId": "ml-005",
+          "eventType": "sent",
+          "timestamp": "2023-12-01T08:05:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-002",
+          "triggeredByUserName": "Mike Johnson"
+        },
+        {
+          "id": "evt-042",
+          "magicLinkId": "ml-005",
+          "eventType": "viewed",
+          "timestamp": "2023-12-01T12:00:00Z",
+          "ipAddress": "192.0.2.xxx",
+          "userAgent": "Mozilla/5.0",
+          "metadata": {},
+          "triggeredByUserId": null,
+          "triggeredByUserName": null
+        },
+        {
+          "id": "evt-043",
+          "magicLinkId": "ml-005",
+          "eventType": "expired",
+          "timestamp": "2023-12-31T08:00:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": null,
+          "triggeredByUserName": null
+        }
+      ]
+    },
+    {
+      "id": "ml-006",
+      "tokenHash": "f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0u1",
+      "linkedEntityType": "purchase-order",
+      "linkedEntityId": "po-2024-0030",
+      "linkedEntityName": "PO-2024-0030",
+      "purpose": "invoice-submission",
+      "status": "revoked",
+      "createdAt": "2024-01-08T10:00:00Z",
+      "expiresAt": "2024-02-07T10:00:00Z",
+      "sentAt": "2024-01-08T10:10:00Z",
+      "firstViewedAt": null,
+      "submittedAt": null,
+      "revokedAt": "2024-01-09T15:30:00Z",
+      "recipientEmail": "wrong-email@example.com",
+      "recipientName": "Unknown Contact",
+      "recipientRole": "Supplier",
+      "createdByUserId": "user-001",
+      "createdByUserName": "Sarah Chen",
+      "submissionData": null,
+      "notes": "Sent to wrong email address - revoked and regenerated",
+      "events": [
+        {
+          "id": "evt-050",
+          "magicLinkId": "ml-006",
+          "eventType": "created",
+          "timestamp": "2024-01-08T10:00:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-001",
+          "triggeredByUserName": "Sarah Chen"
+        },
+        {
+          "id": "evt-051",
+          "magicLinkId": "ml-006",
+          "eventType": "sent",
+          "timestamp": "2024-01-08T10:10:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": {},
+          "triggeredByUserId": "user-001",
+          "triggeredByUserName": "Sarah Chen"
+        },
+        {
+          "id": "evt-052",
+          "magicLinkId": "ml-006",
+          "eventType": "revoked",
+          "timestamp": "2024-01-09T15:30:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": { "reason": "Sent to incorrect email" },
+          "triggeredByUserId": "user-001",
+          "triggeredByUserName": "Sarah Chen"
+        },
+        {
+          "id": "evt-053",
+          "magicLinkId": "ml-006",
+          "eventType": "regenerated",
+          "timestamp": "2024-01-09T15:35:00Z",
+          "ipAddress": null,
+          "userAgent": null,
+          "metadata": { "newMagicLinkId": "ml-007" },
+          "triggeredByUserId": "user-001",
+          "triggeredByUserName": "Sarah Chen"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "totalActive": 2,
+    "pendingSubmission": 2,
+    "submittedThisWeek": 1,
+    "expiringWithin24Hours": 0
+  },
+  "entityTypes": [
+    { "id": "purchase-order", "label": "Purchase Order" },
+    { "id": "transfer", "label": "Transfer" }
+  ],
+  "purposes": [
+    { "id": "invoice-submission", "label": "Invoice Submission" },
+    { "id": "document-upload", "label": "Document Upload" }
+  ],
+  "statuses": [
+    { "id": "active", "label": "Active" },
+    { "id": "submitted", "label": "Submitted" },
+    { "id": "expired", "label": "Expired" },
+    { "id": "revoked", "label": "Revoked" }
+  ]
+}

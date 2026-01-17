@@ -1,0 +1,235 @@
+{
+  "_meta": {
+    "models": {
+      "AmazonConnection": "Connected Amazon Seller Central account. Provides API access to marketplaces.",
+      "Brand": "Organizational grouping for products. Multiple products can belong to one brand.",
+      "RouteLeg": "Individual point-to-point shipping segment. Reusable across multiple routes.",
+      "ShippingRoute": "Composed journey using multiple legs. Defines full path from origin to destination."
+    },
+    "relationships": [
+      "AmazonConnection provides API access for syncing products to enabled marketplaces",
+      "Brand has many Products (via brandId in catalog)",
+      "Brand connects to many AmazonConnections (via amazonConnectionIds) - defines which seller accounts sell this brand",
+      "Route references multiple Legs by ID (ordered array)",
+      "Legs are reusable - one leg can be part of many routes",
+      "Routes compute totals dynamically from their legs"
+    ]
+  },
+  "amazonConnections": [
+    {
+      "id": "conn-na-main",
+      "connectionName": "Main NA Account",
+      "region": "NA",
+      "sellerId": "A1B2C3D4E5F6G",
+      "sellerName": "ACME Commerce LLC",
+      "enabledMarketplaces": ["US", "CA"],
+      "status": "connected",
+      "lastSyncAt": "2026-01-09T10:30:00Z",
+      "createdAt": "2025-06-15T00:00:00Z"
+    },
+    {
+      "id": "conn-eu-main",
+      "connectionName": "EU Expansion Account",
+      "region": "EU",
+      "sellerId": "H8I9J0K1L2M3N",
+      "sellerName": "ACME Europe GmbH",
+      "enabledMarketplaces": ["UK", "DE"],
+      "status": "connected",
+      "lastSyncAt": "2026-01-09T08:15:00Z",
+      "createdAt": "2025-11-01T00:00:00Z"
+    }
+  ],
+  "brands": [
+    {
+      "id": "brand-hydraflow",
+      "name": "HydraFlow",
+      "description": "Premium hydration and drinkware products",
+      "logoUrl": null,
+      "status": "active",
+      "amazonConnectionIds": ["conn-na-main", "conn-eu-main"],
+      "productCount": 5,
+      "createdAt": "2025-06-15T00:00:00Z",
+      "updatedAt": "2025-12-01T00:00:00Z"
+    },
+    {
+      "id": "brand-fitpro",
+      "name": "FitPro Gear",
+      "description": "Fitness equipment and accessories",
+      "logoUrl": null,
+      "status": "active",
+      "amazonConnectionIds": ["conn-na-main"],
+      "productCount": 3,
+      "createdAt": "2025-08-01T00:00:00Z",
+      "updatedAt": "2025-12-01T00:00:00Z"
+    }
+  ],
+  "legs": [
+    {
+      "id": "leg-001",
+      "name": "Shenzhen to LA Ocean",
+      "fromLocationId": "loc-001",
+      "fromLocationName": "Shenzhen Drinkware Factory",
+      "toLocationId": "loc-003",
+      "toLocationName": "FlexPort LA Warehouse",
+      "method": "sea",
+      "transitDays": { "min": 18, "typical": 22, "max": 28 },
+      "costs": { "perUnit": 0.85, "perKg": null, "flatFee": 2800, "currency": "USD" },
+      "isActive": true,
+      "notes": "Standard ocean freight FCL from China",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "leg-002",
+      "name": "Shenzhen to LA Air",
+      "fromLocationId": "loc-001",
+      "fromLocationName": "Shenzhen Drinkware Factory",
+      "toLocationId": "loc-003",
+      "toLocationName": "FlexPort LA Warehouse",
+      "method": "air",
+      "transitDays": { "min": 4, "typical": 5, "max": 7 },
+      "costs": { "perUnit": 3.50, "perKg": 8.00, "flatFee": 500, "currency": "USD" },
+      "isActive": true,
+      "notes": "Express air for urgent restocks - 4x cost of ocean",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "leg-003",
+      "name": "Thailand to LA Ocean",
+      "fromLocationId": "loc-factory-th",
+      "fromLocationName": "Fitness Factory Thailand",
+      "toLocationId": "loc-003",
+      "toLocationName": "FlexPort LA Warehouse",
+      "method": "sea",
+      "transitDays": { "min": 20, "typical": 25, "max": 32 },
+      "costs": { "perUnit": 0.95, "perKg": null, "flatFee": 3200, "currency": "USD" },
+      "isActive": true,
+      "notes": "Ocean freight from Bangkok port",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "leg-004",
+      "name": "LA to FBA Ground",
+      "fromLocationId": "loc-003",
+      "fromLocationName": "FlexPort LA Warehouse",
+      "toLocationId": "type:amazon-fba",
+      "toLocationName": "Amazon FBA",
+      "toLocationType": "amazon-fba",
+      "method": "ground",
+      "transitDays": { "min": 2, "typical": 3, "max": 5 },
+      "costs": { "perUnit": 0.15, "perKg": null, "flatFee": 150, "currency": "USD" },
+      "isActive": true,
+      "notes": "Standard LTL route to any FBA fulfillment center",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "leg-005",
+      "name": "LA to AWD Ground",
+      "fromLocationId": "loc-003",
+      "fromLocationName": "FlexPort LA Warehouse",
+      "toLocationId": "type:amazon-awd",
+      "toLocationName": "Amazon AWD",
+      "toLocationType": "amazon-awd",
+      "method": "ground",
+      "transitDays": { "min": 1, "typical": 2, "max": 3 },
+      "costs": { "perUnit": 0.10, "perKg": null, "flatFee": 80, "currency": "USD" },
+      "isActive": true,
+      "notes": "Bulk AWD shipments to Amazon warehousing",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "leg-006",
+      "name": "LA to FBA Express",
+      "fromLocationId": "loc-003",
+      "fromLocationName": "FlexPort LA Warehouse",
+      "toLocationId": "type:amazon-fba",
+      "toLocationName": "Amazon FBA",
+      "toLocationType": "amazon-fba",
+      "method": "express",
+      "transitDays": { "min": 1, "typical": 1, "max": 2 },
+      "costs": { "perUnit": 0.85, "perKg": null, "flatFee": 250, "currency": "USD" },
+      "isActive": true,
+      "notes": "Express courier for urgent small shipments to FBA",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    }
+  ],
+  "routes": [
+    {
+      "id": "route-001",
+      "name": "Shenzhen Standard Ocean to FBA",
+      "legIds": ["leg-001", "leg-004"],
+      "isDefault": true,
+      "isActive": true,
+      "notes": "Default route for Shenzhen supplier to Amazon FBA. ~25 days total.",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-002",
+      "name": "Shenzhen Express Air to FBA",
+      "legIds": ["leg-002", "leg-004"],
+      "isDefault": false,
+      "isActive": true,
+      "notes": "Expedited air route for urgent restocks. ~8 days total but 4x cost.",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-003",
+      "name": "Shenzhen Standard Ocean to AWD",
+      "legIds": ["leg-001", "leg-005"],
+      "isDefault": true,
+      "isActive": true,
+      "notes": "Default route for bulk AWD shipments. ~24 days total.",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-004",
+      "name": "Thailand Standard Ocean to FBA",
+      "legIds": ["leg-003", "leg-004"],
+      "isDefault": true,
+      "isActive": true,
+      "notes": "Default route for Thailand supplier to Amazon FBA. ~28 days total.",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-005",
+      "name": "Shenzhen Rush Air + Express to FBA",
+      "legIds": ["leg-002", "leg-006"],
+      "isDefault": false,
+      "isActive": true,
+      "notes": "Maximum speed route for emergencies. ~6 days total, very expensive.",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    }
+  ],
+  "locations": [
+    { "id": "loc-001", "name": "Shenzhen Drinkware Factory", "type": "factory" },
+    { "id": "loc-factory-th", "name": "Fitness Factory Thailand", "type": "factory" },
+    { "id": "loc-003", "name": "FlexPort LA Warehouse", "type": "3pl" },
+    { "id": "loc-004", "name": "PHX7 Amazon FBA", "type": "amazon-fba" },
+    { "id": "loc-005", "name": "ONT8 Amazon FBA", "type": "amazon-fba" },
+    { "id": "loc-006", "name": "SBD1 Amazon AWD", "type": "amazon-awd" }
+  ],
+  "shippingMethods": [
+    { "id": "sea", "label": "Ocean Freight" },
+    { "id": "air", "label": "Air Freight" },
+    { "id": "ground", "label": "Ground/Truck" },
+    { "id": "express", "label": "Express Courier" },
+    { "id": "rail", "label": "Rail" }
+  ],
+  "tabs": [
+    { "id": "amazon-accounts", "label": "Amazon Accounts", "description": "Connect Seller Central accounts" },
+    { "id": "brands", "label": "Brands", "description": "Product brand management" },
+    { "id": "routes", "label": "Routes", "description": "Shipping routes and legs" },
+    { "id": "notifications", "label": "Notifications", "description": "Alert preferences" },
+    { "id": "preferences", "label": "Preferences", "description": "App preferences" }
+  ]
+}

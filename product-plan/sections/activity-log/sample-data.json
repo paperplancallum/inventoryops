@@ -1,0 +1,255 @@
+{
+  "_meta": {
+    "models": {
+      "activityLogEntry": "A record of a change made by a user, including entity reference, action type, and field-level changes.",
+      "fieldChange": "A single field modification within an activity entry, tracking old and new values with type information."
+    },
+    "relationships": [
+      "Each ActivityLogEntry references a User who made the change",
+      "Each ActivityLogEntry references an Entity that was changed",
+      "Each ActivityLogEntry can have multiple FieldChanges"
+    ]
+  },
+  "entries": [
+    {
+      "id": "act-001",
+      "timestamp": "2024-12-10T14:32:15Z",
+      "user": {
+        "id": "user-001",
+        "name": "Sarah Chen",
+        "email": "sarah@company.com",
+        "avatarUrl": null
+      },
+      "entityType": "transfer",
+      "entityId": "transfer-001",
+      "entityName": "TRF-2024-001",
+      "action": "status_change",
+      "changes": [
+        {
+          "field": "status",
+          "fieldLabel": "Status",
+          "oldValue": "booked",
+          "newValue": "in-transit",
+          "valueType": "status"
+        }
+      ],
+      "ipAddress": "192.168.1.100",
+      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)",
+      "notes": ""
+    },
+    {
+      "id": "act-002",
+      "timestamp": "2024-12-10T11:15:00Z",
+      "user": {
+        "id": "user-002",
+        "name": "Mike Johnson",
+        "email": "mike@company.com",
+        "avatarUrl": null
+      },
+      "entityType": "purchase-order",
+      "entityId": "po-007",
+      "entityName": "PO-2024-007",
+      "action": "update",
+      "changes": [
+        {
+          "field": "quantity",
+          "fieldLabel": "Quantity",
+          "oldValue": 500,
+          "newValue": 750,
+          "valueType": "number"
+        },
+        {
+          "field": "totalCost",
+          "fieldLabel": "Total Cost",
+          "oldValue": 2500.0,
+          "newValue": 3750.0,
+          "valueType": "currency"
+        }
+      ],
+      "ipAddress": "192.168.1.105",
+      "userAgent": null,
+      "notes": "Supplier confirmed increased capacity"
+    },
+    {
+      "id": "act-003",
+      "timestamp": "2024-12-10T09:45:30Z",
+      "user": {
+        "id": "user-001",
+        "name": "Sarah Chen",
+        "email": "sarah@company.com",
+        "avatarUrl": null
+      },
+      "entityType": "product",
+      "entityId": "prod-015",
+      "entityName": "Insulated Water Bottle 20oz",
+      "action": "create",
+      "changes": [],
+      "ipAddress": "192.168.1.100",
+      "userAgent": null,
+      "notes": "New SKU added to catalog"
+    },
+    {
+      "id": "act-004",
+      "timestamp": "2024-12-09T16:20:00Z",
+      "user": {
+        "id": "user-003",
+        "name": "Emily Rodriguez",
+        "email": "emily@company.com",
+        "avatarUrl": null
+      },
+      "entityType": "inspection",
+      "entityId": "insp-002",
+      "entityName": "INSP-BATCH-007",
+      "action": "update",
+      "changes": [
+        {
+          "field": "result",
+          "fieldLabel": "Result",
+          "oldValue": "pending",
+          "newValue": "fail",
+          "valueType": "status"
+        },
+        {
+          "field": "defectRate",
+          "fieldLabel": "Defect Rate",
+          "oldValue": 0,
+          "newValue": 3.2,
+          "valueType": "number"
+        },
+        {
+          "field": "notes",
+          "fieldLabel": "Notes",
+          "oldValue": "",
+          "newValue": "3.2% defect rate exceeds 2.5% AQL threshold. Rework required.",
+          "valueType": "text"
+        }
+      ],
+      "ipAddress": null,
+      "userAgent": null,
+      "notes": ""
+    },
+    {
+      "id": "act-005",
+      "timestamp": "2024-12-09T10:00:00Z",
+      "user": {
+        "id": "user-002",
+        "name": "Mike Johnson",
+        "email": "mike@company.com",
+        "avatarUrl": null
+      },
+      "entityType": "supplier",
+      "entityId": "supplier-003",
+      "entityName": "Shenzhen Quality Goods Ltd",
+      "action": "update",
+      "changes": [
+        {
+          "field": "contactEmail",
+          "fieldLabel": "Contact Email",
+          "oldValue": "old@supplier.com",
+          "newValue": "new@supplier.com",
+          "valueType": "text"
+        },
+        {
+          "field": "isActive",
+          "fieldLabel": "Active",
+          "oldValue": false,
+          "newValue": true,
+          "valueType": "boolean"
+        }
+      ],
+      "ipAddress": "192.168.1.105",
+      "userAgent": null,
+      "notes": "Reactivated supplier after payment dispute resolved"
+    },
+    {
+      "id": "act-006",
+      "timestamp": "2024-12-08T14:30:00Z",
+      "user": {
+        "id": "user-001",
+        "name": "Sarah Chen",
+        "email": "sarah@company.com",
+        "avatarUrl": null
+      },
+      "entityType": "location",
+      "entityId": "loc-005",
+      "entityName": "Guangzhou Warehouse B",
+      "action": "delete",
+      "changes": [],
+      "ipAddress": "192.168.1.100",
+      "userAgent": null,
+      "notes": "Consolidated into Warehouse A"
+    },
+    {
+      "id": "act-007",
+      "timestamp": "2024-12-08T09:15:00Z",
+      "user": {
+        "id": "user-003",
+        "name": "Emily Rodriguez",
+        "email": "emily@company.com",
+        "avatarUrl": null
+      },
+      "entityType": "batch",
+      "entityId": "batch-012",
+      "entityName": "BATCH-2024-012",
+      "action": "update",
+      "changes": [
+        {
+          "field": "expectedArrival",
+          "fieldLabel": "Expected Arrival",
+          "oldValue": "2024-12-15",
+          "newValue": "2024-12-18",
+          "valueType": "date"
+        }
+      ],
+      "ipAddress": null,
+      "userAgent": null,
+      "notes": "Delayed due to port congestion"
+    },
+    {
+      "id": "act-008",
+      "timestamp": "2024-12-07T16:45:00Z",
+      "user": {
+        "id": "user-002",
+        "name": "Mike Johnson",
+        "email": "mike@company.com",
+        "avatarUrl": null
+      },
+      "entityType": "cost",
+      "entityId": "cost-019",
+      "entityName": "Shipping Fee - PO-2024-005",
+      "action": "create",
+      "changes": [],
+      "ipAddress": "192.168.1.105",
+      "userAgent": null,
+      "notes": "Added expedited shipping charge"
+    }
+  ],
+  "entityTypes": [
+    { "id": "product", "label": "Product" },
+    { "id": "supplier", "label": "Supplier" },
+    { "id": "purchase-order", "label": "Purchase Order" },
+    { "id": "batch", "label": "Batch" },
+    { "id": "transfer", "label": "Transfer" },
+    { "id": "inspection", "label": "Inspection" },
+    { "id": "cost", "label": "Cost" },
+    { "id": "payment", "label": "Payment" },
+    { "id": "location", "label": "Location" }
+  ],
+  "actionTypes": [
+    { "id": "create", "label": "Created" },
+    { "id": "update", "label": "Updated" },
+    { "id": "delete", "label": "Deleted" },
+    { "id": "status_change", "label": "Status Changed" }
+  ],
+  "users": [
+    { "id": "user-001", "name": "Sarah Chen", "email": "sarah@company.com", "avatarUrl": null },
+    { "id": "user-002", "name": "Mike Johnson", "email": "mike@company.com", "avatarUrl": null },
+    { "id": "user-003", "name": "Emily Rodriguez", "email": "emily@company.com", "avatarUrl": null }
+  ],
+  "summary": {
+    "totalEntries": 8,
+    "entriesThisWeek": 5,
+    "mostActiveUser": { "id": "user-001", "name": "Sarah Chen", "email": "sarah@company.com", "avatarUrl": null },
+    "mostChangedEntityType": "purchase-order"
+  }
+}

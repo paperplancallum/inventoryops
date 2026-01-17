@@ -1,0 +1,70 @@
+{
+  "_meta": {
+    "models": {
+      "Supplier": "Each supplier is a manufacturer or vendor you purchase products from. They have contact details, lead times, and payment terms."
+    },
+    "relationships": [
+      "Each Product has one primary Supplier (linked via supplierId)",
+      "Each Supplier can supply multiple Products (shown as productCount)",
+      "Each PurchaseOrder references a Supplier"
+    ]
+  },
+  "suppliers": [
+    {
+      "id": "sup-001",
+      "name": "Shenzhen Drinkware Co.",
+      "contactName": "Li Wei",
+      "contactEmail": "liwei@szdrinkware.com",
+      "contactPhone": "+86 755 8888 1234",
+      "country": "China",
+      "productCount": 3,
+      "leadTimeDays": 35,
+      "paymentTerms": "30% deposit, 70% before shipping",
+      "paymentTermsTemplateId": "standard-30-70",
+      "factoryLocationId": "loc-001",
+      "notes": "Primary supplier for water bottles and tumblers. Good quality and reliable."
+    },
+    {
+      "id": "sup-002",
+      "name": "Hangzhou Silicone Products Ltd.",
+      "contactName": "Zhang Mei",
+      "contactEmail": "sales@hzsilicone.cn",
+      "contactPhone": "+86 571 8765 4321",
+      "country": "China",
+      "productCount": 2,
+      "leadTimeDays": 28,
+      "paymentTerms": "50% deposit, 50% on delivery",
+      "paymentTermsTemplateId": "standard-30-70",
+      "factoryLocationId": "loc-002",
+      "notes": "Specializes in food-grade silicone products."
+    },
+    {
+      "id": "sup-003",
+      "name": "Saigon Pet Supplies",
+      "contactName": "Nguyen Thi Lan",
+      "contactEmail": "lan.nguyen@saigonpet.vn",
+      "contactPhone": "+84 28 3456 7890",
+      "country": "Vietnam",
+      "productCount": 1,
+      "leadTimeDays": 42,
+      "paymentTerms": "100% before shipping",
+      "paymentTermsTemplateId": "prepay-100",
+      "factoryLocationId": "loc-009",
+      "notes": "New supplier, testing with pet bowl line."
+    },
+    {
+      "id": "sup-004",
+      "name": "Fitness Factory Thailand",
+      "contactName": "Somchai Prasert",
+      "contactEmail": "somchai@fitfactoryth.com",
+      "contactPhone": "+66 2 123 4567",
+      "country": "Thailand",
+      "productCount": 2,
+      "leadTimeDays": 30,
+      "paymentTerms": "30% deposit, 70% before shipping",
+      "paymentTermsTemplateId": "standard-30-70",
+      "factoryLocationId": "loc-010",
+      "notes": "Excellent quality fitness equipment. Fast turnaround."
+    }
+  ]
+}

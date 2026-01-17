@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cron/magic-link-reminders",
+      "schedule": "0 9 * * *"
+    }
+  ]
+}

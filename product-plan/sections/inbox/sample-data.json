@@ -1,0 +1,389 @@
+{
+  "_meta": {
+    "models": {
+      "inboxMessages": "Flattened messages from POs and Shipping Agents, enriched with parent context for the centralized inbox view.",
+      "inboxSummary": "Aggregate statistics about messages across all sources."
+    },
+    "relationships": [
+      "Each InboxMessage belongs to either a PurchaseOrder or a ShippingAgent",
+      "Messages are sorted by timestamp, newest first"
+    ]
+  },
+  "inboxMessages": [
+    {
+      "messageId": "msg-009",
+      "direction": "inbound",
+      "senderName": "Nguyen Van Minh",
+      "senderEmail": "nguyen@saigonpet.com",
+      "timestamp": "2024-12-12T08:00:00Z",
+      "content": "Hi Sarah,\n\nJust following up - the 30 replacement units shipped yesterday via DHL Express. Tracking: DHL-9847362541.\n\nExpected delivery: Dec 15.\n\nBest regards,\nNguyen",
+      "isRead": false,
+      "sourceType": "purchase-order",
+      "poId": "po-007",
+      "poNumber": "PO-2024-007",
+      "supplierId": "sup-003",
+      "supplierName": "Saigon Pet Supplies",
+      "poStatus": "partially-received"
+    },
+    {
+      "messageId": "msg-011",
+      "direction": "inbound",
+      "senderName": "Somchai Prasert",
+      "senderEmail": "somchai@fitnessfactory.th",
+      "timestamp": "2024-12-10T09:30:00Z",
+      "content": "Hi Sarah,\n\nThank you for the order! I've reviewed the color swatch and we can definitely match it.\n\nHowever, I wanted to check - would you prefer the standard 6mm thickness or would you like to try our new 8mm premium option? The 8mm is more durable and only $1.20 more per unit.\n\nLet me know and I'll confirm the order right away.\n\nBest regards,\nSomchai",
+      "isRead": false,
+      "sourceType": "purchase-order",
+      "poId": "po-005",
+      "poNumber": "PO-2024-005",
+      "supplierId": "sup-004",
+      "supplierName": "Fitness Factory Thailand",
+      "poStatus": "sent"
+    },
+    {
+      "messageId": "note-003",
+      "direction": "note",
+      "senderName": "Mike Johnson",
+      "timestamp": "2024-12-10T11:00:00Z",
+      "content": "QC team confirmed defect rate is acceptable for this batch. Moved 970 units to inventory. Awaiting 30 replacement units.",
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-007",
+      "poNumber": "PO-2024-007",
+      "supplierId": "sup-003",
+      "supplierName": "Saigon Pet Supplies",
+      "poStatus": "partially-received"
+    },
+    {
+      "messageId": "msg-008",
+      "direction": "outbound",
+      "senderName": "Sarah Chen",
+      "senderEmail": "sarah@inventoryops.com",
+      "timestamp": "2024-12-09T10:15:00Z",
+      "content": "Hi Nguyen,\n\nThank you for the quick response and for sending replacements. We appreciate you making this right.\n\nWe'll keep the 970 good units in stock and wait for the replacements.\n\nBest,\nSarah",
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-007",
+      "poNumber": "PO-2024-007",
+      "supplierId": "sup-003",
+      "supplierName": "Saigon Pet Supplies",
+      "poStatus": "partially-received"
+    },
+    {
+      "messageId": "msg-007",
+      "direction": "inbound",
+      "senderName": "Nguyen Van Minh",
+      "senderEmail": "nguyen@saigonpet.com",
+      "timestamp": "2024-12-08T16:30:00Z",
+      "content": "Hi Sarah,\n\nShipment arrived at your facility today. However, your QC team flagged some issues - about 30 units (3%) had minor dents on the rim.\n\nWe sincerely apologize for this. We're sending replacement units immediately at no charge. They should arrive within the week.\n\nPlease let me know if you need anything else.\n\nBest regards,\nNguyen",
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-007",
+      "poNumber": "PO-2024-007",
+      "supplierId": "sup-003",
+      "supplierName": "Saigon Pet Supplies",
+      "poStatus": "partially-received"
+    },
+    {
+      "messageId": "note-002",
+      "direction": "note",
+      "senderName": "Sarah Chen",
+      "timestamp": "2024-11-26T09:00:00Z",
+      "content": "Scheduled inspection with QC team for Nov 27. Sent deposit payment via wire transfer - confirmation #WR-2024-1125.",
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-001",
+      "poNumber": "PO-2024-001",
+      "supplierId": "sup-001",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "poStatus": "received"
+    },
+    {
+      "messageId": "msg-010",
+      "direction": "outbound",
+      "senderName": "Sarah Chen",
+      "senderEmail": "sarah@inventoryops.com",
+      "timestamp": "2024-11-25T10:00:00Z",
+      "content": "Hi Somchai,\n\nPlease find attached PO-2024-005 for 800 Ocean Blue yoga mats.\n\nThis is a new color variant we'd like to add to our lineup. Please confirm you can match the color swatch I sent last week.\n\nBest,\nSarah",
+      "attachments": [
+        {
+          "id": "att-005",
+          "name": "PO-2024-005.pdf",
+          "type": "application/pdf",
+          "url": "/documents/PO-2024-005.pdf"
+        }
+      ],
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-005",
+      "poNumber": "PO-2024-005",
+      "supplierId": "sup-004",
+      "supplierName": "Fitness Factory Thailand",
+      "poStatus": "sent"
+    },
+    {
+      "messageId": "msg-004",
+      "direction": "inbound",
+      "senderName": "Li Wei",
+      "senderEmail": "liwei@shenzhendrinkware.com",
+      "timestamp": "2024-11-25T08:00:00Z",
+      "content": "Hi Sarah,\n\nProduction is complete! Please see attached photos of the finished goods.\n\nAll 3,500 units are ready for inspection. Let me know when your inspector can visit.\n\nBest,\nLi Wei",
+      "attachments": [
+        {
+          "id": "att-002",
+          "name": "production-photos-001.jpg",
+          "type": "image/jpeg",
+          "url": "/documents/production-photos-001.jpg"
+        },
+        {
+          "id": "att-003",
+          "name": "production-photos-002.jpg",
+          "type": "image/jpeg",
+          "url": "/documents/production-photos-002.jpg"
+        }
+      ],
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-001",
+      "poNumber": "PO-2024-001",
+      "supplierId": "sup-001",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "poStatus": "received"
+    },
+    {
+      "messageId": "note-001",
+      "direction": "note",
+      "senderName": "Sarah Chen",
+      "timestamp": "2024-11-20T14:30:00Z",
+      "content": "Called Li Wei on WeChat to check production status. He confirmed they're on track and will send photos by end of week.",
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-001",
+      "poNumber": "PO-2024-001",
+      "supplierId": "sup-001",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "poStatus": "received"
+    },
+    {
+      "messageId": "msg-006",
+      "direction": "inbound",
+      "senderName": "Nguyen Van Minh",
+      "senderEmail": "nguyen@saigonpet.com",
+      "timestamp": "2024-11-19T11:00:00Z",
+      "content": "Hi Sarah,\n\nOrder confirmed! We'll have them ready by early December and ship out right away.\n\nBest regards,\nNguyen",
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-007",
+      "poNumber": "PO-2024-007",
+      "supplierId": "sup-003",
+      "supplierName": "Saigon Pet Supplies",
+      "poStatus": "partially-received"
+    },
+    {
+      "messageId": "msg-005",
+      "direction": "outbound",
+      "senderName": "Sarah Chen",
+      "senderEmail": "sarah@inventoryops.com",
+      "timestamp": "2024-11-18T09:00:00Z",
+      "content": "Hi Nguyen,\n\nPlease find attached PO-2024-007 for 1,000 stainless steel pet bowls.\n\nWe need these by Jan 15 to meet our Q1 inventory targets.\n\nBest,\nSarah",
+      "attachments": [
+        {
+          "id": "att-004",
+          "name": "PO-2024-007.pdf",
+          "type": "application/pdf",
+          "url": "/documents/PO-2024-007.pdf"
+        }
+      ],
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-007",
+      "poNumber": "PO-2024-007",
+      "supplierId": "sup-003",
+      "supplierName": "Saigon Pet Supplies",
+      "poStatus": "partially-received"
+    },
+    {
+      "messageId": "msg-agent-007",
+      "direction": "inbound",
+      "senderName": "Jennifer Wu",
+      "senderEmail": "jennifer@abccustoms.com",
+      "timestamp": "2024-11-07T14:00:00Z",
+      "content": "Hi Sarah,\n\nGood news - your shipment has cleared customs! \n\nEntry Number: ABC-2024-78901\nClearance Date: November 7, 2024\nDuties Paid: $1,240.00\n\nContainer is now available for pickup at the terminal.\n\nBest,\nJennifer",
+      "isRead": true,
+      "sourceType": "shipping-agent",
+      "agentId": "agent-004",
+      "agentName": "ABC Customs Brokers",
+      "transferId": "trf-001",
+      "transferNumber": "TRF-2024-001"
+    },
+    {
+      "messageId": "msg-agent-006",
+      "direction": "inbound",
+      "senderName": "Jennifer Wu",
+      "senderEmail": "jennifer@abccustoms.com",
+      "timestamp": "2024-11-06T10:30:00Z",
+      "content": "Hi Sarah,\n\nGot it! I've submitted the entry. Everything looks good - no flags or holds.\n\nExpecting clearance by end of day. Entry number: ABC-2024-78901\n\nI'll send confirmation once cleared.\n\nJennifer",
+      "isRead": true,
+      "sourceType": "shipping-agent",
+      "agentId": "agent-004",
+      "agentName": "ABC Customs Brokers",
+      "transferId": "trf-001",
+      "transferNumber": "TRF-2024-001"
+    },
+    {
+      "messageId": "msg-agent-005",
+      "direction": "outbound",
+      "senderName": "Sarah Chen",
+      "senderEmail": "sarah@inventoryops.com",
+      "timestamp": "2024-11-06T08:00:00Z",
+      "content": "Hi Jennifer,\n\nContainer MSKU1234567 arriving today at Long Beach. Can you prioritize customs clearance?\n\nPO details:\n- HS Code: 9617.00.10\n- Value: $12,750\n- Commercial invoice attached\n\nThanks,\nSarah",
+      "attachments": [
+        {
+          "id": "att-agent-001",
+          "name": "invoice-TRF-2024-001.pdf",
+          "type": "application/pdf",
+          "url": "/documents/invoice-TRF-2024-001.pdf"
+        }
+      ],
+      "isRead": true,
+      "sourceType": "shipping-agent",
+      "agentId": "agent-004",
+      "agentName": "ABC Customs Brokers",
+      "transferId": "trf-001",
+      "transferNumber": "TRF-2024-001"
+    },
+    {
+      "messageId": "msg-agent-003",
+      "direction": "note",
+      "senderName": "Sarah Chen",
+      "timestamp": "2024-11-02T14:00:00Z",
+      "content": "Called David to confirm FCL option. Booking will be placed Nov 5 for Nov 8 pickup.",
+      "isRead": true,
+      "sourceType": "shipping-agent",
+      "agentId": "agent-001",
+      "agentName": "FlexPort",
+      "transferId": "trf-002",
+      "transferNumber": "TRF-2024-002"
+    },
+    {
+      "messageId": "msg-agent-002",
+      "direction": "inbound",
+      "senderName": "David Chen",
+      "senderEmail": "david.chen@flexport.com",
+      "timestamp": "2024-11-02T09:30:00Z",
+      "content": "Hi Sarah,\n\nThanks for reaching out! Here's our quote for the Q4 shipment:\n\n- Ocean FCL (20ft): $2,800\n- Transit time: 18-22 days\n- Port of entry: Long Beach\n- Last free day at port: 5 business days\n\nWe can also offer Air Freight if you need faster delivery:\n- Air Express: $8,500 (5-7 days)\n\nLet me know which option works best!\n\nBest,\nDavid",
+      "isRead": true,
+      "sourceType": "shipping-agent",
+      "agentId": "agent-001",
+      "agentName": "FlexPort",
+      "transferId": "trf-002",
+      "transferNumber": "TRF-2024-002"
+    },
+    {
+      "messageId": "msg-agent-001",
+      "direction": "outbound",
+      "senderName": "Sarah Chen",
+      "senderEmail": "sarah@inventoryops.com",
+      "timestamp": "2024-11-01T10:00:00Z",
+      "content": "Hi David,\n\nWe have a Q4 shipment coming up from Shenzhen - 2000 units of water bottles. Can you provide a quote for FCL ocean freight?\n\nTarget delivery: December 15\nOrigin: Shenzhen Drinkware Factory\nDestination: FlexPort LA Warehouse\n\nThanks,\nSarah",
+      "isRead": true,
+      "sourceType": "shipping-agent",
+      "agentId": "agent-001",
+      "agentName": "FlexPort",
+      "transferId": "trf-002",
+      "transferNumber": "TRF-2024-002"
+    },
+    {
+      "messageId": "msg-003",
+      "direction": "outbound",
+      "senderName": "Sarah Chen",
+      "senderEmail": "sarah@inventoryops.com",
+      "timestamp": "2024-10-17T10:15:00Z",
+      "content": "Great, thanks Li Wei!\n\nYes please send photos before shipping. We'll arrange inspection once production is complete.\n\nSarah",
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-001",
+      "poNumber": "PO-2024-001",
+      "supplierId": "sup-001",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "poStatus": "received"
+    },
+    {
+      "messageId": "msg-002",
+      "direction": "inbound",
+      "senderName": "Li Wei",
+      "senderEmail": "liwei@shenzhendrinkware.com",
+      "timestamp": "2024-10-16T14:30:00Z",
+      "content": "Hi Sarah,\n\nThank you for the order! I've reviewed the PO and everything looks good.\n\nOrder confirmed. Production will start Monday and we're on track for the Dec 1 delivery.\n\nI'll send photos when production is complete for your approval before shipping.\n\nBest regards,\nLi Wei",
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-001",
+      "poNumber": "PO-2024-001",
+      "supplierId": "sup-001",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "poStatus": "received"
+    },
+    {
+      "messageId": "msg-agent-004",
+      "direction": "inbound",
+      "senderName": "Lisa Park",
+      "senderEmail": "lisa.park@maersk.com",
+      "timestamp": "2024-10-15T11:00:00Z",
+      "content": "Hi,\n\nYour shipment MAEU1234567 has departed Shenzhen on schedule. ETA Long Beach: November 8.\n\nYou can track your container at: https://maersk.com/tracking/MAEU1234567\n\nBest regards,\nLisa Park\nMaersk Customer Service",
+      "isRead": true,
+      "sourceType": "shipping-agent",
+      "agentId": "agent-002",
+      "agentName": "Maersk Line Direct",
+      "transferId": "trf-001",
+      "transferNumber": "TRF-2024-001"
+    },
+    {
+      "messageId": "msg-001",
+      "direction": "outbound",
+      "senderName": "Sarah Chen",
+      "senderEmail": "sarah@inventoryops.com",
+      "timestamp": "2024-10-15T09:00:00Z",
+      "content": "Hi Li Wei,\n\nPlease find attached PO-2024-001 for our Q4 water bottle restock order.\n\nWe need 2,000 units of the 20oz and 1,500 units of the 32oz Midnight Black tumblers.\n\nTarget delivery: December 1st.\n\nLet me know if you have any questions.\n\nBest,\nSarah",
+      "attachments": [
+        {
+          "id": "att-001",
+          "name": "PO-2024-001.pdf",
+          "type": "application/pdf",
+          "url": "/documents/PO-2024-001.pdf"
+        }
+      ],
+      "isRead": true,
+      "sourceType": "purchase-order",
+      "poId": "po-001",
+      "poNumber": "PO-2024-001",
+      "supplierId": "sup-001",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "poStatus": "received"
+    }
+  ],
+  "inboxSummary": {
+    "totalMessages": 22,
+    "unreadCount": 2,
+    "awaitingReply": 2
+  },
+  "suppliers": [
+    { "id": "sup-001", "name": "Shenzhen Drinkware Co." },
+    { "id": "sup-002", "name": "Hangzhou Silicone Products Ltd." },
+    { "id": "sup-003", "name": "Saigon Pet Supplies" },
+    { "id": "sup-004", "name": "Fitness Factory Thailand" }
+  ],
+  "shippingAgents": [
+    { "id": "agent-001", "name": "FlexPort" },
+    { "id": "agent-002", "name": "Maersk Line Direct" },
+    { "id": "agent-003", "name": "DHL Express" },
+    { "id": "agent-004", "name": "ABC Customs Brokers" }
+  ],
+  "poStatuses": [
+    { "id": "draft", "label": "Draft", "order": 1 },
+    { "id": "sent", "label": "Sent", "order": 2 },
+    { "id": "confirmed", "label": "Confirmed", "order": 3 },
+    { "id": "partially-received", "label": "Partially Received", "order": 4 },
+    { "id": "received", "label": "Received", "order": 5 },
+    { "id": "cancelled", "label": "Cancelled", "order": 6 }
+  ]
+}

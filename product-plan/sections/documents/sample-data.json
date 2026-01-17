@@ -1,0 +1,427 @@
+{
+  "_meta": {
+    "models": {
+      "generatedDocuments": "PDF documents generated from POs, Inspections, or Transfers with immutable data snapshots"
+    },
+    "relationships": [
+      "Each GeneratedDocument references a source entity (PO, Inspection, or Transfer)",
+      "Documents store immutable snapshots of data at generation time",
+      "Documents can be viewed in the centralized Documents section or per-record in detail views"
+    ]
+  },
+  "documents": [
+    {
+      "id": "doc-001",
+      "sourceEntityType": "purchase-order",
+      "sourceEntityId": "po-001",
+      "sourceEntityRef": "PO-2024-001",
+      "documentType": "purchase-order-pdf",
+      "documentName": "PO-2024-001.pdf",
+      "generatedAt": "2024-10-15T09:05:00Z",
+      "generatedById": "user-001",
+      "generatedByName": "Sarah Chen",
+      "pdfUrl": "/documents/generated/PO-2024-001-v1.pdf",
+      "fileSize": 125400,
+      "dataSnapshot": {
+        "poNumber": "PO-2024-001",
+        "supplierName": "Shenzhen Drinkware Co.",
+        "supplierAddress": "123 Manufacturing Road, Shenzhen, China",
+        "orderDate": "2024-10-15",
+        "expectedDate": "2024-12-01",
+        "paymentTerms": "30% deposit, 70% before shipping",
+        "lineItems": [
+          {
+            "sku": "WB-TUMBLER-20",
+            "productName": "Insulated Water Bottle 20oz - Midnight Black",
+            "quantity": 2000,
+            "unitCost": 4.85,
+            "subtotal": 9700.00
+          },
+          {
+            "sku": "WB-TUMBLER-32",
+            "productName": "Insulated Water Bottle 32oz - Midnight Black",
+            "quantity": 1500,
+            "unitCost": 5.20,
+            "subtotal": 7800.00
+          }
+        ],
+        "subtotal": 17500.00,
+        "total": 17500.00,
+        "notes": "Q4 restock order for water bottles"
+      },
+      "notes": "Initial PO sent to supplier"
+    },
+    {
+      "id": "doc-002",
+      "sourceEntityType": "purchase-order",
+      "sourceEntityId": "po-001",
+      "sourceEntityRef": "PO-2024-001",
+      "documentType": "purchase-order-pdf",
+      "documentName": "PO-2024-001-revised.pdf",
+      "generatedAt": "2024-10-18T14:30:00Z",
+      "generatedById": "user-001",
+      "generatedByName": "Sarah Chen",
+      "pdfUrl": "/documents/generated/PO-2024-001-v2.pdf",
+      "fileSize": 127200,
+      "dataSnapshot": {
+        "poNumber": "PO-2024-001",
+        "supplierName": "Shenzhen Drinkware Co.",
+        "supplierAddress": "123 Manufacturing Road, Shenzhen, China",
+        "orderDate": "2024-10-15",
+        "expectedDate": "2024-12-01",
+        "paymentTerms": "30% deposit, 70% before shipping",
+        "lineItems": [
+          {
+            "sku": "WB-TUMBLER-20",
+            "productName": "Insulated Water Bottle 20oz - Midnight Black",
+            "quantity": 2500,
+            "unitCost": 4.85,
+            "subtotal": 12125.00
+          },
+          {
+            "sku": "WB-TUMBLER-32",
+            "productName": "Insulated Water Bottle 32oz - Midnight Black",
+            "quantity": 1500,
+            "unitCost": 5.20,
+            "subtotal": 7800.00
+          }
+        ],
+        "subtotal": 19925.00,
+        "total": 19925.00,
+        "notes": "Q4 restock order for water bottles - increased 20oz quantity"
+      },
+      "notes": "Revised PO with increased quantity for 20oz bottles"
+    },
+    {
+      "id": "doc-003",
+      "sourceEntityType": "inspection",
+      "sourceEntityId": "insp-001",
+      "sourceEntityRef": "INS-2024-001",
+      "documentType": "inspection-brief",
+      "documentName": "Inspection-Brief-INS-2024-001.pdf",
+      "generatedAt": "2024-11-20T09:00:00Z",
+      "generatedById": "user-001",
+      "generatedByName": "Sarah Chen",
+      "pdfUrl": "/documents/generated/inspection-brief-INS-2024-001.pdf",
+      "fileSize": 145200,
+      "dataSnapshot": {
+        "inspectionId": "insp-001",
+        "purchaseOrderNumber": "PO-2024-001",
+        "supplierName": "Shenzhen Drinkware Co.",
+        "supplierAddress": "123 Manufacturing Road, Shenzhen, China",
+        "supplierPhone": "+86 755 1234 5678",
+        "supplierContactPerson": "Wang Lei",
+        "scheduledDate": "2024-11-25",
+        "inspectionType": "Pre-Shipment Inspection (PSI)",
+        "agentName": "Chen Wei",
+        "agentCompany": "QIMA Inspection Services",
+        "lineItems": [
+          {
+            "productSku": "WB-TUMBLER-20",
+            "productName": "Insulated Water Bottle 20oz - Midnight Black",
+            "orderedQuantity": 2500,
+            "specSheetUrl": "/documents/specs/WB-TUMBLER-20-spec-v2.1.pdf",
+            "inspectionCriteria": "Check vacuum seal integrity, lid threading, powder coat finish"
+          },
+          {
+            "productSku": "WB-TUMBLER-32",
+            "productName": "Insulated Water Bottle 32oz - Midnight Black",
+            "orderedQuantity": 1500,
+            "specSheetUrl": "/documents/specs/WB-TUMBLER-32-spec-v2.1.pdf",
+            "inspectionCriteria": "Check vacuum seal integrity, lid threading, powder coat finish"
+          }
+        ],
+        "specialInstructions": "Focus on vacuum seal test - previous batch had 2% failure rate. Perform drop test on 5 random samples.",
+        "notes": "Q4 restock inspection for water bottles"
+      },
+      "notes": "Inspection brief sent to QIMA"
+    },
+    {
+      "id": "doc-004",
+      "sourceEntityType": "transfer",
+      "sourceEntityId": "trf-001",
+      "sourceEntityRef": "TRF-2024-001",
+      "documentType": "shipping-manifest",
+      "documentName": "Manifest-TRF-2024-001.pdf",
+      "generatedAt": "2024-11-28T10:00:00Z",
+      "generatedById": "user-001",
+      "generatedByName": "Sarah Chen",
+      "pdfUrl": "/documents/generated/manifest-TRF-2024-001.pdf",
+      "fileSize": 89200,
+      "dataSnapshot": {
+        "transferNumber": "TRF-2024-001",
+        "sourceLocationName": "Shenzhen Drinkware Factory",
+        "sourceLocationAddress": "123 Manufacturing Road, Shenzhen, China",
+        "destinationLocationName": "FlexPort LA Warehouse",
+        "destinationLocationAddress": "1234 Logistics Way, Los Angeles, CA 90001",
+        "carrier": "Maersk Line",
+        "shippingMethod": "ocean-fcl",
+        "scheduledDepartureDate": "2024-12-01",
+        "scheduledArrivalDate": "2024-12-28",
+        "incoterms": "FOB Shenzhen",
+        "lineItems": [
+          {
+            "sku": "WB-TUMBLER-20",
+            "productName": "Insulated Water Bottle 20oz - Midnight Black",
+            "quantity": 2500,
+            "unitWeight": 0.35,
+            "totalWeight": 875,
+            "dimensions": "22x8x8 cm",
+            "packagingType": "carton",
+            "cartonCount": 125
+          },
+          {
+            "sku": "WB-TUMBLER-32",
+            "productName": "Insulated Water Bottle 32oz - Midnight Black",
+            "quantity": 1500,
+            "unitWeight": 0.42,
+            "totalWeight": 630,
+            "dimensions": "28x9x9 cm",
+            "packagingType": "carton",
+            "cartonCount": 75
+          }
+        ],
+        "totalUnits": 4000,
+        "totalValue": 19925.00,
+        "totalWeight": 1505,
+        "totalVolume": 12.5,
+        "palletCount": 8,
+        "totalCartonCount": 200,
+        "specialInstructions": "Handle with care. Keep dry. Store upright. Do not stack more than 4 cartons high.",
+        "trackingNumbers": [
+          { "carrier": "Maersk", "number": "MAEU1234567" }
+        ],
+        "containerNumbers": ["MSKU7654321"],
+        "notes": "Q4 restock shipment - water bottles from Shenzhen to LA"
+      },
+      "notes": "Shipping manifest for carrier - ocean freight shipment"
+    },
+    {
+      "id": "doc-005",
+      "sourceEntityType": "transfer",
+      "sourceEntityId": "trf-002",
+      "sourceEntityRef": "TRF-2024-002",
+      "documentType": "shipping-manifest",
+      "documentName": "Manifest-TRF-2024-002.pdf",
+      "generatedAt": "2025-01-05T08:30:00Z",
+      "generatedById": "user-002",
+      "generatedByName": "Mike Johnson",
+      "pdfUrl": "/documents/generated/manifest-TRF-2024-002.pdf",
+      "fileSize": 72400,
+      "dataSnapshot": {
+        "transferNumber": "TRF-2024-002",
+        "sourceLocationName": "FlexPort LA Warehouse",
+        "sourceLocationAddress": "1234 Logistics Way, Los Angeles, CA 90001",
+        "destinationLocationName": "PHX7 Amazon FBA",
+        "destinationLocationAddress": "6835 W Buckeye Rd, Phoenix, AZ 85043",
+        "carrier": "SAIA LTL Freight",
+        "shippingMethod": "ground",
+        "scheduledDepartureDate": "2025-01-06",
+        "scheduledArrivalDate": "2025-01-08",
+        "lineItems": [
+          {
+            "sku": "WB-TUMBLER-20",
+            "productName": "Insulated Water Bottle 20oz - Midnight Black",
+            "quantity": 1500,
+            "unitWeight": 0.35,
+            "totalWeight": 525,
+            "dimensions": "22x8x8 cm",
+            "packagingType": "carton",
+            "cartonCount": 75
+          }
+        ],
+        "totalUnits": 1500,
+        "totalValue": 7275.00,
+        "totalWeight": 525,
+        "totalVolume": 3.2,
+        "palletCount": 4,
+        "totalCartonCount": 75,
+        "specialInstructions": "Amazon FBA shipment. Ensure all cartons are labeled per Amazon requirements. PRO number required for delivery appointment.",
+        "trackingNumbers": [
+          { "carrier": "SAIA", "number": "2151234567" }
+        ],
+        "containerNumbers": [],
+        "notes": "FBA replenishment shipment to Phoenix warehouse"
+      },
+      "notes": "Amazon FBA shipment manifest"
+    },
+    {
+      "id": "doc-006",
+      "sourceEntityType": "inspection",
+      "sourceEntityId": "insp-002",
+      "sourceEntityRef": "INS-2024-002",
+      "documentType": "inspection-brief",
+      "documentName": "Inspection-Brief-INS-2024-002.pdf",
+      "generatedAt": "2024-12-05T10:00:00Z",
+      "generatedById": "user-001",
+      "generatedByName": "Sarah Chen",
+      "pdfUrl": "/documents/generated/inspection-brief-INS-2024-002.pdf",
+      "fileSize": 168400,
+      "dataSnapshot": {
+        "inspectionId": "insp-002",
+        "purchaseOrderNumber": "PO-2024-003",
+        "supplierName": "Shenzhen PetPro Manufacturing",
+        "supplierAddress": "456 Industrial Park, Shenzhen, China",
+        "supplierPhone": "+86 755 8765 4321",
+        "supplierContactPerson": "Zhang Wei",
+        "scheduledDate": "2024-12-10",
+        "inspectionType": "Pre-Shipment Inspection (PSI)",
+        "agentName": "Li Ming",
+        "agentCompany": "SGS Inspection",
+        "lineItems": [
+          {
+            "productSku": "PET-BOWL-SM",
+            "productName": "Stainless Steel Pet Bowl - Small",
+            "orderedQuantity": 2000,
+            "specSheetUrl": "/documents/specs/PET-BOWL-SM-spec-v1.0.pdf",
+            "inspectionCriteria": "Check stainless steel grade, rubber base adhesion, no sharp edges"
+          },
+          {
+            "productSku": "PET-BOWL-MD",
+            "productName": "Stainless Steel Pet Bowl - Medium",
+            "orderedQuantity": 3000,
+            "specSheetUrl": "/documents/specs/PET-BOWL-MD-spec-v1.0.pdf",
+            "inspectionCriteria": "Check stainless steel grade, rubber base adhesion, no sharp edges"
+          },
+          {
+            "productSku": "PET-BOWL-LG",
+            "productName": "Stainless Steel Pet Bowl - Large",
+            "orderedQuantity": 1500,
+            "specSheetUrl": "/documents/specs/PET-BOWL-LG-spec-v1.0.pdf",
+            "inspectionCriteria": "Check stainless steel grade, rubber base adhesion, no sharp edges"
+          }
+        ],
+        "specialInstructions": "Pay special attention to rubber base adhesion - must withstand 10lb pull force.",
+        "notes": "Pet bowl inspection for new product line"
+      },
+      "notes": "Inspection brief sent to SGS"
+    },
+    {
+      "id": "doc-007",
+      "sourceEntityType": "transfer",
+      "sourceEntityId": "trf-001",
+      "sourceEntityRef": "TRF-2024-001",
+      "documentType": "packing-list",
+      "documentName": "Packing-List-TRF-2024-001.pdf",
+      "generatedAt": "2024-11-28T10:30:00Z",
+      "generatedById": "user-001",
+      "generatedByName": "Sarah Chen",
+      "pdfUrl": "/documents/generated/packing-list-TRF-2024-001.pdf",
+      "fileSize": 67800,
+      "dataSnapshot": {
+        "transferNumber": "TRF-2024-001",
+        "sourceLocationName": "Shenzhen Drinkware Factory",
+        "destinationLocationName": "FlexPort LA Warehouse",
+        "destinationAddress": "1234 Logistics Way, Los Angeles, CA 90001",
+        "scheduledArrivalDate": "2024-12-28",
+        "packages": [
+          {
+            "packageId": "pkg-001",
+            "packageType": "pallet",
+            "packageNumber": "1 of 8",
+            "weight": 188,
+            "dimensions": "120x100x150 cm",
+            "contents": [
+              { "sku": "WB-TUMBLER-20", "productName": "Insulated Water Bottle 20oz", "quantity": 320 }
+            ]
+          },
+          {
+            "packageId": "pkg-002",
+            "packageType": "pallet",
+            "packageNumber": "2 of 8",
+            "weight": 188,
+            "dimensions": "120x100x150 cm",
+            "contents": [
+              { "sku": "WB-TUMBLER-20", "productName": "Insulated Water Bottle 20oz", "quantity": 320 }
+            ]
+          },
+          {
+            "packageId": "pkg-003",
+            "packageType": "pallet",
+            "packageNumber": "3 of 8",
+            "weight": 188,
+            "dimensions": "120x100x150 cm",
+            "contents": [
+              { "sku": "WB-TUMBLER-20", "productName": "Insulated Water Bottle 20oz", "quantity": 320 }
+            ]
+          },
+          {
+            "packageId": "pkg-004",
+            "packageType": "pallet",
+            "packageNumber": "4 of 8",
+            "weight": 188,
+            "dimensions": "120x100x150 cm",
+            "contents": [
+              { "sku": "WB-TUMBLER-20", "productName": "Insulated Water Bottle 20oz", "quantity": 320 }
+            ]
+          },
+          {
+            "packageId": "pkg-005",
+            "packageType": "pallet",
+            "packageNumber": "5 of 8",
+            "weight": 188,
+            "dimensions": "120x100x150 cm",
+            "contents": [
+              { "sku": "WB-TUMBLER-20", "productName": "Insulated Water Bottle 20oz", "quantity": 320 },
+              { "sku": "WB-TUMBLER-32", "productName": "Insulated Water Bottle 32oz", "quantity": 100 }
+            ]
+          },
+          {
+            "packageId": "pkg-006",
+            "packageType": "pallet",
+            "packageNumber": "6 of 8",
+            "weight": 210,
+            "dimensions": "120x100x150 cm",
+            "contents": [
+              { "sku": "WB-TUMBLER-32", "productName": "Insulated Water Bottle 32oz", "quantity": 400 }
+            ]
+          },
+          {
+            "packageId": "pkg-007",
+            "packageType": "pallet",
+            "packageNumber": "7 of 8",
+            "weight": 210,
+            "dimensions": "120x100x150 cm",
+            "contents": [
+              { "sku": "WB-TUMBLER-32", "productName": "Insulated Water Bottle 32oz", "quantity": 400 }
+            ]
+          },
+          {
+            "packageId": "pkg-008",
+            "packageType": "pallet",
+            "packageNumber": "8 of 8",
+            "weight": 210,
+            "dimensions": "120x100x150 cm",
+            "contents": [
+              { "sku": "WB-TUMBLER-32", "productName": "Insulated Water Bottle 32oz", "quantity": 600 }
+            ]
+          }
+        ],
+        "totalPackages": 8,
+        "totalUnits": 4000,
+        "totalWeight": 1570,
+        "receivingInstructions": "Count all pallets upon arrival. Check for damage to cartons. Sign BOL with any exceptions noted.",
+        "notes": "Q4 restock shipment - water bottles"
+      },
+      "notes": "Packing list for FlexPort receiving team"
+    }
+  ],
+  "summary": {
+    "total": 7,
+    "purchaseOrders": 2,
+    "inspections": 2,
+    "transfers": 3,
+    "thisMonth": 2
+  },
+  "documentTypes": [
+    { "id": "purchase-order-pdf", "label": "Purchase Order", "icon": "document-text", "color": "indigo" },
+    { "id": "inspection-brief", "label": "Inspection Brief", "icon": "clipboard-check", "color": "cyan" },
+    { "id": "shipping-manifest", "label": "Shipping Manifest", "icon": "truck", "color": "amber" },
+    { "id": "packing-list", "label": "Packing List", "icon": "package", "color": "emerald" }
+  ],
+  "sourceTypes": [
+    { "id": "purchase-order", "label": "Purchase Order" },
+    { "id": "inspection", "label": "Inspection" },
+    { "id": "transfer", "label": "Transfer" }
+  ]
+}

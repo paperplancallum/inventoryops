@@ -11,7 +11,8 @@ import {
   CheckCircle,
   Pencil,
   Link,
-  Plus
+  Plus,
+  Link2
 } from 'lucide-react'
 import type {
   Transfer,
@@ -49,6 +50,7 @@ interface TransferDetailProps {
   onViewInvoice?: (invoiceId: string) => void
   onViewShippingInvoice?: (invoiceId: string) => void
   onGenerateManifest?: () => void
+  onGenerateMagicLink?: () => void
   onUpdateAmazonShipmentId?: (shipmentId: string | null) => void
   onNavigateToAmazonShipment?: () => void
   // Shipping Quotes
@@ -109,6 +111,7 @@ export function TransferDetail({
   onViewInvoice,
   onViewShippingInvoice,
   onGenerateManifest,
+  onGenerateMagicLink,
   onUpdateAmazonShipmentId,
   onNavigateToAmazonShipment,
   onRequestQuotes,
@@ -161,6 +164,15 @@ export function TransferDetail({
               </span>
             </div>
             <div className="flex items-center gap-2">
+              {onGenerateMagicLink && transfer.status !== 'cancelled' && (
+                <button
+                  onClick={onGenerateMagicLink}
+                  className="px-3 py-1.5 text-sm font-medium text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 rounded-lg transition-colors flex items-center gap-1.5"
+                >
+                  <Link2 className="w-4 h-4" />
+                  Magic Link
+                </button>
+              )}
               <button
                 onClick={onEdit}
                 className="px-3 py-1.5 text-sm font-medium text-lime-600 dark:text-lime-400 hover:bg-lime-50 dark:hover:bg-lime-900/20 rounded-lg transition-colors"

@@ -321,13 +321,55 @@ export function getTransferBlockers(transfer: Transfer, targetStatus: TransferSt
   return blockers
 }
 
+// Quote status type for transfers
+export type TransferQuoteStatus = 'no_quotes' | 'awaiting_quotes' | 'quotes_received' | 'confirmed'
+
+// Quote status data from the view
+export interface TransferQuoteStatusData {
+  transferId: string
+  quoteStatus: TransferQuoteStatus
+  totalQuotes: number
+  submittedQuotes: number
+  selectedQuoteAmount: number | null
+  selectedQuoteId: string | null
+}
+
 export function useTransfers() {
   const [transfers, setTransfers] = useState<Transfer[]>([])
   const [availableStock, setAvailableStock] = useState<AvailableStock[]>([])
+  const [quoteStatuses, setQuoteStatuses] = useState<Map<string, TransferQuoteStatusData>>(new Map())
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
   const supabase = createClient()
+
+  // Fetch quote statuses from the view
+  const fetchQuoteStatuses = useCallback(async () => {
+    try {
+      const { data, error: fetchError } = await supabase
+        .from('transfer_quote_status')
+        .select('*')
+
+      if (fetchError) throw fetchError
+
+      const statusMap = new Map<string, TransferQuoteStatusData>()
+      for (const row of data || []) {
+        statusMap.set(row.transfer_id, {
+          transferId: row.transfer_id,
+          quoteStatus: row.quote_status as TransferQuoteStatus,
+          totalQuotes: row.total_quotes,
+          submittedQuotes: row.submitted_quotes,
+          selectedQuoteAmount: row.selected_quote_amount,
+          selectedQuoteId: row.selected_quote_id,
+        })
+      }
+      setQuoteStatuses(statusMap)
+      return statusMap
+    } catch (err) {
+      console.error('Failed to fetch quote statuses:', err)
+      return new Map<string, TransferQuoteStatusData>()
+    }
+  }, [supabase])
 
   // Fetch all transfers with related data
   const fetchTransfers = useCallback(async () => {
@@ -335,30 +377,34 @@ export function useTransfers() {
     setError(null)
 
     try {
-      const { data, error: fetchError } = await supabase
-        .from('transfers')
-        .select(`
-          *,
-          source_location:locations!transfers_source_location_id_fkey(name, type),
-          destination_location:locations!transfers_destination_location_id_fkey(name, type),
-          shipping_agent:shipping_agents(name),
-          transfer_line_items(*),
-          transfer_tracking_numbers(*),
-          transfer_documents(*),
-          transfer_status_history(*)
-        `)
-        .order('created_at', { ascending: false })
+      // Fetch transfers and quote statuses in parallel
+      const [transfersResult, _quoteStatuses] = await Promise.all([
+        supabase
+          .from('transfers')
+          .select(`
+            *,
+            source_location:locations!transfers_source_location_id_fkey(name, type),
+            destination_location:locations!transfers_destination_location_id_fkey(name, type),
+            shipping_agent:shipping_agents(name),
+            transfer_line_items(*),
+            transfer_tracking_numbers(*),
+            transfer_documents(*),
+            transfer_status_history(*)
+          `)
+          .order('created_at', { ascending: false }),
+        fetchQuoteStatuses(),
+      ])
 
-      if (fetchError) throw fetchError
+      if (transfersResult.error) throw transfersResult.error
 
-      const transformedTransfers = (data || []).map(transformTransfer)
+      const transformedTransfers = (transfersResult.data || []).map(transformTransfer)
       setTransfers(transformedTransfers)
     } catch (err) {
       setError(err instanceof Error ? err : new Error('Failed to fetch transfers'))
     } finally {
       setLoading(false)
     }
-  }, [supabase])
+  }, [supabase, fetchQuoteStatuses])
 
   // Fetch draft transfer allocations (stock reserved by draft transfers)
   const fetchDraftAllocations = useCallback(async (): Promise<Map<string, number>> => {
@@ -970,15 +1016,22 @@ export function useTransfers() {
     fetchAvailableStock()
   }, [fetchTransfers, fetchAvailableStock])
 
+  // Helper to get quote status for a specific transfer
+  const getQuoteStatusForTransfer = useCallback((transferId: string): TransferQuoteStatusData | undefined => {
+    return quoteStatuses.get(transferId)
+  }, [quoteStatuses])
+
   return {
     transfers,
     availableStock,
+    quoteStatuses,
     summary,
     flatLineItems,
     lineItemsSummary,
     loading,
     error,
     refetch: fetchTransfers,
+    refetchQuoteStatuses: fetchQuoteStatuses,
     fetchTransfer,
     fetchAvailableStock,
     createTransfer,
@@ -991,6 +1044,7 @@ export function useTransfers() {
     removeDocument,
     updateAmazonReceiving,
     updateLineItemReceiving,
+    getQuoteStatusForTransfer,
     // Quote workflow helpers
     canTransferMoveToStatus,
     getTransferBlockers,

@@ -7,10 +7,68 @@ export { usePaymentTermsTemplates } from './usePaymentTermsTemplates'
 export { usePurchaseOrders } from './usePurchaseOrders'
 export { usePOMessages } from './usePOMessages'
 export { useSendPO } from './useSendPO'
-export { useChangeLog } from './useChangeLog'
 export { useBatches } from './useBatches'
 export { useTransfers } from './useTransfers'
 export { useShippingAgents } from './useShippingAgents'
 export { useAmazonShipments } from './useAmazonShipments'
 export { useShippingQuotes } from './useShippingQuotes'
 export { useShippingInvoices } from './useShippingInvoices'
+export { useActivityLog } from './useActivityLog'
+export type {
+  ActivityLogEntry,
+  ActivityLogFilters,
+  ActivityLogSummary,
+  ActivityEntityType,
+  ActivityActionType,
+  ActivityUser,
+  FieldChange,
+  ValueType,
+  ChangeValue,
+  GroupByOption,
+  DatePreset,
+} from './useActivityLog'
+
+export { useMagicLinks, generateSecureToken, hashToken } from './useMagicLinks'
+export type {
+  MagicLink,
+  MagicLinkEvent,
+  MagicLinkEntityType,
+  MagicLinkPurpose,
+  MagicLinkStatus,
+  MagicLinkEventType,
+  MagicLinksSummary,
+  MagicLinksFilters,
+  CreateMagicLinkData,
+} from './useMagicLinks'
+
+export { useSupplierInvoiceSubmissions } from './useSupplierInvoiceSubmissions'
+export type {
+  SupplierInvoiceSubmission,
+  SubmissionLineItem,
+  SubmissionAdditionalCost,
+  SubmissionReviewStatus,
+  AdditionalCostType,
+  SubmissionsSummary,
+} from './useSupplierInvoiceSubmissions'
+
+export { useBOMs } from './useBOMs'
+export type {
+  BOM,
+  BOMLineItem,
+  BOMFormData,
+  ComponentUsage,
+  ProductType,
+} from './useBOMs'
+
+export { useWorkOrders, canTransitionTo, getAvailableTransitions } from './useWorkOrders'
+export type {
+  WorkOrder,
+  WorkOrderComponent,
+  WorkOrderCost,
+  WorkOrderStatusHistory,
+  WorkOrderFormData,
+  WorkOrdersByStatus,
+  WorkOrderStatus,
+  WorkOrderCostType,
+  AvailableComponentStock,
+} from './useWorkOrders'

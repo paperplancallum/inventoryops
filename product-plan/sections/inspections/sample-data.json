@@ -1,0 +1,627 @@
+{
+  "_meta": {
+    "models": {
+      "inspections": "A pre-shipment quality control inspection for a purchase order, covering all line items.",
+      "lineItems": "Individual line item results within an inspection, each with their own defects and measurements.",
+      "defects": "Individual defect findings with type, severity, quantity, and photo references.",
+      "reworkRequest": "Instructions sent to supplier when inspection fails, tracking rework status.",
+      "agents": "Third-party inspection agents or agencies that perform quality inspections at supplier facilities."
+    },
+    "relationships": [
+      "Each Inspection belongs to one Purchase Order",
+      "Each Inspection has multiple LineItems (one per PO line item)",
+      "Each Inspection is assigned to one Agent",
+      "Each LineItem can have multiple Defects found",
+      "Each LineItem can have multiple Photos attached",
+      "Each failed Inspection can have one ReworkRequest"
+    ]
+  },
+  "agents": [
+    {
+      "id": "agent-001",
+      "name": "Chen Wei",
+      "email": "chen.wei@qima.com",
+      "phone": "+86 137 1234 5678",
+      "company": "QIMA",
+      "location": "Shenzhen, China",
+      "hourlyRate": 45,
+      "specialties": ["Electronics", "Consumer goods", "Packaging"],
+      "notes": "10+ years experience. Speaks English and Mandarin fluently.",
+      "isActive": true,
+      "paymentTerms": "Payment required before inspection",
+      "paymentTermsTemplateId": "inspection-upfront"
+    },
+    {
+      "id": "agent-002",
+      "name": "Maria Santos",
+      "email": "m.santos@sgs.com",
+      "phone": "+84 90 234 5678",
+      "company": "SGS",
+      "location": "Ho Chi Minh City, Vietnam",
+      "hourlyRate": 50,
+      "specialties": ["Textiles", "Apparel", "Footwear"],
+      "notes": "Textile specialist. Previously worked at major fashion brands.",
+      "isActive": true,
+      "paymentTerms": "Payment required before inspection",
+      "paymentTermsTemplateId": "inspection-upfront"
+    },
+    {
+      "id": "agent-003",
+      "name": "Rajesh Patel",
+      "email": "r.patel@bureauveritas.com",
+      "phone": "+91 98765 43210",
+      "company": "Bureau Veritas",
+      "location": "Mumbai, India",
+      "hourlyRate": 40,
+      "specialties": ["Home goods", "Kitchenware", "Fitness equipment"],
+      "notes": "ISO certified inspector. Handles large volume orders.",
+      "isActive": true,
+      "paymentTerms": "Payment required before inspection",
+      "paymentTermsTemplateId": "inspection-upfront"
+    },
+    {
+      "id": "agent-004",
+      "name": "Li Ming",
+      "email": "li.ming@asiainspection.com",
+      "phone": "+86 138 8765 4321",
+      "company": "Asia Inspection",
+      "location": "Guangzhou, China",
+      "hourlyRate": 42,
+      "specialties": ["Pet products", "Housewares", "Plastics"],
+      "notes": "Factory audit specialist. Good supplier relationships.",
+      "isActive": true,
+      "paymentTerms": "Payment required before inspection",
+      "paymentTermsTemplateId": "inspection-upfront"
+    },
+    {
+      "id": "agent-005",
+      "name": "Nguyen Van Tuan",
+      "email": "tuan.nguyen@intertek.com",
+      "phone": "+84 91 345 6789",
+      "company": "Intertek",
+      "location": "Hanoi, Vietnam",
+      "hourlyRate": 48,
+      "specialties": ["Food-safe products", "Silicone", "BPA-free materials"],
+      "notes": "Food safety certification expert.",
+      "isActive": false,
+      "paymentTerms": "Payment required before inspection",
+      "paymentTermsTemplateId": "inspection-upfront"
+    }
+  ],
+  "inspections": [
+    {
+      "id": "insp-001",
+      "purchaseOrderId": "po-001",
+      "purchaseOrderNumber": "PO-2024-0142",
+      "supplierName": "Shenzhen DrinkWare Manufacturing",
+      "scheduledDate": "2024-11-25",
+      "completedDate": "2024-11-25",
+      "agentId": "agent-001",
+      "agentName": "Chen Wei",
+      "status": "passed",
+      "lineItems": [
+        {
+          "id": "li-001-1",
+          "productName": "Insulated Water Bottle 20oz - Midnight Black",
+          "productSku": "WB-TUMBLER-20",
+          "orderedQuantity": 5000,
+          "sampleSize": 200,
+          "defectsFound": 3,
+          "defectRate": 1.5,
+          "result": "pass",
+          "defects": [
+            {
+              "id": "def-001",
+              "type": "cosmetic",
+              "description": "Minor scratch on lid",
+              "quantity": 2,
+              "severity": "minor",
+              "photoIds": ["photo-001"]
+            },
+            {
+              "id": "def-002",
+              "type": "packaging",
+              "description": "Dented box corner",
+              "quantity": 1,
+              "severity": "minor",
+              "photoIds": []
+            }
+          ],
+          "measurements": [
+            { "id": "m-001", "name": "Height", "specValue": "25.4cm", "actualValue": "25.3cm", "passed": true },
+            { "id": "m-002", "name": "Diameter", "specValue": "7.6cm", "actualValue": "7.6cm", "passed": true },
+            { "id": "m-003", "name": "Weight", "specValue": "350g ±10g", "actualValue": "348g", "passed": true }
+          ],
+          "packaging": {
+            "boxCondition": "good",
+            "labelingAccuracy": true,
+            "barcodeScans": true,
+            "notes": ""
+          },
+          "photos": [
+            { "id": "photo-001", "url": "/inspections/insp-001/scratch.jpg", "caption": "Minor scratch on lid", "type": "defect" },
+            { "id": "photo-002", "url": "/inspections/insp-001/product-20oz.jpg", "caption": "20oz bottle sample", "type": "product" }
+          ]
+        },
+        {
+          "id": "li-001-2",
+          "productName": "Insulated Water Bottle 32oz - Midnight Black",
+          "productSku": "WB-TUMBLER-32",
+          "orderedQuantity": 3000,
+          "sampleSize": 150,
+          "defectsFound": 1,
+          "defectRate": 0.7,
+          "result": "pass",
+          "defects": [
+            {
+              "id": "def-003",
+              "type": "labeling",
+              "description": "Slightly off-center logo print",
+              "quantity": 1,
+              "severity": "minor",
+              "photoIds": []
+            }
+          ],
+          "measurements": [
+            { "id": "m-004", "name": "Height", "specValue": "28cm", "actualValue": "28.1cm", "passed": true },
+            { "id": "m-005", "name": "Diameter", "specValue": "8.5cm", "actualValue": "8.5cm", "passed": true },
+            { "id": "m-006", "name": "Weight", "specValue": "420g ±15g", "actualValue": "425g", "passed": true }
+          ],
+          "packaging": {
+            "boxCondition": "good",
+            "labelingAccuracy": true,
+            "barcodeScans": true,
+            "notes": ""
+          },
+          "photos": [
+            { "id": "photo-003", "url": "/inspections/insp-001/product-32oz.jpg", "caption": "32oz bottle sample", "type": "product" }
+          ]
+        },
+        {
+          "id": "li-001-3",
+          "productName": "Replacement Lid Pack (3)",
+          "productSku": "WB-LID-3PK",
+          "orderedQuantity": 1000,
+          "sampleSize": 50,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pass",
+          "defects": [],
+          "measurements": [],
+          "packaging": {
+            "boxCondition": "good",
+            "labelingAccuracy": true,
+            "barcodeScans": true,
+            "notes": ""
+          },
+          "photos": []
+        }
+      ],
+      "result": "pass",
+      "overallDefectRate": 1.0,
+      "totalSampleSize": 400,
+      "reworkRequest": null,
+      "notes": "Overall good quality. Minor cosmetic issues within acceptable limits.",
+      "messages": [
+        {
+          "id": "msg-001",
+          "direction": "outbound",
+          "senderName": "Sarah Chen",
+          "senderEmail": "sarah@inventoryops.com",
+          "timestamp": "2024-11-24T09:00:00Z",
+          "content": "Hi Chen, please pay special attention to the lid seal quality on this batch. We've had a few customer complaints about minor leaking on previous orders.",
+          "attachments": []
+        },
+        {
+          "id": "msg-002",
+          "direction": "inbound",
+          "senderName": "Chen Wei",
+          "senderEmail": "chen.wei@qima.com",
+          "timestamp": "2024-11-24T10:30:00Z",
+          "content": "Understood Sarah. I'll add extra focus on the lid gasket seal during inspection. Will also do a water test on 10% of the sample to check for any leakage.",
+          "attachments": []
+        },
+        {
+          "id": "msg-003",
+          "direction": "inbound",
+          "senderName": "Chen Wei",
+          "senderEmail": "chen.wei@qima.com",
+          "timestamp": "2024-11-25T16:00:00Z",
+          "content": "Inspection complete. All 3 line items passed. Found minor defects on the 20oz and 32oz bottles (see report). All lids passed the seal test - no leakage detected. PO is approved for shipment.",
+          "attachments": []
+        },
+        {
+          "id": "msg-004",
+          "direction": "outbound",
+          "senderName": "Sarah Chen",
+          "senderEmail": "sarah@inventoryops.com",
+          "timestamp": "2024-11-25T17:15:00Z",
+          "content": "Great work Chen, thank you for the thorough testing! Approving shipment now.",
+          "attachments": []
+        }
+      ]
+    },
+    {
+      "id": "insp-002",
+      "purchaseOrderId": "po-003",
+      "purchaseOrderNumber": "PO-2024-0156",
+      "supplierName": "Shenzhen PetPro Manufacturing",
+      "scheduledDate": "2024-12-05",
+      "completedDate": "2024-12-05",
+      "agentId": "agent-004",
+      "agentName": "Li Ming",
+      "status": "pending-rework",
+      "lineItems": [
+        {
+          "id": "li-002-1",
+          "productName": "Stainless Steel Pet Bowl - Small",
+          "productSku": "PET-BOWL-SM",
+          "orderedQuantity": 2000,
+          "sampleSize": 80,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pass",
+          "defects": [],
+          "measurements": [
+            { "id": "m-010", "name": "Diameter", "specValue": "14cm", "actualValue": "14.1cm", "passed": true },
+            { "id": "m-011", "name": "Depth", "specValue": "4.5cm", "actualValue": "4.5cm", "passed": true }
+          ],
+          "packaging": {
+            "boxCondition": "good",
+            "labelingAccuracy": true,
+            "barcodeScans": true,
+            "notes": ""
+          },
+          "photos": []
+        },
+        {
+          "id": "li-002-2",
+          "productName": "Stainless Steel Pet Bowl - Medium",
+          "productSku": "PET-BOWL-MD",
+          "orderedQuantity": 3000,
+          "sampleSize": 100,
+          "defectsFound": 3,
+          "defectRate": 3.0,
+          "result": "fail",
+          "defects": [
+            {
+              "id": "def-004",
+              "type": "functional",
+              "description": "Rubber base not properly adhered",
+              "quantity": 2,
+              "severity": "major",
+              "photoIds": ["photo-004"]
+            },
+            {
+              "id": "def-005",
+              "type": "cosmetic",
+              "description": "Visible weld marks on interior",
+              "quantity": 1,
+              "severity": "minor",
+              "photoIds": ["photo-005"]
+            }
+          ],
+          "measurements": [
+            { "id": "m-012", "name": "Diameter", "specValue": "18cm", "actualValue": "18.1cm", "passed": true },
+            { "id": "m-013", "name": "Depth", "specValue": "6cm", "actualValue": "5.8cm", "passed": true },
+            { "id": "m-014", "name": "Weight", "specValue": "280g ±15g", "actualValue": "275g", "passed": true }
+          ],
+          "packaging": {
+            "boxCondition": "good",
+            "labelingAccuracy": true,
+            "barcodeScans": true,
+            "notes": ""
+          },
+          "photos": [
+            { "id": "photo-004", "url": "/inspections/insp-002/rubber-base.jpg", "caption": "Rubber base peeling", "type": "defect" },
+            { "id": "photo-005", "url": "/inspections/insp-002/weld-marks.jpg", "caption": "Visible weld marks", "type": "defect" }
+          ]
+        },
+        {
+          "id": "li-002-3",
+          "productName": "Stainless Steel Pet Bowl - Large",
+          "productSku": "PET-BOWL-LG",
+          "orderedQuantity": 1500,
+          "sampleSize": 60,
+          "defectsFound": 2,
+          "defectRate": 3.3,
+          "result": "fail",
+          "defects": [
+            {
+              "id": "def-006",
+              "type": "functional",
+              "description": "Rubber base not properly adhered",
+              "quantity": 2,
+              "severity": "major",
+              "photoIds": []
+            }
+          ],
+          "measurements": [
+            { "id": "m-015", "name": "Diameter", "specValue": "22cm", "actualValue": "22.0cm", "passed": true },
+            { "id": "m-016", "name": "Depth", "specValue": "8cm", "actualValue": "8.1cm", "passed": true }
+          ],
+          "packaging": {
+            "boxCondition": "good",
+            "labelingAccuracy": true,
+            "barcodeScans": true,
+            "notes": ""
+          },
+          "photos": []
+        }
+      ],
+      "result": "fail",
+      "overallDefectRate": 2.1,
+      "totalSampleSize": 240,
+      "reworkRequest": {
+        "id": "rework-001",
+        "createdDate": "2024-12-06",
+        "instructions": "Please re-adhere rubber bases on affected units (Medium and Large bowls). Ensure proper adhesive application and 24-hour curing time. Replace units with visible weld marks.",
+        "supplierResponse": "Acknowledged. Will complete rework by Dec 15.",
+        "completedDate": null,
+        "status": "in-progress"
+      },
+      "notes": "Small bowls passed. Medium and Large bowls failed due to rubber base adhesion issues. Rework required before shipment.",
+      "messages": [
+        {
+          "id": "msg-005",
+          "direction": "inbound",
+          "senderName": "Li Ming",
+          "senderEmail": "li.ming@asiainspection.com",
+          "timestamp": "2024-12-05T14:00:00Z",
+          "content": "Inspection complete. 1 of 3 line items passed (Small bowls). Medium and Large bowls both failed - rubber bases are peeling off easily on both sizes. Same issue across both SKUs.",
+          "attachments": []
+        },
+        {
+          "id": "msg-006",
+          "direction": "outbound",
+          "senderName": "Sarah Chen",
+          "senderEmail": "sarah@inventoryops.com",
+          "timestamp": "2024-12-05T15:30:00Z",
+          "content": "Thanks Li. This is disappointing but glad we caught it. Creating a rework request now. The small bowls are fine to ship separately?",
+          "attachments": []
+        },
+        {
+          "id": "msg-007",
+          "direction": "inbound",
+          "senderName": "Li Ming",
+          "senderEmail": "li.ming@asiainspection.com",
+          "timestamp": "2024-12-05T15:45:00Z",
+          "content": "Yes, the small bowls passed all checks. You could split the shipment if needed.",
+          "attachments": []
+        },
+        {
+          "id": "msg-008",
+          "direction": "note",
+          "senderName": "Sarah Chen",
+          "senderEmail": "sarah@inventoryops.com",
+          "timestamp": "2024-12-05T16:00:00Z",
+          "content": "Internal note: This is the second PO from PetPro with adhesion issues. Need to discuss quality standards during next supplier review.",
+          "attachments": []
+        },
+        {
+          "id": "msg-009",
+          "direction": "inbound",
+          "senderName": "Shenzhen PetPro Manufacturing",
+          "senderEmail": "quality@petpro-manufacturing.cn",
+          "timestamp": "2024-12-06T09:00:00Z",
+          "content": "We acknowledge the issue. Root cause: adhesive curing time was shortened due to production pressure. Will rework all affected units with proper 24-hour curing. Completion: December 15.",
+          "attachments": []
+        }
+      ]
+    },
+    {
+      "id": "insp-003",
+      "purchaseOrderId": "po-005",
+      "purchaseOrderNumber": "PO-2024-0168",
+      "supplierName": "Guangzhou KitchenPro",
+      "scheduledDate": "2024-12-15",
+      "completedDate": null,
+      "agentId": null,
+      "agentName": "Unassigned",
+      "status": "scheduled",
+      "lineItems": [
+        {
+          "id": "li-003-1",
+          "productName": "Silicone Baking Mat Large (16x24)",
+          "productSku": "KT-SILMAT-LG",
+          "orderedQuantity": 4000,
+          "sampleSize": 150,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pending",
+          "defects": [],
+          "measurements": [],
+          "packaging": null,
+          "photos": []
+        },
+        {
+          "id": "li-003-2",
+          "productName": "Silicone Baking Mat Medium (12x16)",
+          "productSku": "KT-SILMAT-MD",
+          "orderedQuantity": 3000,
+          "sampleSize": 120,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pending",
+          "defects": [],
+          "measurements": [],
+          "packaging": null,
+          "photos": []
+        }
+      ],
+      "result": "pending",
+      "overallDefectRate": 0,
+      "totalSampleSize": 270,
+      "reworkRequest": null,
+      "notes": "First order with this supplier - thorough inspection recommended."
+    },
+    {
+      "id": "insp-004",
+      "purchaseOrderId": "po-006",
+      "purchaseOrderNumber": "PO-2024-0171",
+      "supplierName": "Mumbai FitGear Industries",
+      "scheduledDate": "2024-12-20",
+      "completedDate": null,
+      "agentId": "agent-003",
+      "agentName": "Rajesh Patel",
+      "status": "scheduled",
+      "lineItems": [
+        {
+          "id": "li-004-1",
+          "productName": "Resistance Band Set (5 Bands with Bag)",
+          "productSku": "FIT-BAND-SET",
+          "orderedQuantity": 2500,
+          "sampleSize": 100,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pending",
+          "defects": [],
+          "measurements": [],
+          "packaging": null,
+          "photos": []
+        },
+        {
+          "id": "li-004-2",
+          "productName": "Jump Rope with Counter",
+          "productSku": "FIT-JUMPROPE",
+          "orderedQuantity": 1500,
+          "sampleSize": 60,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pending",
+          "defects": [],
+          "measurements": [],
+          "packaging": null,
+          "photos": []
+        },
+        {
+          "id": "li-004-3",
+          "productName": "Exercise Ball 65cm with Pump",
+          "productSku": "FIT-EXBALL-65",
+          "orderedQuantity": 800,
+          "sampleSize": 40,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pending",
+          "defects": [],
+          "measurements": [],
+          "packaging": null,
+          "photos": []
+        }
+      ],
+      "result": "pending",
+      "overallDefectRate": 0,
+      "totalSampleSize": 200,
+      "reworkRequest": null,
+      "notes": "Focus on band elasticity, rope bearing mechanism, and ball material thickness."
+    },
+    {
+      "id": "insp-005",
+      "purchaseOrderId": "po-007",
+      "purchaseOrderNumber": "PO-2024-0175",
+      "supplierName": "Vietnam TextileCraft",
+      "scheduledDate": "2025-01-10",
+      "completedDate": null,
+      "agentId": "agent-002",
+      "agentName": "Maria Santos",
+      "status": "scheduled",
+      "lineItems": [
+        {
+          "id": "li-005-1",
+          "productName": "Non-Slip Yoga Mat 6mm - Ocean Blue",
+          "productSku": "FIT-YOGAMAT-BL",
+          "orderedQuantity": 2000,
+          "sampleSize": 80,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pending",
+          "defects": [],
+          "measurements": [],
+          "packaging": null,
+          "photos": []
+        },
+        {
+          "id": "li-005-2",
+          "productName": "Non-Slip Yoga Mat 6mm - Forest Green",
+          "productSku": "FIT-YOGAMAT-GR",
+          "orderedQuantity": 2000,
+          "sampleSize": 80,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pending",
+          "defects": [],
+          "measurements": [],
+          "packaging": null,
+          "photos": []
+        }
+      ],
+      "result": "pending",
+      "overallDefectRate": 0,
+      "totalSampleSize": 160,
+      "reworkRequest": null,
+      "notes": "New color variants - verify color consistency across batch."
+    },
+    {
+      "id": "insp-006",
+      "purchaseOrderId": "po-003",
+      "purchaseOrderNumber": "PO-2024-0156",
+      "supplierName": "Shenzhen PetPro Manufacturing",
+      "scheduledDate": "2024-12-18",
+      "completedDate": null,
+      "agentId": "agent-004",
+      "agentName": "Li Ming",
+      "status": "re-inspection",
+      "lineItems": [
+        {
+          "id": "li-006-1",
+          "productName": "Stainless Steel Pet Bowl - Medium",
+          "productSku": "PET-BOWL-MD",
+          "orderedQuantity": 3000,
+          "sampleSize": 100,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pending",
+          "defects": [],
+          "measurements": [],
+          "packaging": null,
+          "photos": []
+        },
+        {
+          "id": "li-006-2",
+          "productName": "Stainless Steel Pet Bowl - Large",
+          "productSku": "PET-BOWL-LG",
+          "orderedQuantity": 1500,
+          "sampleSize": 60,
+          "defectsFound": 0,
+          "defectRate": 0,
+          "result": "pending",
+          "defects": [],
+          "measurements": [],
+          "packaging": null,
+          "photos": []
+        }
+      ],
+      "result": "pending",
+      "overallDefectRate": 0,
+      "totalSampleSize": 160,
+      "reworkRequest": null,
+      "notes": "Re-inspection of reworked Medium and Large bowls after rubber base fix."
+    }
+  ],
+  "statusOptions": [
+    { "id": "scheduled", "label": "Scheduled" },
+    { "id": "in-progress", "label": "In Progress" },
+    { "id": "passed", "label": "Passed" },
+    { "id": "failed", "label": "Failed" },
+    { "id": "pending-rework", "label": "Pending Rework" },
+    { "id": "re-inspection", "label": "Re-inspection" }
+  ],
+  "summary": {
+    "total": 6,
+    "scheduled": 3,
+    "passed": 1,
+    "failed": 0,
+    "pendingRework": 1,
+    "avgDefectRate": 1.55
+  }
+}

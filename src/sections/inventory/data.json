@@ -1,0 +1,233 @@
+{
+  "batches": [
+    {
+      "id": "batch-001",
+      "sku": "WB-TUMBLER-20",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "quantity": 2000,
+      "stage": "amazon",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "poNumber": "PO-2024-001",
+      "shipmentId": "SHIP-2024-001",
+      "unitCost": 4.85,
+      "totalCost": 9700.00,
+      "orderedDate": "2024-10-15",
+      "expectedArrival": "2024-12-01",
+      "actualArrival": "2024-11-28",
+      "notes": "First batch of Q4 restock",
+      "stageHistory": [
+        { "stage": "ordered", "date": "2024-10-15T09:00:00Z", "note": "PO submitted to supplier" },
+        { "stage": "factory", "date": "2024-10-22T14:30:00Z", "note": "Production started" },
+        { "stage": "inspected", "date": "2024-11-05T10:00:00Z", "note": "QC passed - 99.2% pass rate" },
+        { "stage": "in-transit", "date": "2024-11-08T16:00:00Z", "note": "Shipped via ocean freight" },
+        { "stage": "warehouse", "date": "2024-11-26T11:00:00Z", "note": "Received at 3PL" },
+        { "stage": "amazon", "date": "2024-11-28T14:00:00Z", "note": "Checked into FBA" }
+      ],
+      "attachments": [
+        { "id": "att-001", "type": "photo", "name": "inspection-photo-1.jpg", "uploadedAt": "2024-11-05T10:15:00Z" },
+        { "id": "att-002", "type": "document", "name": "bill-of-lading.pdf", "uploadedAt": "2024-11-08T16:30:00Z" }
+      ]
+    },
+    {
+      "id": "batch-002",
+      "sku": "WB-TUMBLER-32",
+      "productName": "Insulated Water Bottle 32oz - Midnight Black",
+      "quantity": 1500,
+      "stage": "warehouse",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "poNumber": "PO-2024-001",
+      "shipmentId": "SHIP-2024-001",
+      "unitCost": 5.20,
+      "totalCost": 7800.00,
+      "orderedDate": "2024-10-15",
+      "expectedArrival": "2024-12-01",
+      "actualArrival": "2024-11-26",
+      "notes": "",
+      "stageHistory": [
+        { "stage": "ordered", "date": "2024-10-15T09:00:00Z", "note": "PO submitted to supplier" },
+        { "stage": "factory", "date": "2024-10-22T14:30:00Z", "note": "Production started" },
+        { "stage": "inspected", "date": "2024-11-05T10:00:00Z", "note": "QC passed" },
+        { "stage": "in-transit", "date": "2024-11-08T16:00:00Z", "note": "Shipped via ocean freight" },
+        { "stage": "warehouse", "date": "2024-11-26T11:00:00Z", "note": "Received at 3PL, awaiting FBA shipment creation" }
+      ],
+      "attachments": []
+    },
+    {
+      "id": "batch-003",
+      "sku": "KT-SILMAT-LG",
+      "productName": "Silicone Baking Mat Large (16x24)",
+      "quantity": 3000,
+      "stage": "in-transit",
+      "supplierName": "Hangzhou Silicone Products Ltd.",
+      "poNumber": "PO-2024-003",
+      "shipmentId": "SHIP-2024-002",
+      "unitCost": 2.15,
+      "totalCost": 6450.00,
+      "orderedDate": "2024-11-01",
+      "expectedArrival": "2024-12-18",
+      "actualArrival": null,
+      "notes": "Holiday season restock - expedited shipping",
+      "stageHistory": [
+        { "stage": "ordered", "date": "2024-11-01T10:00:00Z", "note": "PO submitted" },
+        { "stage": "factory", "date": "2024-11-05T09:00:00Z", "note": "Production started" },
+        { "stage": "inspected", "date": "2024-11-20T15:00:00Z", "note": "QC passed - 98.7% pass rate" },
+        { "stage": "in-transit", "date": "2024-11-25T08:00:00Z", "note": "Air freight - tracking: 1Z999AA10123456784" }
+      ],
+      "attachments": [
+        { "id": "att-003", "type": "photo", "name": "packing-photo.jpg", "uploadedAt": "2024-11-25T07:45:00Z" }
+      ]
+    },
+    {
+      "id": "batch-004",
+      "sku": "FIT-BAND-SET",
+      "productName": "Resistance Band Set (5 Bands with Bag)",
+      "quantity": 2500,
+      "stage": "inspected",
+      "supplierName": "Fitness Factory Thailand",
+      "poNumber": "PO-2024-004",
+      "shipmentId": null,
+      "unitCost": 6.75,
+      "totalCost": 16875.00,
+      "orderedDate": "2024-11-10",
+      "expectedArrival": "2025-01-05",
+      "actualArrival": null,
+      "notes": "Waiting for shipment consolidation",
+      "stageHistory": [
+        { "stage": "ordered", "date": "2024-11-10T11:00:00Z", "note": "PO submitted" },
+        { "stage": "factory", "date": "2024-11-15T09:00:00Z", "note": "Production started" },
+        { "stage": "inspected", "date": "2024-12-05T14:00:00Z", "note": "QC completed - ready for shipment" }
+      ],
+      "attachments": [
+        { "id": "att-004", "type": "document", "name": "inspection-report.pdf", "uploadedAt": "2024-12-05T14:30:00Z" },
+        { "id": "att-005", "type": "photo", "name": "product-samples.jpg", "uploadedAt": "2024-12-05T14:35:00Z" },
+        { "id": "att-006", "type": "photo", "name": "packaging-check.jpg", "uploadedAt": "2024-12-05T14:40:00Z" }
+      ]
+    },
+    {
+      "id": "batch-005",
+      "sku": "FIT-YOGAMAT",
+      "productName": "Non-Slip Yoga Mat 6mm - Ocean Blue",
+      "quantity": 800,
+      "stage": "factory",
+      "supplierName": "Fitness Factory Thailand",
+      "poNumber": "PO-2024-005",
+      "shipmentId": null,
+      "unitCost": 8.40,
+      "totalCost": 6720.00,
+      "orderedDate": "2024-11-25",
+      "expectedArrival": "2025-01-20",
+      "actualArrival": null,
+      "notes": "New color variant - Ocean Blue",
+      "stageHistory": [
+        { "stage": "ordered", "date": "2024-11-25T10:00:00Z", "note": "PO submitted" },
+        { "stage": "factory", "date": "2024-12-02T09:00:00Z", "note": "Production in progress - estimated completion Dec 20" }
+      ],
+      "attachments": []
+    },
+    {
+      "id": "batch-006",
+      "sku": "KT-SILMAT-SM",
+      "productName": "Silicone Baking Mat Small (12x16)",
+      "quantity": 2000,
+      "stage": "ordered",
+      "supplierName": "Hangzhou Silicone Products Ltd.",
+      "poNumber": "PO-2024-006",
+      "shipmentId": null,
+      "unitCost": 1.45,
+      "totalCost": 2900.00,
+      "orderedDate": "2024-12-05",
+      "expectedArrival": "2025-02-01",
+      "actualArrival": null,
+      "notes": "",
+      "stageHistory": [
+        { "stage": "ordered", "date": "2024-12-05T14:00:00Z", "note": "PO submitted - supplier confirmed receipt" }
+      ],
+      "attachments": []
+    },
+    {
+      "id": "batch-007",
+      "sku": "WB-TUMBLER-20",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "quantity": 500,
+      "stage": "amazon",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "poNumber": "PO-2024-002",
+      "shipmentId": "SHIP-2024-001",
+      "unitCost": 4.85,
+      "totalCost": 2425.00,
+      "orderedDate": "2024-09-20",
+      "expectedArrival": "2024-11-15",
+      "actualArrival": "2024-11-12",
+      "notes": "Older batch - FIFO priority for next sales",
+      "stageHistory": [
+        { "stage": "ordered", "date": "2024-09-20T10:00:00Z", "note": "PO submitted" },
+        { "stage": "factory", "date": "2024-09-28T09:00:00Z", "note": "Production started" },
+        { "stage": "inspected", "date": "2024-10-15T11:00:00Z", "note": "QC passed" },
+        { "stage": "in-transit", "date": "2024-10-20T14:00:00Z", "note": "Shipped via ocean freight" },
+        { "stage": "warehouse", "date": "2024-11-10T09:00:00Z", "note": "Received at 3PL" },
+        { "stage": "amazon", "date": "2024-11-12T15:00:00Z", "note": "Checked into FBA" }
+      ],
+      "attachments": [
+        { "id": "att-007", "type": "document", "name": "customs-clearance.pdf", "uploadedAt": "2024-11-10T10:00:00Z" }
+      ]
+    },
+    {
+      "id": "batch-008",
+      "sku": "PET-BOWL-SS",
+      "productName": "Stainless Steel Pet Bowl - Medium",
+      "quantity": 1000,
+      "stage": "inspected",
+      "supplierName": "Saigon Pet Supplies",
+      "poNumber": "PO-2024-007",
+      "shipmentId": null,
+      "unitCost": 3.10,
+      "totalCost": 3100.00,
+      "orderedDate": "2024-11-18",
+      "expectedArrival": "2025-01-15",
+      "actualArrival": null,
+      "notes": "QC flagged minor issue - supplier providing replacement units. Batch on hold until resolved.",
+      "stageHistory": [
+        { "stage": "ordered", "date": "2024-11-18T09:00:00Z", "note": "PO submitted" },
+        { "stage": "factory", "date": "2024-11-22T10:00:00Z", "note": "Production started" },
+        { "stage": "inspected", "date": "2024-12-08T16:00:00Z", "note": "QC flagged 3% defect rate on welding - awaiting replacement units" }
+      ],
+      "attachments": [
+        { "id": "att-008", "type": "photo", "name": "defect-sample-1.jpg", "uploadedAt": "2024-12-08T16:15:00Z" },
+        { "id": "att-009", "type": "photo", "name": "defect-sample-2.jpg", "uploadedAt": "2024-12-08T16:20:00Z" },
+        { "id": "att-010", "type": "document", "name": "qc-failure-report.pdf", "uploadedAt": "2024-12-08T17:00:00Z" }
+      ]
+    }
+  ],
+  "amazonReconciliation": [
+    {
+      "id": "recon-001",
+      "batchId": "batch-001",
+      "sku": "WB-TUMBLER-20",
+      "expectedQuantity": 2000,
+      "amazonQuantity": 1987,
+      "discrepancy": -13,
+      "status": "discrepancy",
+      "reconciledAt": "2024-12-01T10:00:00Z",
+      "notes": "13 units short - likely damaged in transit or receiving error"
+    },
+    {
+      "id": "recon-002",
+      "batchId": "batch-007",
+      "sku": "WB-TUMBLER-20",
+      "expectedQuantity": 500,
+      "amazonQuantity": 500,
+      "discrepancy": 0,
+      "status": "matched",
+      "reconciledAt": "2024-11-20T14:00:00Z",
+      "notes": ""
+    }
+  ],
+  "pipelineStages": [
+    { "id": "ordered", "label": "Ordered", "order": 1 },
+    { "id": "factory", "label": "At Factory", "order": 2 },
+    { "id": "inspected", "label": "Inspected", "order": 3 },
+    { "id": "in-transit", "label": "In Transit", "order": 4 },
+    { "id": "warehouse", "label": "At Warehouse", "order": 5 },
+    { "id": "amazon", "label": "At Amazon", "order": 6 }
+  ]
+}

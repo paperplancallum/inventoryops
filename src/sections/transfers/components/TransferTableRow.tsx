@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { MoreVertical, Package, FileText, CheckCircle, AlertCircle, Link, AlertTriangle, Clock, MessageSquare } from 'lucide-react'
+import { MoreVertical, Package, FileText, CheckCircle, AlertCircle, Link, AlertTriangle, Clock, MessageSquare, Link2 } from 'lucide-react'
 import type {
   Transfer,
   TransferStatus,
@@ -33,6 +33,7 @@ interface TransferTableRowProps {
   onCreateInvoice?: () => void
   onNavigateToAmazonShipment?: () => void
   onRequestQuotes?: () => void
+  onGenerateMagicLink?: () => void
 }
 
 const statusColors: Record<TransferStatus, string> = {
@@ -93,6 +94,7 @@ export function TransferTableRow({
   onCreateInvoice,
   onNavigateToAmazonShipment,
   onRequestQuotes,
+  onGenerateMagicLink,
 }: TransferTableRowProps) {
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -440,6 +442,18 @@ export function TransferTableRow({
                     className="w-full px-4 py-2 text-left text-sm text-lime-600 dark:text-lime-400 hover:bg-stone-50 dark:hover:bg-stone-700"
                   >
                     Create Invoice
+                  </button>
+                )}
+                {onGenerateMagicLink && transfer.status !== 'cancelled' && (
+                  <button
+                    onClick={() => {
+                      onGenerateMagicLink()
+                      setMenuOpen(false)
+                    }}
+                    className="w-full px-4 py-2 text-left text-sm text-indigo-600 dark:text-indigo-400 hover:bg-stone-50 dark:hover:bg-stone-700 flex items-center gap-2"
+                  >
+                    <Link2 className="w-4 h-4" />
+                    Generate Magic Link
                   </button>
                 )}
                 <div className="border-t border-stone-200 dark:border-stone-700 my-1" />

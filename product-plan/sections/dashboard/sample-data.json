@@ -1,0 +1,121 @@
+{
+  "pulseCheck": {
+    "status": "needs_attention",
+    "attentionCount": 3
+  },
+  "keyMetrics": {
+    "openPOs": 8,
+    "inTransit": 3,
+    "arriving": 2,
+    "owed": 42300
+  },
+  "inventoryHealth": {
+    "healthyPercent": 75,
+    "alertCount": 6,
+    "criticalCount": 2,
+    "warningCount": 4
+  },
+  "cashFlow": {
+    "outstanding": 42300,
+    "overdue": 8200,
+    "dueThisWeek": 15000
+  },
+  "actionItems": [
+    {
+      "id": "action-1",
+      "type": "stock",
+      "urgency": "critical",
+      "title": "Acme Stainless Steel Tumbler",
+      "description": "Will stock out in 7 days",
+      "actionLabel": "Accept PO",
+      "navigateTo": "inventory-intelligence",
+      "entityId": "sugg-001"
+    },
+    {
+      "id": "action-2",
+      "type": "payment",
+      "urgency": "critical",
+      "title": "PO-2024-082",
+      "description": "$3,200 overdue by 5 days",
+      "actionLabel": "Record payment",
+      "navigateTo": "invoices-and-payments",
+      "entityId": "inv-082"
+    },
+    {
+      "id": "action-3",
+      "type": "invoice",
+      "urgency": "warning",
+      "title": "2 supplier invoices",
+      "description": "Pending approval",
+      "actionLabel": "Review",
+      "navigateTo": "supplier-invoices",
+      "entityId": ""
+    },
+    {
+      "id": "action-4",
+      "type": "inspection",
+      "urgency": "info",
+      "title": "Inspection #INS-043",
+      "description": "Scheduled for tomorrow",
+      "actionLabel": "View",
+      "navigateTo": "inspections",
+      "entityId": "ins-043"
+    }
+  ],
+  "timeline": [
+    {
+      "date": "2025-01-09",
+      "dayLabel": "Thu",
+      "dateLabel": "9",
+      "events": [
+        {
+          "id": "evt-1",
+          "date": "2025-01-09",
+          "type": "arrival",
+          "title": "T-154 arrives",
+          "subtitle": "ONT8 Warehouse"
+        }
+      ]
+    },
+    {
+      "date": "2025-01-10",
+      "dayLabel": "Fri",
+      "dateLabel": "10",
+      "events": [
+        {
+          "id": "evt-2",
+          "date": "2025-01-10",
+          "type": "inspection",
+          "title": "Inspection",
+          "subtitle": "Acme Tumbler"
+        }
+      ]
+    },
+    {
+      "date": "2025-01-11",
+      "dayLabel": "Sat",
+      "dateLabel": "11",
+      "events": []
+    },
+    {
+      "date": "2025-01-12",
+      "dayLabel": "Sun",
+      "dateLabel": "12",
+      "events": [
+        {
+          "id": "evt-3",
+          "date": "2025-01-12",
+          "type": "completion",
+          "title": "PO-085 complete",
+          "subtitle": "Ready for pickup"
+        }
+      ]
+    },
+    {
+      "date": "2025-01-13",
+      "dayLabel": "Mon",
+      "dateLabel": "13",
+      "events": []
+    }
+  ]
+}

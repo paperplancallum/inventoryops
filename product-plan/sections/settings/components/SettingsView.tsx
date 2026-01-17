@@ -1,0 +1,161 @@
+'use client'
+
+import type { SettingsViewProps, SettingsTab } from '@/../product/sections/settings/types'
+import { LegsView } from './LegsView'
+import { RoutesView } from './RoutesView'
+import { AmazonAccountsView } from './AmazonAccountsView'
+import { BrandsView } from './BrandsView'
+
+const tabs: { id: SettingsTab; label: string; description: string }[] = [
+  { id: 'amazon-accounts', label: 'Amazon Accounts', description: 'Connect Seller Central accounts' },
+  { id: 'brands', label: 'Brands', description: 'Product brand management' },
+  { id: 'routes', label: 'Routes', description: 'Shipping routes and legs' },
+  { id: 'notifications', label: 'Notifications', description: 'Alert preferences' },
+  { id: 'preferences', label: 'Preferences', description: 'App preferences' },
+]
+
+export function SettingsView({
+  activeTab,
+  onTabChange,
+  // Amazon Accounts props
+  amazonConnections,
+  onConnectAmazon,
+  onRefreshConnection,
+  onEditMarketplaces,
+  onDisconnectAmazon,
+  // Brands props
+  brands,
+  onCreateBrand,
+  onEditBrand,
+  onArchiveBrand,
+  // Legs props
+  legs,
+  locations,
+  shippingMethods,
+  onCreateLeg,
+  onEditLeg,
+  onDeleteLeg,
+  onToggleLegActive,
+  // Routes props
+  routes,
+  onCreateRoute,
+  onEditRoute,
+  onDeleteRoute,
+  onSetRouteDefault,
+  onToggleRouteActive,
+}: SettingsViewProps) {
+  return (
+    <div className="flex flex-col h-full">
+      {/* Header */}
+      <div className="border-b border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+        <div className="px-6 py-4">
+          <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+            Settings
+          </h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Manage shipping configuration, notifications, and preferences
+          </p>
+        </div>
+
+        {/* Tabs */}
+        <div className="px-6">
+          <nav className="-mb-px flex space-x-6 overflow-x-auto" aria-label="Tabs">
+            {tabs.map((tab) => {
+              const isActive = activeTab === tab.id
+              const isDisabled = tab.id === 'notifications' || tab.id === 'preferences'
+
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => !isDisabled && onTabChange(tab.id)}
+                  disabled={isDisabled}
+                  className={`
+                    whitespace-nowrap border-b-2 py-3 px-1 text-sm font-medium transition-colors
+                    ${
+                      isActive
+                        ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400'
+                        : isDisabled
+                          ? 'border-transparent text-slate-300 cursor-not-allowed dark:text-slate-600'
+                          : 'border-transparent text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-300'
+                    }
+                  `}
+                >
+                  {tab.label}
+                  {isDisabled && (
+                    <span className="ml-1.5 text-xs text-slate-400 dark:text-slate-500">
+                      (Soon)
+                    </span>
+                  )}
+                </button>
+              )
+            })}
+          </nav>
+        </div>
+      </div>
+
+      {/* Content */}
+      <div className="flex-1 overflow-auto p-6 bg-slate-50 dark:bg-slate-950">
+        {activeTab === 'amazon-accounts' && (
+          <AmazonAccountsView
+            connections={amazonConnections}
+            onConnect={onConnectAmazon}
+            onRefresh={onRefreshConnection}
+            onEditMarketplaces={onEditMarketplaces}
+            onDisconnect={onDisconnectAmazon}
+          />
+        )}
+
+        {activeTab === 'brands' && (
+          <BrandsView
+            brands={brands}
+            amazonConnections={amazonConnections}
+            onCreateBrand={onCreateBrand}
+            onEditBrand={onEditBrand}
+            onArchiveBrand={onArchiveBrand}
+          />
+        )}
+
+        {activeTab === 'routes' && (
+          <>
+            <LegsView
+              legs={legs}
+              locations={locations}
+              shippingMethods={shippingMethods}
+              onCreateLeg={onCreateLeg}
+              onEditLeg={onEditLeg}
+              onDeleteLeg={onDeleteLeg}
+              onToggleActive={onToggleLegActive}
+            />
+            <div className="mt-8">
+              <RoutesView
+                routes={routes}
+                legs={legs}
+                onCreateRoute={onCreateRoute}
+                onEditRoute={onEditRoute}
+                onDeleteRoute={onDeleteRoute}
+                onSetDefault={onSetRouteDefault}
+                onToggleActive={onToggleRouteActive}
+              />
+            </div>
+          </>
+        )}
+
+        {activeTab === 'notifications' && (
+          <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-600">
+            <p className="text-slate-500 dark:text-slate-400">
+              Notification settings coming soon.
+            </p>
+          </div>
+        )}
+
+        {activeTab === 'preferences' && (
+          <div className="rounded-xl border border-dashed border-slate-300 p-8 text-center dark:border-slate-600">
+            <p className="text-slate-500 dark:text-slate-400">
+              Preference settings coming soon.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}

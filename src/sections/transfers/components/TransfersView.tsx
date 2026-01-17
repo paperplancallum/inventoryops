@@ -14,6 +14,7 @@ import type {
 } from '../types'
 import type { Location } from '@/sections/suppliers/types'
 import { TransferTableRow, QuoteStatus } from './TransferTableRow'
+import type { TransferQuoteStatusData } from '@/lib/supabase/hooks/useTransfers'
 import { TransfersViewTabs } from './TransfersViewTabs'
 import { ShippingAgentsView } from './ShippingAgentsView'
 import { AmazonShipmentsView } from './AmazonShipmentsView'
@@ -30,6 +31,7 @@ interface TransfersViewProps {
   amazonShipments?: AmazonShipment[]
   lineItems?: TransferLineItemFlat[]
   lineItemsSummary?: TransferLineItemsSummary
+  quoteStatuses?: Map<string, TransferQuoteStatusData>
   onViewTransfer?: (id: string) => void
   onEditTransfer?: (id: string) => void
   onDeleteTransfer?: (id: string) => void
@@ -58,6 +60,7 @@ export function TransfersView({
   amazonShipments = [],
   lineItems = [],
   lineItemsSummary,
+  quoteStatuses,
   onViewTransfer,
   onEditTransfer,
   onDeleteTransfer,
@@ -81,11 +84,22 @@ export function TransfersView({
   const [methodFilter, setMethodFilter] = useState<string>('all')
   const [quoteStatusFilter, setQuoteStatusFilter] = useState<QuoteStatus | 'all'>('all')
 
-  // Helper to determine quote status for a transfer
+  // Helper to determine quote status for a transfer - uses data from transfer_quote_status view
   const getQuoteStatus = (transfer: Transfer): QuoteStatus => {
+    // First check if we have data from the view
+    const quoteData = quoteStatuses?.get(transfer.id)
+    if (quoteData) {
+      return quoteData.quoteStatus
+    }
+    // Fallback to checking quoteConfirmedAt on the transfer itself
     if (transfer.quoteConfirmedAt) return 'confirmed'
-    // For now, we return 'no_quotes' as default - in practice this would come from the view/join
     return 'no_quotes'
+  }
+
+  // Helper to get selected quote amount for a transfer
+  const getSelectedQuoteAmount = (transfer: Transfer): number | null => {
+    const quoteData = quoteStatuses?.get(transfer.id)
+    return quoteData?.selectedQuoteAmount ?? null
   }
 
   // Filter transfers
@@ -278,7 +292,7 @@ export function TransfersView({
       {/* Content */}
       <div className="p-6">
         {activeTab === 'transfers' && (
-          <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700 overflow-hidden">
+          <div className="bg-white dark:bg-stone-800 rounded-xl border border-stone-200 dark:border-stone-700">
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -323,6 +337,7 @@ export function TransfersView({
                         linkedAmazonShipment={linkedAmazonShipment}
                         shippingAgent={shippingAgent}
                         quoteStatus={getQuoteStatus(transfer)}
+                        selectedQuoteAmount={getSelectedQuoteAmount(transfer)}
                         onView={() => onViewTransfer?.(transfer.id)}
                         onEdit={() => onEditTransfer?.(transfer.id)}
                         onDelete={() => onDeleteTransfer?.(transfer.id)}

@@ -1,0 +1,652 @@
+{
+  "_meta": {
+    "models": {
+      "products": "Each product represents a master product you sell on Amazon. Products can have multiple SKU variants for different conditions (new, refurbished, used) or different barcodes."
+    },
+    "relationships": [
+      "Each Product belongs to one Brand (linked via brandId)",
+      "Each Product has one primary Supplier (linked via supplierId)",
+      "Supplier data is managed in the Suppliers section - this file includes supplier references for product display",
+      "Each Product can have multiple SKU variants (ProductSKU) for different conditions"
+    ]
+  },
+  "brands": [
+    { "id": "brand-hydraflow", "name": "HydraFlow" },
+    { "id": "brand-fitpro", "name": "FitPro Gear" }
+  ],
+  "products": [
+    {
+      "id": "prod-001",
+      "brandId": "brand-hydraflow",
+      "name": "Insulated Water Bottle 20oz - Midnight Black",
+      "description": "Double-wall vacuum insulated stainless steel water bottle. Keeps drinks cold for 24 hours or hot for 12 hours.",
+      "category": "Drinkware",
+      "unitCost": 4.85,
+      "supplierId": "sup-001",
+      "status": "active",
+      "createdAt": "2024-01-15T08:00:00Z",
+      "updatedAt": "2024-11-20T14:30:00Z",
+      "specSheet": {
+        "id": "spec-001",
+        "fileName": "WB-TUMBLER-20-spec-v2.1.pdf",
+        "fileUrl": "/documents/specs/WB-TUMBLER-20-spec-v2.1.pdf",
+        "fileSize": 245600,
+        "uploadedAt": "2024-09-15T10:30:00Z",
+        "uploadedById": "user-001",
+        "uploadedByName": "Sarah Chen",
+        "version": "v2.1",
+        "notes": "Updated vacuum seal specifications after Q3 quality improvements"
+      },
+      "skus": [
+        {
+          "id": "sku-001a",
+          "sku": "WB-TUMBLER-20-NEW",
+          "condition": "new",
+          "asin": "B09K3NXMPL",
+          "fnsku": "X001ABC123",
+          "upc": "012345678901",
+          "stockLevel": 2200,
+          "isDefault": true
+        },
+        {
+          "id": "sku-001b",
+          "sku": "WB-TUMBLER-20-REFURB",
+          "condition": "refurbished",
+          "asin": "B09K3NXMPL",
+          "fnsku": "X001ABC123-R",
+          "stockLevel": 250,
+          "isDefault": false,
+          "notes": "Refurbished units from customer returns - resealed and tested"
+        }
+      ],
+      "sku": "WB-TUMBLER-20-NEW",
+      "asin": "B09K3NXMPL",
+      "fnsku": "X001ABC123",
+      "stockLevel": 2450,
+      "stockBreakdown": {
+        "inProduction": {
+          "total": 0,
+          "factoryStock": [],
+          "pendingPOs": []
+        },
+        "inTransfer": {
+          "total": 0,
+          "transfers": []
+        },
+        "warehouseStock": {
+          "total": 0,
+          "locations": []
+        },
+        "amazonStock": {
+          "fbaTotal": 2450,
+          "awdTotal": 0,
+          "fbaLocations": [
+            {
+              "locationId": "loc-phx7",
+              "locationName": "PHX7 Phoenix",
+              "locationType": "amazon-fba",
+              "quantity": 1650
+            },
+            {
+              "locationId": "loc-ont8",
+              "locationName": "ONT8 Moreno Valley",
+              "locationType": "amazon-fba",
+              "quantity": 800
+            }
+          ],
+          "awdLocations": []
+        }
+      }
+    },
+    {
+      "id": "prod-002",
+      "brandId": "brand-hydraflow",
+      "name": "Insulated Water Bottle 32oz - Midnight Black",
+      "description": "Double-wall vacuum insulated stainless steel water bottle. Large capacity for all-day hydration.",
+      "category": "Drinkware",
+      "unitCost": 5.20,
+      "supplierId": "sup-001",
+      "status": "active",
+      "createdAt": "2024-01-15T08:00:00Z",
+      "updatedAt": "2024-11-18T09:15:00Z",
+      "specSheet": {
+        "id": "spec-002",
+        "fileName": "WB-TUMBLER-32-spec-v2.1.pdf",
+        "fileUrl": "/documents/specs/WB-TUMBLER-32-spec-v2.1.pdf",
+        "fileSize": 252300,
+        "uploadedAt": "2024-09-15T10:45:00Z",
+        "uploadedById": "user-001",
+        "uploadedByName": "Sarah Chen",
+        "version": "v2.1",
+        "notes": "Updated vacuum seal specifications after Q3 quality improvements"
+      },
+      "skus": [
+        {
+          "id": "sku-002a",
+          "sku": "WB-TUMBLER-32-NEW",
+          "condition": "new",
+          "asin": "B09K3NXMQR",
+          "fnsku": "X001ABC124",
+          "upc": "012345678902",
+          "stockLevel": 1620,
+          "isDefault": true
+        },
+        {
+          "id": "sku-002b",
+          "sku": "WB-TUMBLER-32-REFURB",
+          "condition": "refurbished",
+          "asin": "B09K3NXMQR",
+          "fnsku": "X001ABC124-R",
+          "stockLevel": 120,
+          "isDefault": false,
+          "notes": "Refurbished units - minor cosmetic imperfections"
+        },
+        {
+          "id": "sku-002c",
+          "sku": "WB-TUMBLER-32-USED",
+          "condition": "used-like-new",
+          "asin": "B09K3NXMQR",
+          "fnsku": "X001ABC124-U",
+          "stockLevel": 80,
+          "isDefault": false,
+          "notes": "Open box returns in like-new condition"
+        }
+      ],
+      "sku": "WB-TUMBLER-32-NEW",
+      "asin": "B09K3NXMQR",
+      "fnsku": "X001ABC124",
+      "stockLevel": 1820,
+      "stockBreakdown": {
+        "inProduction": {
+          "total": 0,
+          "factoryStock": [],
+          "pendingPOs": []
+        },
+        "inTransfer": {
+          "total": 500,
+          "transfers": [
+            {
+              "transferId": "trf-001",
+              "quantity": 500,
+              "sourceLocationName": "FlexPort LA",
+              "destinationLocationName": "PHX7 Phoenix",
+              "expectedArrival": "2024-12-20"
+            }
+          ]
+        },
+        "warehouseStock": {
+          "total": 320,
+          "locations": [
+            {
+              "locationId": "loc-flexport-la",
+              "locationName": "FlexPort LA Warehouse",
+              "locationType": "3pl",
+              "quantity": 320
+            }
+          ]
+        },
+        "amazonStock": {
+          "fbaTotal": 1000,
+          "awdTotal": 0,
+          "fbaLocations": [
+            {
+              "locationId": "loc-phx7",
+              "locationName": "PHX7 Phoenix",
+              "locationType": "amazon-fba",
+              "quantity": 1000
+            }
+          ],
+          "awdLocations": []
+        }
+      }
+    },
+    {
+      "id": "prod-003",
+      "brandId": "brand-hydraflow",
+      "name": "Silicone Baking Mat Large (16x24)",
+      "description": "Non-stick silicone baking mat. Heat resistant up to 480F. Reusable and dishwasher safe.",
+      "category": "Kitchen",
+      "unitCost": 2.15,
+      "supplierId": "sup-002",
+      "status": "active",
+      "createdAt": "2024-03-10T10:00:00Z",
+      "updatedAt": "2024-11-15T16:20:00Z",
+      "skus": [
+        {
+          "id": "sku-003a",
+          "sku": "KT-SILMAT-LG",
+          "condition": "new",
+          "asin": "B08HTJKLMN",
+          "fnsku": "X002DEF456",
+          "stockLevel": 5200,
+          "isDefault": true
+        }
+      ],
+      "sku": "KT-SILMAT-LG",
+      "asin": "B08HTJKLMN",
+      "fnsku": "X002DEF456",
+      "stockLevel": 5200,
+      "stockBreakdown": {
+        "inProduction": {
+          "total": 0,
+          "factoryStock": [],
+          "pendingPOs": []
+        },
+        "inTransfer": {
+          "total": 3000,
+          "transfers": [
+            {
+              "transferId": "trf-002",
+              "quantity": 3000,
+              "sourceLocationName": "Hangzhou Factory",
+              "destinationLocationName": "FlexPort LA",
+              "expectedArrival": "2024-12-18"
+            }
+          ]
+        },
+        "warehouseStock": {
+          "total": 700,
+          "locations": [
+            {
+              "locationId": "loc-flexport-la",
+              "locationName": "FlexPort LA Warehouse",
+              "locationType": "3pl",
+              "quantity": 700
+            }
+          ]
+        },
+        "amazonStock": {
+          "fbaTotal": 1500,
+          "awdTotal": 0,
+          "fbaLocations": [
+            {
+              "locationId": "loc-ont8",
+              "locationName": "ONT8 Moreno Valley",
+              "locationType": "amazon-fba",
+              "quantity": 1500
+            }
+          ],
+          "awdLocations": []
+        }
+      }
+    },
+    {
+      "id": "prod-004",
+      "brandId": "brand-hydraflow",
+      "name": "Silicone Baking Mat Small (12x16)",
+      "description": "Non-stick silicone baking mat in compact size. Perfect for toaster ovens and quarter sheet pans.",
+      "category": "Kitchen",
+      "unitCost": 1.45,
+      "supplierId": "sup-002",
+      "status": "active",
+      "createdAt": "2024-03-10T10:00:00Z",
+      "updatedAt": "2024-10-25T11:30:00Z",
+      "skus": [
+        {
+          "id": "sku-004a",
+          "sku": "KT-SILMAT-SM",
+          "condition": "new",
+          "asin": "B08HTJKLOP",
+          "fnsku": "X002DEF457",
+          "stockLevel": 890,
+          "isDefault": true
+        }
+      ],
+      "sku": "KT-SILMAT-SM",
+      "asin": "B08HTJKLOP",
+      "fnsku": "X002DEF457",
+      "stockLevel": 890,
+      "stockBreakdown": {
+        "inProduction": {
+          "total": 0,
+          "factoryStock": [],
+          "pendingPOs": []
+        },
+        "inTransfer": {
+          "total": 0,
+          "transfers": []
+        },
+        "warehouseStock": {
+          "total": 0,
+          "locations": []
+        },
+        "amazonStock": {
+          "fbaTotal": 640,
+          "awdTotal": 250,
+          "fbaLocations": [
+            {
+              "locationId": "loc-phx7",
+              "locationName": "PHX7 Phoenix",
+              "locationType": "amazon-fba",
+              "quantity": 640
+            }
+          ],
+          "awdLocations": [
+            {
+              "locationId": "loc-sbd1",
+              "locationName": "SBD1 San Bernardino AWD",
+              "locationType": "amazon-awd",
+              "quantity": 250
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "prod-005",
+      "brandId": "brand-hydraflow",
+      "name": "Stainless Steel Pet Bowl - Medium",
+      "description": "Durable stainless steel pet bowl with rubber base. Dishwasher safe, 32oz capacity.",
+      "category": "Pet Supplies",
+      "unitCost": 3.10,
+      "supplierId": "sup-003",
+      "status": "inactive",
+      "createdAt": "2024-02-20T14:00:00Z",
+      "updatedAt": "2024-11-01T08:45:00Z",
+      "skus": [
+        {
+          "id": "sku-005a",
+          "sku": "PET-BOWL-SS",
+          "condition": "new",
+          "asin": "B07PQRSTUV",
+          "fnsku": "X003GHI789",
+          "stockLevel": 0,
+          "isDefault": true
+        }
+      ],
+      "sku": "PET-BOWL-SS",
+      "asin": "B07PQRSTUV",
+      "fnsku": "X003GHI789",
+      "stockLevel": 0,
+      "stockBreakdown": {
+        "inProduction": {
+          "total": 2000,
+          "factoryStock": [],
+          "pendingPOs": [
+            {
+              "poNumber": "PO-2024-089",
+              "quantity": 2000,
+              "expectedDate": "2025-01-15",
+              "status": "confirmed"
+            }
+          ]
+        },
+        "inTransfer": {
+          "total": 0,
+          "transfers": []
+        },
+        "warehouseStock": {
+          "total": 0,
+          "locations": []
+        },
+        "amazonStock": {
+          "fbaTotal": 0,
+          "awdTotal": 0,
+          "fbaLocations": [],
+          "awdLocations": []
+        }
+      }
+    },
+    {
+      "id": "prod-006",
+      "brandId": "brand-fitpro",
+      "name": "Resistance Band Set (5 Bands with Bag)",
+      "description": "Complete resistance band set with 5 different resistance levels. Includes carrying bag and exercise guide.",
+      "category": "Fitness",
+      "unitCost": 6.75,
+      "supplierId": "sup-004",
+      "status": "active",
+      "createdAt": "2024-04-05T09:00:00Z",
+      "updatedAt": "2024-11-22T13:00:00Z",
+      "skus": [
+        {
+          "id": "sku-006a",
+          "sku": "FIT-BAND-SET-NEW",
+          "condition": "new",
+          "asin": "B09MNOPQRS",
+          "fnsku": "X004JKL012",
+          "upc": "012345678906",
+          "stockLevel": 2900,
+          "isDefault": true
+        },
+        {
+          "id": "sku-006b",
+          "sku": "FIT-BAND-SET-USED",
+          "condition": "used-very-good",
+          "asin": "B09MNOPQRS",
+          "fnsku": "X004JKL012-U",
+          "stockLevel": 200,
+          "isDefault": false,
+          "notes": "Customer returns - bands inspected and repacked"
+        }
+      ],
+      "sku": "FIT-BAND-SET-NEW",
+      "asin": "B09MNOPQRS",
+      "fnsku": "X004JKL012",
+      "stockLevel": 3100,
+      "stockBreakdown": {
+        "inProduction": {
+          "total": 1500,
+          "factoryStock": [
+            {
+              "locationId": "loc-factory-th",
+              "locationName": "Fitness Factory Thailand",
+              "locationType": "factory",
+              "quantity": 1500
+            }
+          ],
+          "pendingPOs": []
+        },
+        "inTransfer": {
+          "total": 0,
+          "transfers": []
+        },
+        "warehouseStock": {
+          "total": 600,
+          "locations": [
+            {
+              "locationId": "loc-flexport-la",
+              "locationName": "FlexPort LA Warehouse",
+              "locationType": "3pl",
+              "quantity": 600
+            }
+          ]
+        },
+        "amazonStock": {
+          "fbaTotal": 1000,
+          "awdTotal": 0,
+          "fbaLocations": [
+            {
+              "locationId": "loc-phx7",
+              "locationName": "PHX7 Phoenix",
+              "locationType": "amazon-fba",
+              "quantity": 1000
+            }
+          ],
+          "awdLocations": []
+        }
+      }
+    },
+    {
+      "id": "prod-007",
+      "brandId": "brand-fitpro",
+      "name": "Non-Slip Yoga Mat 6mm - Ocean Blue",
+      "description": "Premium yoga mat with textured non-slip surface. 6mm thick for comfort. Includes carrying strap.",
+      "category": "Fitness",
+      "unitCost": 8.40,
+      "supplierId": "sup-004",
+      "status": "active",
+      "createdAt": "2024-04-12T11:00:00Z",
+      "updatedAt": "2024-11-19T15:45:00Z",
+      "skus": [
+        {
+          "id": "sku-007a",
+          "sku": "FIT-YOGAMAT-NEW",
+          "condition": "new",
+          "asin": "B09MNOPTUV",
+          "fnsku": "X004JKL013",
+          "upc": "012345678907",
+          "stockLevel": 380,
+          "isDefault": true
+        },
+        {
+          "id": "sku-007b",
+          "sku": "FIT-YOGAMAT-REFURB",
+          "condition": "refurbished",
+          "asin": "B09MNOPTUV",
+          "fnsku": "X004JKL013-R",
+          "stockLevel": 40,
+          "isDefault": false,
+          "notes": "Cleaned and sanitized returns"
+        }
+      ],
+      "sku": "FIT-YOGAMAT-NEW",
+      "asin": "B09MNOPTUV",
+      "fnsku": "X004JKL013",
+      "stockLevel": 420,
+      "stockBreakdown": {
+        "inProduction": {
+          "total": 3000,
+          "factoryStock": [
+            {
+              "locationId": "loc-factory-th",
+              "locationName": "Fitness Factory Thailand",
+              "locationType": "factory",
+              "quantity": 1500
+            }
+          ],
+          "pendingPOs": [
+            {
+              "poNumber": "PO-2024-092",
+              "quantity": 1500,
+              "expectedDate": "2025-01-08",
+              "status": "sent"
+            }
+          ]
+        },
+        "inTransfer": {
+          "total": 200,
+          "transfers": [
+            {
+              "transferId": "trf-003",
+              "quantity": 200,
+              "sourceLocationName": "FlexPort LA",
+              "destinationLocationName": "ONT8 Moreno Valley",
+              "expectedArrival": "2024-12-16"
+            }
+          ]
+        },
+        "warehouseStock": {
+          "total": 0,
+          "locations": []
+        },
+        "amazonStock": {
+          "fbaTotal": 220,
+          "awdTotal": 0,
+          "fbaLocations": [
+            {
+              "locationId": "loc-ont8",
+              "locationName": "ONT8 Moreno Valley",
+              "locationType": "amazon-fba",
+              "quantity": 220
+            }
+          ],
+          "awdLocations": []
+        }
+      }
+    },
+    {
+      "id": "prod-008",
+      "brandId": "brand-hydraflow",
+      "name": "Replacement Lid for Tumbler (Universal)",
+      "description": "Universal replacement lid compatible with 20oz and 32oz tumblers. BPA-free, dishwasher safe.",
+      "category": "Drinkware",
+      "unitCost": 0.85,
+      "supplierId": "sup-001",
+      "status": "archived",
+      "createdAt": "2024-01-20T10:00:00Z",
+      "updatedAt": "2024-09-01T12:00:00Z",
+      "skus": [
+        {
+          "id": "sku-008a",
+          "sku": "WB-TUMBLER-LID",
+          "condition": "new",
+          "asin": "B09K3NXWXY",
+          "fnsku": "X001ABC125",
+          "stockLevel": 12500,
+          "isDefault": true
+        }
+      ],
+      "sku": "WB-TUMBLER-LID",
+      "asin": "B09K3NXWXY",
+      "fnsku": "X001ABC125",
+      "stockLevel": 12500,
+      "stockBreakdown": {
+        "inProduction": {
+          "total": 0,
+          "factoryStock": [],
+          "pendingPOs": []
+        },
+        "inTransfer": {
+          "total": 0,
+          "transfers": []
+        },
+        "warehouseStock": {
+          "total": 5000,
+          "locations": [
+            {
+              "locationId": "loc-flexport-la",
+              "locationName": "FlexPort LA Warehouse",
+              "locationType": "3pl",
+              "quantity": 5000
+            }
+          ]
+        },
+        "amazonStock": {
+          "fbaTotal": 4500,
+          "awdTotal": 3000,
+          "fbaLocations": [
+            {
+              "locationId": "loc-phx7",
+              "locationName": "PHX7 Phoenix",
+              "locationType": "amazon-fba",
+              "quantity": 2500
+            },
+            {
+              "locationId": "loc-ont8",
+              "locationName": "ONT8 Moreno Valley",
+              "locationType": "amazon-fba",
+              "quantity": 2000
+            }
+          ],
+          "awdLocations": [
+            {
+              "locationId": "loc-sbd1",
+              "locationName": "SBD1 San Bernardino AWD",
+              "locationType": "amazon-awd",
+              "quantity": 3000
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "suppliers": [
+    {
+      "id": "sup-001",
+      "name": "Shenzhen Drinkware Co."
+    },
+    {
+      "id": "sup-002",
+      "name": "Hangzhou Silicone Products Ltd."
+    },
+    {
+      "id": "sup-003",
+      "name": "Saigon Pet Supplies"
+    },
+    {
+      "id": "sup-004",
+      "name": "Fitness Factory Thailand"
+    }
+  ]
+}

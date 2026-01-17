@@ -1,0 +1,605 @@
+{
+  "_meta": {
+    "models": {
+      "invoices": "An invoice record linked to a PO, shipment, batch, or inspection. Tracks amount, payment status, and payment schedule.",
+      "paymentSchedule": "Payment terms for an invoice, specifying percentage/amount due at different milestones with event triggers.",
+      "payments": "Individual payment records against an invoice, tracking date, amount, and method.",
+      "paymentsFlat": "Flattened payments array with invoice context for the Payments tab display.",
+      "paymentTermsTemplates": "Reusable payment schedule templates that can be assigned to suppliers, shipping agents, or inspection agents.",
+      "brands": "Product brand categories for filtering and grouping invoices."
+    },
+    "relationships": [
+      "Each Invoice is linked to a PurchaseOrder, Shipment, Batch, or Inspection",
+      "Each Invoice can have multiple PaymentScheduleItems defining payment terms with milestone triggers",
+      "Each Invoice can have multiple Payments recording actual payments made",
+      "Payments can be linked to specific PaymentScheduleItems",
+      "PaymentTermsTemplates can be assigned to Suppliers, ShippingAgents, or InspectionAgents",
+      "Invoices are created manually with conditional enabling based on source entity status",
+      "Each Invoice may be associated with a Brand for filtering"
+    ]
+  },
+  "brands": [
+    { "id": "brand-drinkware", "name": "Drinkware Collection" },
+    { "id": "brand-kitchen", "name": "Kitchen Essentials" },
+    { "id": "brand-fitness", "name": "Fitness Gear" },
+    { "id": "brand-pet", "name": "Pet Supplies" }
+  ],
+  "invoices": [
+    {
+      "id": "inv-001",
+      "date": "2024-10-15",
+      "description": "Product cost - Water Bottles Q4 Restock",
+      "type": "product",
+      "linkedEntityType": "purchase-order",
+      "linkedEntityId": "po-001",
+      "linkedEntityName": "PO-2024-001",
+      "brandId": "brand-drinkware",
+      "brandName": "Drinkware Collection",
+      "amount": 17500.00,
+      "paidAmount": 17500.00,
+      "balance": 0,
+      "status": "paid",
+      "paymentSchedule": [
+        {
+          "id": "ps-001",
+          "description": "30% Deposit",
+          "percentage": 30,
+          "amount": 5250.00,
+          "dueDate": "2024-10-16",
+          "paidDate": "2024-10-16",
+          "paidAmount": 5250.00
+        },
+        {
+          "id": "ps-002",
+          "description": "70% Before Shipping",
+          "percentage": 70,
+          "amount": 12250.00,
+          "dueDate": "2024-11-20",
+          "paidDate": "2024-11-18",
+          "paidAmount": 12250.00
+        }
+      ],
+      "payments": [
+        {
+          "id": "pmt-001",
+          "date": "2024-10-16",
+          "amount": 5250.00,
+          "method": "wire-transfer",
+          "reference": "WT-2024-1016-001",
+          "scheduleItemId": "ps-001"
+        },
+        {
+          "id": "pmt-002",
+          "date": "2024-11-18",
+          "amount": 12250.00,
+          "method": "wire-transfer",
+          "reference": "WT-2024-1118-001",
+          "scheduleItemId": "ps-002"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "inv-002",
+      "date": "2024-11-01",
+      "description": "Product cost - Silicone Baking Mats Holiday Restock",
+      "type": "product",
+      "linkedEntityType": "purchase-order",
+      "linkedEntityId": "po-003",
+      "linkedEntityName": "PO-2024-003",
+      "brandId": "brand-kitchen",
+      "brandName": "Kitchen Essentials",
+      "amount": 6450.00,
+      "paidAmount": 3225.00,
+      "balance": 3225.00,
+      "status": "partial",
+      "paymentSchedule": [
+        {
+          "id": "ps-003",
+          "description": "50% Deposit",
+          "percentage": 50,
+          "amount": 3225.00,
+          "dueDate": "2024-11-02",
+          "paidDate": "2024-11-02",
+          "paidAmount": 3225.00
+        },
+        {
+          "id": "ps-004",
+          "description": "50% On Delivery",
+          "percentage": 50,
+          "amount": 3225.00,
+          "dueDate": "2024-12-18",
+          "paidDate": null,
+          "paidAmount": 0
+        }
+      ],
+      "payments": [
+        {
+          "id": "pmt-003",
+          "date": "2024-11-02",
+          "amount": 3225.00,
+          "method": "wire-transfer",
+          "reference": "WT-2024-1102-001",
+          "scheduleItemId": "ps-003"
+        }
+      ],
+      "notes": "Final payment due on delivery"
+    },
+    {
+      "id": "inv-003",
+      "date": "2024-11-10",
+      "description": "Product cost - Resistance Bands",
+      "type": "product",
+      "linkedEntityType": "purchase-order",
+      "linkedEntityId": "po-004",
+      "linkedEntityName": "PO-2024-004",
+      "brandId": "brand-fitness",
+      "brandName": "Fitness Gear",
+      "amount": 16875.00,
+      "paidAmount": 5062.50,
+      "balance": 11812.50,
+      "status": "partial",
+      "paymentSchedule": [
+        {
+          "id": "ps-005",
+          "description": "30% Deposit",
+          "percentage": 30,
+          "amount": 5062.50,
+          "dueDate": "2024-11-11",
+          "paidDate": "2024-11-11",
+          "paidAmount": 5062.50
+        },
+        {
+          "id": "ps-006",
+          "description": "70% Before Shipping",
+          "percentage": 70,
+          "amount": 11812.50,
+          "dueDate": "2024-12-28",
+          "paidDate": null,
+          "paidAmount": 0
+        }
+      ],
+      "payments": [
+        {
+          "id": "pmt-004",
+          "date": "2024-11-11",
+          "amount": 5062.50,
+          "method": "wire-transfer",
+          "reference": "WT-2024-1111-001",
+          "scheduleItemId": "ps-005"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "inv-004",
+      "date": "2024-11-15",
+      "description": "Ocean freight - Container SHZN to LA",
+      "type": "shipping",
+      "linkedEntityType": "shipment",
+      "linkedEntityId": "ship-001",
+      "linkedEntityName": "SHIP-2024-001",
+      "brandId": "brand-drinkware",
+      "brandName": "Drinkware Collection",
+      "amount": 4200.00,
+      "paidAmount": 4200.00,
+      "balance": 0,
+      "status": "paid",
+      "paymentSchedule": [
+        {
+          "id": "ps-007",
+          "description": "Full Payment",
+          "percentage": 100,
+          "amount": 4200.00,
+          "dueDate": "2024-11-15",
+          "paidDate": "2024-11-15",
+          "paidAmount": 4200.00
+        }
+      ],
+      "payments": [
+        {
+          "id": "pmt-005",
+          "date": "2024-11-15",
+          "amount": 4200.00,
+          "method": "credit-card",
+          "reference": "CC-2024-1115-001",
+          "scheduleItemId": "ps-007"
+        }
+      ],
+      "notes": "20ft container, door-to-door"
+    },
+    {
+      "id": "inv-005",
+      "date": "2024-11-20",
+      "description": "Import duties & customs clearance",
+      "type": "duties",
+      "linkedEntityType": "shipment",
+      "linkedEntityId": "ship-001",
+      "linkedEntityName": "SHIP-2024-001",
+      "brandId": "brand-drinkware",
+      "brandName": "Drinkware Collection",
+      "amount": 2100.00,
+      "paidAmount": 2100.00,
+      "balance": 0,
+      "status": "paid",
+      "paymentSchedule": [
+        {
+          "id": "ps-008",
+          "description": "Full Payment",
+          "percentage": 100,
+          "amount": 2100.00,
+          "dueDate": "2024-11-20",
+          "paidDate": "2024-11-20",
+          "paidAmount": 2100.00
+        }
+      ],
+      "payments": [
+        {
+          "id": "pmt-006",
+          "date": "2024-11-20",
+          "amount": 2100.00,
+          "method": "wire-transfer",
+          "reference": "WT-2024-1120-001",
+          "scheduleItemId": "ps-008"
+        }
+      ],
+      "notes": "Customs broker: FastClear Logistics"
+    },
+    {
+      "id": "inv-006",
+      "date": "2024-11-18",
+      "description": "Pre-shipment inspection - Pet Bowls",
+      "type": "inspection",
+      "linkedEntityType": "batch",
+      "linkedEntityId": "batch-007",
+      "linkedEntityName": "BATCH-007 (Pet Bowls)",
+      "brandId": "brand-pet",
+      "brandName": "Pet Supplies",
+      "amount": 350.00,
+      "paidAmount": 350.00,
+      "balance": 0,
+      "status": "paid",
+      "paymentSchedule": [
+        {
+          "id": "ps-009",
+          "description": "Full Payment",
+          "percentage": 100,
+          "amount": 350.00,
+          "dueDate": "2024-11-18",
+          "paidDate": "2024-11-18",
+          "paidAmount": 350.00
+        }
+      ],
+      "payments": [
+        {
+          "id": "pmt-007",
+          "date": "2024-11-18",
+          "amount": 350.00,
+          "method": "paypal",
+          "reference": "PP-2024-1118-001",
+          "scheduleItemId": "ps-009"
+        }
+      ],
+      "notes": "QIMA inspection, 3% defect rate found"
+    },
+    {
+      "id": "inv-007",
+      "date": "2024-12-01",
+      "description": "Warehouse storage - November",
+      "type": "storage",
+      "linkedEntityType": "batch",
+      "linkedEntityId": "batch-001",
+      "linkedEntityName": "BATCH-001 (Water Bottles 20oz)",
+      "brandId": "brand-drinkware",
+      "brandName": "Drinkware Collection",
+      "amount": 180.00,
+      "paidAmount": 0,
+      "balance": 180.00,
+      "status": "unpaid",
+      "paymentSchedule": [
+        {
+          "id": "ps-010",
+          "description": "Monthly Invoice",
+          "percentage": 100,
+          "amount": 180.00,
+          "dueDate": "2024-12-15",
+          "paidDate": null,
+          "paidAmount": 0
+        }
+      ],
+      "payments": [],
+      "notes": "3PL monthly storage fee"
+    },
+    {
+      "id": "inv-008",
+      "date": "2024-11-25",
+      "description": "Product cost - Yoga Mats Ocean Blue",
+      "type": "product",
+      "linkedEntityType": "purchase-order",
+      "linkedEntityId": "po-005",
+      "linkedEntityName": "PO-2024-005",
+      "brandId": "brand-fitness",
+      "brandName": "Fitness Gear",
+      "amount": 6720.00,
+      "paidAmount": 2016.00,
+      "balance": 4704.00,
+      "status": "partial",
+      "paymentSchedule": [
+        {
+          "id": "ps-011",
+          "description": "30% Deposit",
+          "percentage": 30,
+          "amount": 2016.00,
+          "dueDate": "2024-11-26",
+          "paidDate": "2024-11-26",
+          "paidAmount": 2016.00
+        },
+        {
+          "id": "ps-012",
+          "description": "70% Before Shipping",
+          "percentage": 70,
+          "amount": 4704.00,
+          "dueDate": "2025-01-10",
+          "paidDate": null,
+          "paidAmount": 0
+        }
+      ],
+      "payments": [
+        {
+          "id": "pmt-008",
+          "date": "2024-11-26",
+          "amount": 2016.00,
+          "method": "wire-transfer",
+          "reference": "WT-2024-1126-001",
+          "scheduleItemId": "ps-011"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "inv-009",
+      "date": "2024-11-18",
+      "description": "Product cost - Pet Bowls",
+      "type": "product",
+      "linkedEntityType": "purchase-order",
+      "linkedEntityId": "po-007",
+      "linkedEntityName": "PO-2024-007",
+      "brandId": "brand-pet",
+      "brandName": "Pet Supplies",
+      "amount": 3100.00,
+      "paidAmount": 3100.00,
+      "balance": 0,
+      "status": "paid",
+      "paymentSchedule": [
+        {
+          "id": "ps-013",
+          "description": "100% Before Shipping",
+          "percentage": 100,
+          "amount": 3100.00,
+          "dueDate": "2024-11-19",
+          "paidDate": "2024-11-19",
+          "paidAmount": 3100.00
+        }
+      ],
+      "payments": [
+        {
+          "id": "pmt-009",
+          "date": "2024-11-19",
+          "amount": 3100.00,
+          "method": "wire-transfer",
+          "reference": "WT-2024-1119-001",
+          "scheduleItemId": "ps-013"
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "inv-010",
+      "date": "2024-10-01",
+      "description": "Air freight - Urgent restock samples",
+      "type": "shipping",
+      "linkedEntityType": "shipment",
+      "linkedEntityId": "ship-002",
+      "linkedEntityName": "SHIP-2024-002",
+      "amount": 850.00,
+      "paidAmount": 0,
+      "balance": 850.00,
+      "status": "overdue",
+      "paymentSchedule": [
+        {
+          "id": "ps-014",
+          "description": "Net 30",
+          "percentage": 100,
+          "amount": 850.00,
+          "dueDate": "2024-10-31",
+          "paidDate": null,
+          "paidAmount": 0
+        }
+      ],
+      "payments": [],
+      "notes": "Invoice disputed - weight discrepancy"
+    }
+  ],
+  "invoiceTypes": [
+    { "id": "product", "label": "Product Cost" },
+    { "id": "shipping", "label": "Shipping/Freight" },
+    { "id": "duties", "label": "Customs/Duties" },
+    { "id": "inspection", "label": "Inspection" },
+    { "id": "storage", "label": "Storage" }
+  ],
+  "summary": {
+    "totalInvoices": 58325.00,
+    "totalPaid": 37803.50,
+    "outstanding": 20521.50,
+    "upcomingThisWeek": 3225.00,
+    "overdueCount": 1
+  },
+  "paymentMethods": [
+    { "id": "wire-transfer", "label": "Wire Transfer" },
+    { "id": "credit-card", "label": "Credit Card" },
+    { "id": "paypal", "label": "PayPal" },
+    { "id": "check", "label": "Check" },
+    { "id": "other", "label": "Other" }
+  ],
+  "paymentTermsTemplates": [
+    {
+      "id": "standard-30-70",
+      "name": "Standard 30/70",
+      "description": "30% deposit on confirmation, 70% balance after inspection passes",
+      "milestones": [
+        { "id": "m1", "name": "Deposit", "percentage": 30, "trigger": "po-confirmed", "offsetDays": 0 },
+        { "id": "m2", "name": "Balance", "percentage": 70, "trigger": "inspection-passed", "offsetDays": 0 }
+      ]
+    },
+    {
+      "id": "split-30-40-30",
+      "name": "30/40/30 Split",
+      "description": "30% deposit, 40% after inspection, 30% after customs clearance",
+      "milestones": [
+        { "id": "m1", "name": "Deposit", "percentage": 30, "trigger": "po-confirmed", "offsetDays": 0 },
+        { "id": "m2", "name": "Post-Inspection", "percentage": 40, "trigger": "inspection-passed", "offsetDays": 0 },
+        { "id": "m3", "name": "Final Payment", "percentage": 30, "trigger": "customs-cleared", "offsetDays": 0 }
+      ]
+    },
+    {
+      "id": "net-30",
+      "name": "Net 30",
+      "description": "Full payment 30 days after shipment departure",
+      "milestones": [
+        { "id": "m1", "name": "Full Payment", "percentage": 100, "trigger": "shipment-departed", "offsetDays": 30 }
+      ]
+    },
+    {
+      "id": "prepay-100",
+      "name": "100% Prepay",
+      "description": "Full payment required before production starts",
+      "milestones": [
+        { "id": "m1", "name": "Full Payment", "percentage": 100, "trigger": "po-confirmed", "offsetDays": 0 }
+      ]
+    },
+    {
+      "id": "inspection-upfront",
+      "name": "Inspection Upfront",
+      "description": "Full payment required before inspection begins",
+      "milestones": [
+        { "id": "m1", "name": "Inspection Fee", "percentage": 100, "trigger": "upfront", "offsetDays": 0 }
+      ]
+    },
+    {
+      "id": "shipping-net-7",
+      "name": "Shipping Net 7",
+      "description": "Payment due 7 days after ship sails",
+      "milestones": [
+        { "id": "m1", "name": "Freight Payment", "percentage": 100, "trigger": "shipment-departed", "offsetDays": 7 }
+      ]
+    },
+    {
+      "id": "shipping-net-30",
+      "name": "Shipping Net 30",
+      "description": "Payment due 30 days after ship sails",
+      "milestones": [
+        { "id": "m1", "name": "Freight Payment", "percentage": 100, "trigger": "shipment-departed", "offsetDays": 30 }
+      ]
+    },
+    {
+      "id": "duties-on-clearance",
+      "name": "Duties on Clearance",
+      "description": "Payment due when goods clear customs",
+      "milestones": [
+        { "id": "m1", "name": "Duties & Taxes", "percentage": 100, "trigger": "customs-cleared", "offsetDays": 0 }
+      ]
+    }
+  ],
+  "payments": [
+    {
+      "id": "pmt-001",
+      "date": "2024-10-16",
+      "amount": 5250.00,
+      "method": "wire-transfer",
+      "reference": "WT-2024-1016-001",
+      "scheduleItemId": "ps-001",
+      "invoiceId": "inv-001",
+      "invoiceDescription": "Product cost - Water Bottles Q4 Restock"
+    },
+    {
+      "id": "pmt-002",
+      "date": "2024-11-18",
+      "amount": 12250.00,
+      "method": "wire-transfer",
+      "reference": "WT-2024-1118-001",
+      "scheduleItemId": "ps-002",
+      "invoiceId": "inv-001",
+      "invoiceDescription": "Product cost - Water Bottles Q4 Restock"
+    },
+    {
+      "id": "pmt-003",
+      "date": "2024-11-02",
+      "amount": 3225.00,
+      "method": "wire-transfer",
+      "reference": "WT-2024-1102-001",
+      "scheduleItemId": "ps-003",
+      "invoiceId": "inv-002",
+      "invoiceDescription": "Product cost - Silicone Baking Mats Holiday Restock"
+    },
+    {
+      "id": "pmt-004",
+      "date": "2024-11-11",
+      "amount": 5062.50,
+      "method": "wire-transfer",
+      "reference": "WT-2024-1111-001",
+      "scheduleItemId": "ps-005",
+      "invoiceId": "inv-003",
+      "invoiceDescription": "Product cost - Resistance Bands"
+    },
+    {
+      "id": "pmt-005",
+      "date": "2024-11-15",
+      "amount": 4200.00,
+      "method": "credit-card",
+      "reference": "CC-2024-1115-001",
+      "scheduleItemId": "ps-007",
+      "invoiceId": "inv-004",
+      "invoiceDescription": "Ocean freight - Container SHZN to LA"
+    },
+    {
+      "id": "pmt-006",
+      "date": "2024-11-20",
+      "amount": 2100.00,
+      "method": "wire-transfer",
+      "reference": "WT-2024-1120-001",
+      "scheduleItemId": "ps-008",
+      "invoiceId": "inv-005",
+      "invoiceDescription": "Import duties & customs clearance"
+    },
+    {
+      "id": "pmt-007",
+      "date": "2024-11-18",
+      "amount": 350.00,
+      "method": "paypal",
+      "reference": "PP-2024-1118-001",
+      "scheduleItemId": "ps-009",
+      "invoiceId": "inv-006",
+      "invoiceDescription": "Pre-shipment inspection - Pet Bowls"
+    },
+    {
+      "id": "pmt-008",
+      "date": "2024-11-26",
+      "amount": 2016.00,
+      "method": "wire-transfer",
+      "reference": "WT-2024-1126-001",
+      "scheduleItemId": "ps-011",
+      "invoiceId": "inv-008",
+      "invoiceDescription": "Product cost - Yoga Mats Ocean Blue"
+    },
+    {
+      "id": "pmt-009",
+      "date": "2024-11-19",
+      "amount": 3100.00,
+      "method": "wire-transfer",
+      "reference": "WT-2024-1119-001",
+      "scheduleItemId": "ps-013",
+      "invoiceId": "inv-009",
+      "invoiceDescription": "Product cost - Pet Bowls"
+    }
+  ]
+}

@@ -1,0 +1,229 @@
+{
+  "purchaseOrders": [
+    {
+      "id": "po-001",
+      "poNumber": "PO-2024-001",
+      "supplierId": "sup-001",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "status": "received",
+      "orderDate": "2024-10-15",
+      "expectedDate": "2024-12-01",
+      "receivedDate": "2024-11-28",
+      "paymentTerms": "30% deposit, 70% before shipping",
+      "notes": "Q4 restock order for water bottles",
+      "subtotal": 17500.00,
+      "total": 17500.00,
+      "lineItems": [
+        {
+          "id": "li-001",
+          "sku": "WB-TUMBLER-20",
+          "productName": "Insulated Water Bottle 20oz - Midnight Black",
+          "quantity": 2000,
+          "unitCost": 4.85,
+          "subtotal": 9700.00
+        },
+        {
+          "id": "li-002",
+          "sku": "WB-TUMBLER-32",
+          "productName": "Insulated Water Bottle 32oz - Midnight Black",
+          "quantity": 1500,
+          "unitCost": 5.20,
+          "subtotal": 7800.00
+        }
+      ],
+      "statusHistory": [
+        { "status": "draft", "date": "2024-10-14T10:00:00Z", "note": "PO created" },
+        { "status": "sent", "date": "2024-10-15T09:00:00Z", "note": "Sent to supplier via email" },
+        { "status": "confirmed", "date": "2024-10-16T14:30:00Z", "note": "Supplier confirmed order" },
+        { "status": "received", "date": "2024-11-28T11:00:00Z", "note": "All items received at factory" }
+      ]
+    },
+    {
+      "id": "po-002",
+      "poNumber": "PO-2024-002",
+      "supplierId": "sup-001",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "status": "received",
+      "orderDate": "2024-09-20",
+      "expectedDate": "2024-11-15",
+      "receivedDate": "2024-11-10",
+      "paymentTerms": "30% deposit, 70% before shipping",
+      "notes": "",
+      "subtotal": 2425.00,
+      "total": 2425.00,
+      "lineItems": [
+        {
+          "id": "li-003",
+          "sku": "WB-TUMBLER-20",
+          "productName": "Insulated Water Bottle 20oz - Midnight Black",
+          "quantity": 500,
+          "unitCost": 4.85,
+          "subtotal": 2425.00
+        }
+      ],
+      "statusHistory": [
+        { "status": "draft", "date": "2024-09-19T14:00:00Z", "note": "PO created" },
+        { "status": "sent", "date": "2024-09-20T10:00:00Z", "note": "Sent to supplier" },
+        { "status": "confirmed", "date": "2024-09-21T09:00:00Z", "note": "Confirmed" },
+        { "status": "received", "date": "2024-11-10T15:00:00Z", "note": "Received" }
+      ]
+    },
+    {
+      "id": "po-003",
+      "poNumber": "PO-2024-003",
+      "supplierId": "sup-002",
+      "supplierName": "Hangzhou Silicone Products Ltd.",
+      "status": "confirmed",
+      "orderDate": "2024-11-01",
+      "expectedDate": "2024-12-18",
+      "receivedDate": null,
+      "paymentTerms": "50% deposit, 50% on delivery",
+      "notes": "Holiday season restock - expedited shipping requested",
+      "subtotal": 6450.00,
+      "total": 6450.00,
+      "lineItems": [
+        {
+          "id": "li-004",
+          "sku": "KT-SILMAT-LG",
+          "productName": "Silicone Baking Mat Large (16x24)",
+          "quantity": 3000,
+          "unitCost": 2.15,
+          "subtotal": 6450.00
+        }
+      ],
+      "statusHistory": [
+        { "status": "draft", "date": "2024-10-31T16:00:00Z", "note": "PO created" },
+        { "status": "sent", "date": "2024-11-01T10:00:00Z", "note": "Sent to supplier" },
+        { "status": "confirmed", "date": "2024-11-02T08:00:00Z", "note": "Supplier confirmed, production scheduled" }
+      ]
+    },
+    {
+      "id": "po-004",
+      "poNumber": "PO-2024-004",
+      "supplierId": "sup-004",
+      "supplierName": "Fitness Factory Thailand",
+      "status": "confirmed",
+      "orderDate": "2024-11-10",
+      "expectedDate": "2025-01-05",
+      "receivedDate": null,
+      "paymentTerms": "30% deposit, 70% before shipping",
+      "notes": "Waiting for shipment consolidation with PO-2024-005",
+      "subtotal": 16875.00,
+      "total": 16875.00,
+      "lineItems": [
+        {
+          "id": "li-005",
+          "sku": "FIT-BAND-SET",
+          "productName": "Resistance Band Set (5 Bands with Bag)",
+          "quantity": 2500,
+          "unitCost": 6.75,
+          "subtotal": 16875.00
+        }
+      ],
+      "statusHistory": [
+        { "status": "draft", "date": "2024-11-09T11:00:00Z", "note": "PO created" },
+        { "status": "sent", "date": "2024-11-10T11:00:00Z", "note": "Sent to supplier" },
+        { "status": "confirmed", "date": "2024-11-11T09:00:00Z", "note": "Confirmed, production started" }
+      ]
+    },
+    {
+      "id": "po-005",
+      "poNumber": "PO-2024-005",
+      "supplierId": "sup-004",
+      "supplierName": "Fitness Factory Thailand",
+      "status": "sent",
+      "orderDate": "2024-11-25",
+      "expectedDate": "2025-01-20",
+      "receivedDate": null,
+      "paymentTerms": "30% deposit, 70% before shipping",
+      "notes": "New color variant - Ocean Blue",
+      "subtotal": 6720.00,
+      "total": 6720.00,
+      "lineItems": [
+        {
+          "id": "li-006",
+          "sku": "FIT-YOGAMAT",
+          "productName": "Non-Slip Yoga Mat 6mm - Ocean Blue",
+          "quantity": 800,
+          "unitCost": 8.40,
+          "subtotal": 6720.00
+        }
+      ],
+      "statusHistory": [
+        { "status": "draft", "date": "2024-11-24T14:00:00Z", "note": "PO created" },
+        { "status": "sent", "date": "2024-11-25T10:00:00Z", "note": "Sent to supplier, awaiting confirmation" }
+      ]
+    },
+    {
+      "id": "po-006",
+      "poNumber": "PO-2024-006",
+      "supplierId": "sup-002",
+      "supplierName": "Hangzhou Silicone Products Ltd.",
+      "status": "draft",
+      "orderDate": "2024-12-05",
+      "expectedDate": "2025-02-01",
+      "receivedDate": null,
+      "paymentTerms": "50% deposit, 50% on delivery",
+      "notes": "",
+      "subtotal": 2900.00,
+      "total": 2900.00,
+      "lineItems": [
+        {
+          "id": "li-007",
+          "sku": "KT-SILMAT-SM",
+          "productName": "Silicone Baking Mat Small (12x16)",
+          "quantity": 2000,
+          "unitCost": 1.45,
+          "subtotal": 2900.00
+        }
+      ],
+      "statusHistory": [
+        { "status": "draft", "date": "2024-12-05T14:00:00Z", "note": "PO created, pending review" }
+      ]
+    },
+    {
+      "id": "po-007",
+      "poNumber": "PO-2024-007",
+      "supplierId": "sup-003",
+      "supplierName": "Saigon Pet Supplies",
+      "status": "partially-received",
+      "orderDate": "2024-11-18",
+      "expectedDate": "2025-01-15",
+      "receivedDate": null,
+      "paymentTerms": "100% before shipping",
+      "notes": "QC flagged 3% defect rate - supplier providing replacement units for defective items",
+      "subtotal": 3100.00,
+      "total": 3100.00,
+      "lineItems": [
+        {
+          "id": "li-008",
+          "sku": "PET-BOWL-SS",
+          "productName": "Stainless Steel Pet Bowl - Medium",
+          "quantity": 1000,
+          "unitCost": 3.10,
+          "subtotal": 3100.00
+        }
+      ],
+      "statusHistory": [
+        { "status": "draft", "date": "2024-11-17T10:00:00Z", "note": "PO created" },
+        { "status": "sent", "date": "2024-11-18T09:00:00Z", "note": "Sent to supplier" },
+        { "status": "confirmed", "date": "2024-11-19T11:00:00Z", "note": "Confirmed" },
+        { "status": "partially-received", "date": "2024-12-08T16:00:00Z", "note": "970 units received, 30 units pending replacement due to QC failure" }
+      ]
+    }
+  ],
+  "poStatuses": [
+    { "id": "draft", "label": "Draft", "order": 1 },
+    { "id": "sent", "label": "Sent", "order": 2 },
+    { "id": "confirmed", "label": "Confirmed", "order": 3 },
+    { "id": "partially-received", "label": "Partially Received", "order": 4 },
+    { "id": "received", "label": "Received", "order": 5 },
+    { "id": "cancelled", "label": "Cancelled", "order": 6 }
+  ],
+  "suppliers": [
+    { "id": "sup-001", "name": "Shenzhen Drinkware Co." },
+    { "id": "sup-002", "name": "Hangzhou Silicone Products Ltd." },
+    { "id": "sup-003", "name": "Saigon Pet Supplies" },
+    { "id": "sup-004", "name": "Fitness Factory Thailand" }
+  ]
+}

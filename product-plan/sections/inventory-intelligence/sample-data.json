@@ -1,0 +1,2359 @@
+{
+  "_meta": {
+    "models": {
+      "ShippingRoute": "Pre-configured shipping routes between locations with transit times and costs.",
+      "SalesForecast": "Simplified daily sales rate per product per location. Auto-calculated with manual override option.",
+      "ForecastAdjustment": "Date range with effect (exclude or multiply) to adjust forecast calculations. Can be account-wide or product-specific.",
+      "AccountForecastAdjustment": "Account-level forecast adjustments that apply to all products by default.",
+      "ProductForecastAdjustment": "Product-specific adjustments that can override or opt-out of account adjustments.",
+      "SafetyStockRule": "Minimum inventory thresholds per product/location.",
+      "ReplenishmentSuggestion": "Generated recommendations to transfer inventory or place purchase orders.",
+      "DashboardSummary": "Aggregated metrics for the dashboard overview."
+    },
+    "relationships": [
+      "ShippingRoute connects two Locations",
+      "SalesForecast belongs to a Product and Location",
+      "AccountForecastAdjustment applies to all products by default",
+      "ProductForecastAdjustment can override or opt-out of AccountForecastAdjustment",
+      "SalesForecast contains ProductForecastAdjustments",
+      "ReplenishmentSuggestion references Product, Location, and Route"
+    ]
+  },
+  "routes": [
+    {
+      "id": "route-001",
+      "name": "FlexPort LA to PHX7 Ground",
+      "fromLocationId": "loc-003",
+      "fromLocationName": "FlexPort LA Warehouse",
+      "toLocationId": "loc-004",
+      "toLocationName": "PHX7 Amazon FBA",
+      "method": "ground",
+      "transitDays": {
+        "min": 2,
+        "typical": 3,
+        "max": 5
+      },
+      "costs": {
+        "perUnit": 0.15,
+        "perKg": null,
+        "flatFee": 150,
+        "currency": "USD"
+      },
+      "isDefault": true,
+      "isActive": true,
+      "notes": "Standard LTL route to Phoenix FC",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-002",
+      "name": "FlexPort LA to ONT8 Ground",
+      "fromLocationId": "loc-003",
+      "fromLocationName": "FlexPort LA Warehouse",
+      "toLocationId": "loc-005",
+      "toLocationName": "ONT8 Amazon FBA",
+      "method": "ground",
+      "transitDays": {
+        "min": 1,
+        "typical": 1,
+        "max": 2
+      },
+      "costs": {
+        "perUnit": 0.12,
+        "perKg": null,
+        "flatFee": 100,
+        "currency": "USD"
+      },
+      "isDefault": true,
+      "isActive": true,
+      "notes": "Short haul to nearby FC in Ontario",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-003",
+      "name": "FlexPort LA to SBD1 AWD Ground",
+      "fromLocationId": "loc-003",
+      "fromLocationName": "FlexPort LA Warehouse",
+      "toLocationId": "loc-006",
+      "toLocationName": "SBD1 Amazon AWD",
+      "method": "ground",
+      "transitDays": {
+        "min": 1,
+        "typical": 1,
+        "max": 2
+      },
+      "costs": {
+        "perUnit": 0.1,
+        "perKg": null,
+        "flatFee": 80,
+        "currency": "USD"
+      },
+      "isDefault": true,
+      "isActive": true,
+      "notes": "Bulk AWD shipments to San Bernardino",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-004",
+      "name": "Shenzhen Factory to FlexPort LA Ocean",
+      "fromLocationId": "loc-001",
+      "fromLocationName": "Shenzhen Drinkware Factory",
+      "toLocationId": "loc-003",
+      "toLocationName": "FlexPort LA Warehouse",
+      "method": "sea",
+      "transitDays": {
+        "min": 18,
+        "typical": 22,
+        "max": 28
+      },
+      "costs": {
+        "perUnit": 0.85,
+        "perKg": null,
+        "flatFee": 2800,
+        "currency": "USD"
+      },
+      "isDefault": true,
+      "isActive": true,
+      "notes": "Standard ocean freight FCL from China",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-005",
+      "name": "Shenzhen Factory to FlexPort LA Air",
+      "fromLocationId": "loc-001",
+      "fromLocationName": "Shenzhen Drinkware Factory",
+      "toLocationId": "loc-003",
+      "toLocationName": "FlexPort LA Warehouse",
+      "method": "air",
+      "transitDays": {
+        "min": 4,
+        "typical": 5,
+        "max": 7
+      },
+      "costs": {
+        "perUnit": 3.5,
+        "perKg": 8,
+        "flatFee": 500,
+        "currency": "USD"
+      },
+      "isDefault": false,
+      "isActive": true,
+      "notes": "Express air for urgent restocks - 4x cost of ocean",
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-006",
+      "name": "Thailand Factory to FlexPort LA Ocean",
+      "fromLocationId": "loc-factory-th",
+      "fromLocationName": "Fitness Factory Thailand",
+      "toLocationId": "loc-003",
+      "toLocationName": "FlexPort LA Warehouse",
+      "method": "sea",
+      "transitDays": {
+        "min": 20,
+        "typical": 25,
+        "max": 32
+      },
+      "costs": {
+        "perUnit": 0.95,
+        "perKg": null,
+        "flatFee": 3200,
+        "currency": "USD"
+      },
+      "isDefault": true,
+      "isActive": true,
+      "notes": "Standard ocean freight from Thailand",
+      "createdAt": "2024-07-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    },
+    {
+      "id": "route-007",
+      "name": "FlexPort LA to PHX7 Express",
+      "fromLocationId": "loc-003",
+      "fromLocationName": "FlexPort LA Warehouse",
+      "toLocationId": "loc-004",
+      "toLocationName": "PHX7 Amazon FBA",
+      "method": "express",
+      "transitDays": {
+        "min": 1,
+        "typical": 1,
+        "max": 2
+      },
+      "costs": {
+        "perUnit": 0.85,
+        "perKg": null,
+        "flatFee": 250,
+        "currency": "USD"
+      },
+      "isDefault": false,
+      "isActive": true,
+      "notes": "Expedited delivery for critical restocks",
+      "createdAt": "2024-08-01T10:00:00Z",
+      "updatedAt": "2024-11-15T14:00:00Z"
+    }
+  ],
+  "forecasts": [
+    {
+      "id": "forecast-001",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "dailyRate": 45,
+      "confidence": "medium",
+      "accuracyMAPE": 15.4,
+      "manualOverride": null,
+      "isEnabled": true,
+      "lastUpdatedAt": "2024-12-05T10:00:00Z",
+      "seasonalMultipliers": [
+        1,
+        0.9,
+        1,
+        1.1,
+        1.2,
+        1.3,
+        1.2,
+        1,
+        0.9,
+        1,
+        1.3,
+        1.5
+      ],
+      "trendRate": 0.02,
+      "productAdjustments": [
+        {
+          "id": "pfa-001",
+          "productId": "prod-001",
+          "accountAdjustmentId": "afa-1",
+          "name": "Black Friday Weekend",
+          "startDate": "2024-11-28",
+          "endDate": "2024-12-02",
+          "effect": "multiply",
+          "multiplier": 1.8,
+          "isRecurring": true,
+          "notes": "This product sells exceptionally well on Black Friday - override to 80% increase",
+          "createdAt": "2024-06-01T00:00:00Z"
+        }
+      ]
+    },
+    {
+      "id": "forecast-002",
+      "productId": "prod-002",
+      "sku": "WB-TUMBLER-32-NEW",
+      "productName": "Insulated Water Bottle 32oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "dailyRate": 32,
+      "confidence": "medium",
+      "accuracyMAPE": 15.4,
+      "manualOverride": null,
+      "isEnabled": true,
+      "lastUpdatedAt": "2024-12-05T10:00:00Z",
+      "seasonalMultipliers": [
+        0.8,
+        0.8,
+        0.9,
+        1,
+        1.1,
+        1.2,
+        1.3,
+        1.2,
+        1,
+        0.9,
+        1.1,
+        1.4
+      ],
+      "trendRate": 0.01,
+      "productAdjustments": []
+    },
+    {
+      "id": "forecast-003",
+      "productId": "prod-003",
+      "sku": "KT-SILMAT-LG",
+      "productName": "Silicone Baking Mat Large (16x24)",
+      "locationId": "loc-005",
+      "locationName": "ONT8 Amazon FBA",
+      "dailyRate": 85,
+      "confidence": "high",
+      "accuracyMAPE": 8.2,
+      "manualOverride": null,
+      "isEnabled": true,
+      "lastUpdatedAt": "2024-12-05T10:00:00Z",
+      "seasonalMultipliers": [
+        1.2,
+        1.1,
+        1,
+        0.9,
+        0.8,
+        0.7,
+        0.7,
+        0.8,
+        0.9,
+        1,
+        1.2,
+        1.5
+      ],
+      "trendRate": -0.01,
+      "productAdjustments": []
+    },
+    {
+      "id": "forecast-004",
+      "productId": "prod-006",
+      "sku": "FIT-BAND-SET-NEW",
+      "productName": "Resistance Band Set (5 Bands with Bag)",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "dailyRate": 28,
+      "confidence": "medium",
+      "accuracyMAPE": 15.4,
+      "manualOverride": null,
+      "isEnabled": true,
+      "lastUpdatedAt": "2024-12-05T10:00:00Z",
+      "seasonalMultipliers": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "trendRate": 0.015,
+      "productAdjustments": []
+    },
+    {
+      "id": "forecast-005",
+      "productId": "prod-007",
+      "sku": "FIT-YOGAMAT-NEW",
+      "productName": "Non-Slip Yoga Mat 6mm - Ocean Blue",
+      "locationId": "loc-005",
+      "locationName": "ONT8 Amazon FBA",
+      "dailyRate": 18,
+      "confidence": "low",
+      "accuracyMAPE": 24.1,
+      "manualOverride": null,
+      "isEnabled": false,
+      "lastUpdatedAt": "2024-12-05T10:00:00Z",
+      "seasonalMultipliers": [
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1
+      ],
+      "trendRate": 0.015,
+      "productAdjustments": []
+    }
+  ],
+  "safetyStockRules": [
+    {
+      "id": "safety-001",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "thresholdType": "days-of-cover",
+      "thresholdValue": 14,
+      "seasonalMultipliers": [
+        {
+          "month": 11,
+          "multiplier": 1.5
+        },
+        {
+          "month": 12,
+          "multiplier": 2
+        }
+      ],
+      "isActive": true,
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-01T10:00:00Z"
+    },
+    {
+      "id": "safety-002",
+      "productId": "prod-002",
+      "sku": "WB-TUMBLER-32-NEW",
+      "productName": "Insulated Water Bottle 32oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "thresholdType": "days-of-cover",
+      "thresholdValue": 14,
+      "seasonalMultipliers": [],
+      "isActive": true,
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-01T10:00:00Z"
+    },
+    {
+      "id": "safety-003",
+      "productId": "prod-003",
+      "sku": "KT-SILMAT-LG",
+      "productName": "Silicone Baking Mat Large (16x24)",
+      "locationId": "loc-005",
+      "locationName": "ONT8 Amazon FBA",
+      "thresholdType": "units",
+      "thresholdValue": 1000,
+      "seasonalMultipliers": [
+        {
+          "month": 11,
+          "multiplier": 1.5
+        },
+        {
+          "month": 12,
+          "multiplier": 2
+        }
+      ],
+      "isActive": true,
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-01T10:00:00Z"
+    },
+    {
+      "id": "safety-004",
+      "productId": "prod-006",
+      "sku": "FIT-BAND-SET-NEW",
+      "productName": "Resistance Band Set (5 Bands with Bag)",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "thresholdType": "days-of-cover",
+      "thresholdValue": 21,
+      "seasonalMultipliers": [],
+      "isActive": true,
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-01T10:00:00Z"
+    },
+    {
+      "id": "safety-005",
+      "productId": "prod-007",
+      "sku": "FIT-YOGAMAT-NEW",
+      "productName": "Non-Slip Yoga Mat 6mm - Ocean Blue",
+      "locationId": "loc-005",
+      "locationName": "ONT8 Amazon FBA",
+      "thresholdType": "units",
+      "thresholdValue": 200,
+      "seasonalMultipliers": [],
+      "isActive": true,
+      "createdAt": "2024-06-01T10:00:00Z",
+      "updatedAt": "2024-11-01T10:00:00Z"
+    }
+  ],
+  "transferSuggestions": [
+    {
+      "id": "sugg-001",
+      "type": "transfer",
+      "urgency": "critical",
+      "status": "pending",
+      "productId": "prod-003",
+      "sku": "KT-SILMAT-LG",
+      "productName": "Silicone Baking Mat Large (16x24)",
+      "destinationLocationId": "loc-005",
+      "destinationLocationName": "ONT8 Amazon FBA",
+      "currentStock": 1500,
+      "inTransitQuantity": 0,
+      "reservedQuantity": 0,
+      "availableStock": 1500,
+      "dailySalesRate": 212,
+      "weeklySalesRate": 1484,
+      "daysOfStockRemaining": 7,
+      "stockoutDate": "2025-01-16",
+      "safetyStockThreshold": 2000,
+      "recommendedQty": 2500,
+      "estimatedArrival": "2025-01-11",
+      "sourceLocationId": "loc-003",
+      "sourceLocationName": "FlexPort LA Warehouse",
+      "sourceAvailableQty": 4200,
+      "supplierId": null,
+      "supplierName": null,
+      "supplierLeadTimeDays": null,
+      "routeId": "route-002",
+      "routeName": "FlexPort LA to ONT8 Ground",
+      "routeMethod": "ground",
+      "routeTransitDays": 1,
+      "reasoning": [
+        {
+          "type": "warning",
+          "message": "Current stock below safety threshold",
+          "value": "1,500 vs 2,000 units"
+        },
+        {
+          "type": "calculation",
+          "message": "Daily sales rate (seasonal adjusted 2.5x)",
+          "value": "212 units/day"
+        },
+        {
+          "type": "calculation",
+          "message": "Days of stock remaining",
+          "value": "7 days"
+        },
+        {
+          "type": "warning",
+          "message": "Stockout projected before next PO arrives"
+        },
+        {
+          "type": "info",
+          "message": "Available at FlexPort LA",
+          "value": "4,200 units"
+        },
+        {
+          "type": "calculation",
+          "message": "Recommended transfer for 14-day cover + safety",
+          "value": "2,500 units"
+        }
+      ],
+      "generatedAt": "2025-01-09T08:00:00Z",
+      "snoozedUntil": null,
+      "dismissedReason": null,
+      "acceptedAt": null,
+      "linkedEntityId": null,
+      "linkedEntityType": null
+    },
+    {
+      "id": "sugg-002",
+      "type": "transfer",
+      "urgency": "warning",
+      "status": "pending",
+      "productId": "prod-002",
+      "sku": "WB-TUMBLER-32-NEW",
+      "productName": "Insulated Water Bottle 32oz - Midnight Black",
+      "destinationLocationId": "loc-004",
+      "destinationLocationName": "PHX7 Amazon FBA",
+      "currentStock": 580,
+      "inTransitQuantity": 0,
+      "reservedQuantity": 0,
+      "availableStock": 580,
+      "dailySalesRate": 58,
+      "weeklySalesRate": 406,
+      "daysOfStockRemaining": 10,
+      "stockoutDate": "2025-01-19",
+      "safetyStockThreshold": 812,
+      "recommendedQty": 1000,
+      "estimatedArrival": "2025-01-12",
+      "sourceLocationId": "loc-003",
+      "sourceLocationName": "FlexPort LA Warehouse",
+      "sourceAvailableQty": 1200,
+      "supplierId": null,
+      "supplierName": null,
+      "supplierLeadTimeDays": null,
+      "routeId": "route-001",
+      "routeName": "FlexPort LA to PHX7 Ground",
+      "routeMethod": "ground",
+      "routeTransitDays": 3,
+      "reasoning": [
+        {
+          "type": "warning",
+          "message": "Stock below safety threshold",
+          "value": "580 vs 812 units"
+        },
+        {
+          "type": "calculation",
+          "message": "Daily sales rate (seasonal adjusted 1.8x)",
+          "value": "58 units/day"
+        },
+        {
+          "type": "calculation",
+          "message": "Days of stock remaining",
+          "value": "10 days"
+        },
+        {
+          "type": "info",
+          "message": "Available at FlexPort LA",
+          "value": "1,200 units"
+        },
+        {
+          "type": "calculation",
+          "message": "Recommended transfer for 21-day cover",
+          "value": "1,000 units"
+        }
+      ],
+      "generatedAt": "2025-01-09T08:00:00Z",
+      "snoozedUntil": null,
+      "dismissedReason": null,
+      "acceptedAt": null,
+      "linkedEntityId": null,
+      "linkedEntityType": null
+    },
+    {
+      "id": "sugg-003",
+      "type": "transfer",
+      "urgency": "planned",
+      "status": "pending",
+      "productId": "prod-006",
+      "sku": "FIT-BAND-SET-NEW",
+      "productName": "Resistance Band Set (5 Bands with Bag)",
+      "destinationLocationId": "loc-004",
+      "destinationLocationName": "PHX7 Amazon FBA",
+      "currentStock": 1000,
+      "inTransitQuantity": 0,
+      "reservedQuantity": 0,
+      "availableStock": 1000,
+      "dailySalesRate": 42,
+      "weeklySalesRate": 294,
+      "daysOfStockRemaining": 24,
+      "stockoutDate": "2025-02-02",
+      "safetyStockThreshold": 588,
+      "recommendedQty": 1500,
+      "estimatedArrival": "2025-01-12",
+      "sourceLocationId": "loc-003",
+      "sourceLocationName": "FlexPort LA Warehouse",
+      "sourceAvailableQty": 2400,
+      "supplierId": null,
+      "supplierName": null,
+      "supplierLeadTimeDays": null,
+      "routeId": "route-001",
+      "routeName": "FlexPort LA to PHX7 Ground",
+      "routeMethod": "ground",
+      "routeTransitDays": 3,
+      "reasoning": [
+        {
+          "type": "info",
+          "message": "Stock currently healthy for standard demand"
+        },
+        {
+          "type": "warning",
+          "message": "January New Year spike expected (2x multiplier)"
+        },
+        {
+          "type": "calculation",
+          "message": "Projected Jan daily rate",
+          "value": "56 units/day"
+        },
+        {
+          "type": "info",
+          "message": "Available at FlexPort LA",
+          "value": "2,400 units"
+        },
+        {
+          "type": "calculation",
+          "message": "Recommended preemptive transfer for Jan demand",
+          "value": "1,500 units"
+        }
+      ],
+      "generatedAt": "2025-01-09T08:00:00Z",
+      "snoozedUntil": null,
+      "dismissedReason": null,
+      "acceptedAt": null,
+      "linkedEntityId": null,
+      "linkedEntityType": null
+    }
+  ],
+  "poSuggestions": [
+    {
+      "id": "sugg-004",
+      "type": "purchase-order",
+      "urgency": "warning",
+      "status": "pending",
+      "productId": "prod-007",
+      "sku": "FIT-YOGAMAT-NEW",
+      "productName": "Non-Slip Yoga Mat 6mm - Ocean Blue",
+      "destinationLocationId": "loc-005",
+      "destinationLocationName": "ONT8 Amazon FBA",
+      "currentStock": 220,
+      "inTransitQuantity": 200,
+      "reservedQuantity": 0,
+      "availableStock": 220,
+      "dailySalesRate": 18,
+      "weeklySalesRate": 126,
+      "daysOfStockRemaining": 23,
+      "stockoutDate": "2025-02-01",
+      "safetyStockThreshold": 200,
+      "recommendedQty": 1500,
+      "estimatedArrival": "2025-03-10",
+      "sourceLocationId": null,
+      "sourceLocationName": null,
+      "sourceAvailableQty": null,
+      "supplierId": "sup-004",
+      "supplierName": "Fitness Factory Thailand",
+      "supplierLeadTimeDays": 45,
+      "routeId": "route-006",
+      "routeName": "Thailand Factory to FlexPort LA Ocean",
+      "routeMethod": "sea",
+      "routeTransitDays": 25,
+      "reasoning": [
+        {
+          "type": "warning",
+          "message": "Lead time is 45+ days - must order now for Feb coverage"
+        },
+        {
+          "type": "calculation",
+          "message": "Days of coverage after in-transit received",
+          "value": "23 days"
+        },
+        {
+          "type": "warning",
+          "message": "January spike expected (1.8x multiplier)"
+        }
+      ],
+      "generatedAt": "2025-01-09T08:00:00Z",
+      "snoozedUntil": null,
+      "dismissedReason": null,
+      "acceptedAt": null,
+      "linkedEntityId": null,
+      "linkedEntityType": null
+    },
+    {
+      "id": "sugg-005",
+      "type": "purchase-order",
+      "urgency": "planned",
+      "status": "pending",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "destinationLocationId": "loc-004",
+      "destinationLocationName": "PHX7 Amazon FBA",
+      "currentStock": 2487,
+      "inTransitQuantity": 0,
+      "reservedQuantity": 0,
+      "availableStock": 2487,
+      "dailySalesRate": 81,
+      "weeklySalesRate": 567,
+      "daysOfStockRemaining": 31,
+      "stockoutDate": "2025-02-09",
+      "safetyStockThreshold": 1260,
+      "recommendedQty": 5000,
+      "estimatedArrival": "2025-02-28",
+      "sourceLocationId": null,
+      "sourceLocationName": null,
+      "sourceAvailableQty": null,
+      "supplierId": "sup-001",
+      "supplierName": "Shenzhen Drinkware Co.",
+      "supplierLeadTimeDays": 35,
+      "routeId": "route-004",
+      "routeName": "Shenzhen Factory to FlexPort LA Ocean",
+      "routeMethod": "sea",
+      "routeTransitDays": 22,
+      "reasoning": [
+        {
+          "type": "warning",
+          "message": "Must order now to receive before warehouse stock depleted"
+        },
+        {
+          "type": "calculation",
+          "message": "Lead time (production + shipping)",
+          "value": "35 days factory + 22 days ocean"
+        },
+        {
+          "type": "warning",
+          "message": "Combined stock insufficient for Q1 at seasonal rates"
+        }
+      ],
+      "generatedAt": "2025-01-09T08:00:00Z",
+      "snoozedUntil": null,
+      "dismissedReason": null,
+      "acceptedAt": null,
+      "linkedEntityId": null,
+      "linkedEntityType": null
+    }
+  ],
+  "dashboardSummary": {
+    "totalActiveProducts": 7,
+    "totalSuggestions": 5,
+    "urgencyCounts": {
+      "critical": 1,
+      "warning": 2,
+      "planned": 2,
+      "monitor": 2
+    },
+    "locationHealth": [
+      {
+        "locationId": "loc-004",
+        "locationName": "PHX7 Amazon FBA",
+        "locationType": "amazon-fba",
+        "totalProducts": 3,
+        "healthyCount": 1,
+        "warningCount": 1,
+        "criticalCount": 0,
+        "totalValue": 45000
+      },
+      {
+        "locationId": "loc-005",
+        "locationName": "ONT8 Amazon FBA",
+        "locationType": "amazon-fba",
+        "totalProducts": 2,
+        "healthyCount": 0,
+        "warningCount": 1,
+        "criticalCount": 1,
+        "totalValue": 12500
+      },
+      {
+        "locationId": "loc-006",
+        "locationName": "SBD1 Amazon AWD",
+        "locationType": "amazon-awd",
+        "totalProducts": 2,
+        "healthyCount": 2,
+        "warningCount": 0,
+        "criticalCount": 0,
+        "totalValue": 8500
+      }
+    ],
+    "recentlyDismissed": 0,
+    "recentlySnoozed": 0,
+    "lastCalculatedAt": "2025-01-09T08:00:00Z"
+  },
+  "settings": {
+    "urgencyThresholds": {
+      "criticalDays": 7,
+      "warningDays": 14,
+      "plannedDays": 30
+    },
+    "autoRefreshIntervalMinutes": 60,
+    "defaultSafetyStockDays": 14,
+    "includeInTransitInCalculations": true,
+    "notifyOnCritical": true,
+    "notifyOnWarning": false
+  },
+  "locations": [
+    {
+      "id": "loc-001",
+      "name": "Shenzhen Drinkware Factory",
+      "type": "factory"
+    },
+    {
+      "id": "loc-factory-th",
+      "name": "Fitness Factory Thailand",
+      "type": "factory"
+    },
+    {
+      "id": "loc-003",
+      "name": "FlexPort LA Warehouse",
+      "type": "3pl"
+    },
+    {
+      "id": "loc-004",
+      "name": "PHX7 Amazon FBA",
+      "type": "amazon-fba"
+    },
+    {
+      "id": "loc-005",
+      "name": "ONT8 Amazon FBA",
+      "type": "amazon-fba"
+    },
+    {
+      "id": "loc-006",
+      "name": "SBD1 Amazon AWD",
+      "type": "amazon-awd"
+    }
+  ],
+  "products": [
+    {
+      "id": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "name": "Insulated Water Bottle 20oz - Midnight Black",
+      "supplierId": "sup-001"
+    },
+    {
+      "id": "prod-002",
+      "sku": "WB-TUMBLER-32-NEW",
+      "name": "Insulated Water Bottle 32oz - Midnight Black",
+      "supplierId": "sup-001"
+    },
+    {
+      "id": "prod-003",
+      "sku": "KT-SILMAT-LG",
+      "name": "Silicone Baking Mat Large (16x24)",
+      "supplierId": "sup-002"
+    },
+    {
+      "id": "prod-006",
+      "sku": "FIT-BAND-SET-NEW",
+      "name": "Resistance Band Set (5 Bands with Bag)",
+      "supplierId": "sup-004"
+    },
+    {
+      "id": "prod-007",
+      "sku": "FIT-YOGAMAT-NEW",
+      "name": "Non-Slip Yoga Mat 6mm - Ocean Blue",
+      "supplierId": "sup-004"
+    }
+  ],
+  "suppliers": [
+    {
+      "id": "sup-001",
+      "name": "Shenzhen Drinkware Co.",
+      "leadTimeDays": 35
+    },
+    {
+      "id": "sup-002",
+      "name": "Hangzhou Silicone Products Ltd.",
+      "leadTimeDays": 30
+    },
+    {
+      "id": "sup-004",
+      "name": "Fitness Factory Thailand",
+      "leadTimeDays": 45
+    }
+  ],
+  "shippingMethods": [
+    {
+      "id": "sea",
+      "label": "Ocean Freight"
+    },
+    {
+      "id": "air",
+      "label": "Air Freight"
+    },
+    {
+      "id": "ground",
+      "label": "Ground/Truck"
+    },
+    {
+      "id": "express",
+      "label": "Express Courier"
+    },
+    {
+      "id": "rail",
+      "label": "Rail"
+    }
+  ],
+  "urgencyOptions": [
+    {
+      "id": "critical",
+      "label": "Critical",
+      "color": "red"
+    },
+    {
+      "id": "warning",
+      "label": "Warning",
+      "color": "amber"
+    },
+    {
+      "id": "planned",
+      "label": "Planned",
+      "color": "indigo"
+    },
+    {
+      "id": "monitor",
+      "label": "Monitor",
+      "color": "slate"
+    }
+  ],
+  "thresholdTypes": [
+    {
+      "id": "units",
+      "label": "Minimum Units"
+    },
+    {
+      "id": "days-of-cover",
+      "label": "Days of Cover"
+    }
+  ],
+  "salesHistory": [
+    {
+      "id": "sh-001",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-11",
+      "unitsSold": 42,
+      "revenue": 1008,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-12T00:00:00Z"
+    },
+    {
+      "id": "sh-002",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-12",
+      "unitsSold": 38,
+      "revenue": 912,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-13T00:00:00Z"
+    },
+    {
+      "id": "sh-003",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-13",
+      "unitsSold": 35,
+      "revenue": 840,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-14T00:00:00Z"
+    },
+    {
+      "id": "sh-004",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-14",
+      "unitsSold": 47,
+      "revenue": 1128,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-15T00:00:00Z"
+    },
+    {
+      "id": "sh-005",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-15",
+      "unitsSold": 8,
+      "revenue": 192,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-16T00:00:00Z"
+    },
+    {
+      "id": "sh-006",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-16",
+      "unitsSold": 5,
+      "revenue": 120,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-17T00:00:00Z"
+    },
+    {
+      "id": "sh-007",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-17",
+      "unitsSold": 49,
+      "revenue": 1176,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-18T00:00:00Z"
+    },
+    {
+      "id": "sh-008",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-18",
+      "unitsSold": 51,
+      "revenue": 1224,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-19T00:00:00Z"
+    },
+    {
+      "id": "sh-009",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-19",
+      "unitsSold": 36,
+      "revenue": 864,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-20T00:00:00Z"
+    },
+    {
+      "id": "sh-010",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-20",
+      "unitsSold": 33,
+      "revenue": 792,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-21T00:00:00Z"
+    },
+    {
+      "id": "sh-011",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-21",
+      "unitsSold": 44,
+      "revenue": 1056,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-22T00:00:00Z"
+    },
+    {
+      "id": "sh-012",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-22",
+      "unitsSold": 46,
+      "revenue": 1104,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-23T00:00:00Z"
+    },
+    {
+      "id": "sh-013",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-23",
+      "unitsSold": 48,
+      "revenue": 1152,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-24T00:00:00Z"
+    },
+    {
+      "id": "sh-014",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-24",
+      "unitsSold": 45,
+      "revenue": 1080,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-25T00:00:00Z"
+    },
+    {
+      "id": "sh-015",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-25",
+      "unitsSold": 52,
+      "revenue": 1248,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-26T00:00:00Z"
+    },
+    {
+      "id": "sh-016",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-26",
+      "unitsSold": 37,
+      "revenue": 888,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-27T00:00:00Z"
+    },
+    {
+      "id": "sh-017",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-27",
+      "unitsSold": 34,
+      "revenue": 816,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-28T00:00:00Z"
+    },
+    {
+      "id": "sh-018",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-28",
+      "unitsSold": 43,
+      "revenue": 1032,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-29T00:00:00Z"
+    },
+    {
+      "id": "sh-019",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-29",
+      "unitsSold": 47,
+      "revenue": 1128,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-30T00:00:00Z"
+    },
+    {
+      "id": "sh-020",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-30",
+      "unitsSold": 49,
+      "revenue": 1176,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-10-31T00:00:00Z"
+    },
+    {
+      "id": "sh-021",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-10-31",
+      "unitsSold": 41,
+      "revenue": 984,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-01T00:00:00Z"
+    },
+    {
+      "id": "sh-022",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-01",
+      "unitsSold": 53,
+      "revenue": 1272,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-02T00:00:00Z"
+    },
+    {
+      "id": "sh-023",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-02",
+      "unitsSold": 38,
+      "revenue": 912,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-03T00:00:00Z"
+    },
+    {
+      "id": "sh-024",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-03",
+      "unitsSold": 35,
+      "revenue": 840,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-04T00:00:00Z"
+    },
+    {
+      "id": "sh-025",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-04",
+      "unitsSold": 48,
+      "revenue": 1152,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-05T00:00:00Z"
+    },
+    {
+      "id": "sh-026",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-05",
+      "unitsSold": 51,
+      "revenue": 1224,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-06T00:00:00Z"
+    },
+    {
+      "id": "sh-027",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-06",
+      "unitsSold": 54,
+      "revenue": 1296,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-07T00:00:00Z"
+    },
+    {
+      "id": "sh-028",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-07",
+      "unitsSold": 56,
+      "revenue": 1344,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-08T00:00:00Z"
+    },
+    {
+      "id": "sh-029",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-08",
+      "unitsSold": 58,
+      "revenue": 1392,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-09T00:00:00Z"
+    },
+    {
+      "id": "sh-030",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-09",
+      "unitsSold": 41,
+      "revenue": 984,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-10T00:00:00Z"
+    },
+    {
+      "id": "sh-031",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-10",
+      "unitsSold": 39,
+      "revenue": 936,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-11T00:00:00Z"
+    },
+    {
+      "id": "sh-032",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-11",
+      "unitsSold": 55,
+      "revenue": 1320,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-12T00:00:00Z"
+    },
+    {
+      "id": "sh-033",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-12",
+      "unitsSold": 57,
+      "revenue": 1368,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-13T00:00:00Z"
+    },
+    {
+      "id": "sh-034",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-13",
+      "unitsSold": 59,
+      "revenue": 1416,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-14T00:00:00Z"
+    },
+    {
+      "id": "sh-035",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-14",
+      "unitsSold": 61,
+      "revenue": 1464,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-15T00:00:00Z"
+    },
+    {
+      "id": "sh-036",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-15",
+      "unitsSold": 63,
+      "revenue": 1512,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-16T00:00:00Z"
+    },
+    {
+      "id": "sh-037",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-16",
+      "unitsSold": 45,
+      "revenue": 1080,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-17T00:00:00Z"
+    },
+    {
+      "id": "sh-038",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-17",
+      "unitsSold": 42,
+      "revenue": 1008,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-18T00:00:00Z"
+    },
+    {
+      "id": "sh-039",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-18",
+      "unitsSold": 58,
+      "revenue": 1392,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-19T00:00:00Z"
+    },
+    {
+      "id": "sh-040",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-19",
+      "unitsSold": 60,
+      "revenue": 1440,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-20T00:00:00Z"
+    },
+    {
+      "id": "sh-041",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-20",
+      "unitsSold": 62,
+      "revenue": 1488,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-21T00:00:00Z"
+    },
+    {
+      "id": "sh-042",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-21",
+      "unitsSold": 12,
+      "revenue": 288,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-22T00:00:00Z"
+    },
+    {
+      "id": "sh-043",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-22",
+      "unitsSold": 64,
+      "revenue": 1536,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-23T00:00:00Z"
+    },
+    {
+      "id": "sh-044",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-23",
+      "unitsSold": 47,
+      "revenue": 1128,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-24T00:00:00Z"
+    },
+    {
+      "id": "sh-045",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-24",
+      "unitsSold": 44,
+      "revenue": 1056,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-25T00:00:00Z"
+    },
+    {
+      "id": "sh-046",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-25",
+      "unitsSold": 61,
+      "revenue": 1464,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-26T00:00:00Z"
+    },
+    {
+      "id": "sh-047",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-26",
+      "unitsSold": 63,
+      "revenue": 1512,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-27T00:00:00Z"
+    },
+    {
+      "id": "sh-048",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-27",
+      "unitsSold": 65,
+      "revenue": 1560,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-28T00:00:00Z"
+    },
+    {
+      "id": "sh-049",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-28",
+      "unitsSold": 67,
+      "revenue": 1608,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-29T00:00:00Z"
+    },
+    {
+      "id": "sh-050",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-29",
+      "unitsSold": 145,
+      "revenue": 3480,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-11-30T00:00:00Z"
+    },
+    {
+      "id": "sh-051",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-11-30",
+      "unitsSold": 52,
+      "revenue": 1248,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-01T00:00:00Z"
+    },
+    {
+      "id": "sh-052",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-01",
+      "unitsSold": 49,
+      "revenue": 1176,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-02T00:00:00Z"
+    },
+    {
+      "id": "sh-053",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-02",
+      "unitsSold": 72,
+      "revenue": 1728,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-03T00:00:00Z"
+    },
+    {
+      "id": "sh-054",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-03",
+      "unitsSold": 75,
+      "revenue": 1800,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-04T00:00:00Z"
+    },
+    {
+      "id": "sh-055",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-04",
+      "unitsSold": 78,
+      "revenue": 1872,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-05T00:00:00Z"
+    },
+    {
+      "id": "sh-056",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-05",
+      "unitsSold": 80,
+      "revenue": 1920,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-06T00:00:00Z"
+    },
+    {
+      "id": "sh-057",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-06",
+      "unitsSold": 82,
+      "revenue": 1968,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-07T00:00:00Z"
+    },
+    {
+      "id": "sh-058",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-07",
+      "unitsSold": 58,
+      "revenue": 1392,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-08T00:00:00Z"
+    },
+    {
+      "id": "sh-059",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-08",
+      "unitsSold": 55,
+      "revenue": 1320,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-09T00:00:00Z"
+    },
+    {
+      "id": "sh-060",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-09",
+      "unitsSold": 85,
+      "revenue": 2040,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-10T00:00:00Z"
+    },
+    {
+      "id": "sh-061",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-10",
+      "unitsSold": 88,
+      "revenue": 2112,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-11T00:00:00Z"
+    },
+    {
+      "id": "sh-062",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-11",
+      "unitsSold": 91,
+      "revenue": 2184,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-12T00:00:00Z"
+    },
+    {
+      "id": "sh-063",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-12",
+      "unitsSold": 94,
+      "revenue": 2256,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-13T00:00:00Z"
+    },
+    {
+      "id": "sh-064",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-13",
+      "unitsSold": 97,
+      "revenue": 2328,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-14T00:00:00Z"
+    },
+    {
+      "id": "sh-065",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-14",
+      "unitsSold": 68,
+      "revenue": 1632,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-15T00:00:00Z"
+    },
+    {
+      "id": "sh-066",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-15",
+      "unitsSold": 65,
+      "revenue": 1560,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-16T00:00:00Z"
+    },
+    {
+      "id": "sh-067",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-16",
+      "unitsSold": 99,
+      "revenue": 2376,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-17T00:00:00Z"
+    },
+    {
+      "id": "sh-068",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-17",
+      "unitsSold": 102,
+      "revenue": 2448,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-18T00:00:00Z"
+    },
+    {
+      "id": "sh-069",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-18",
+      "unitsSold": 105,
+      "revenue": 2520,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-19T00:00:00Z"
+    },
+    {
+      "id": "sh-070",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-19",
+      "unitsSold": 108,
+      "revenue": 2592,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-20T00:00:00Z"
+    },
+    {
+      "id": "sh-071",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-20",
+      "unitsSold": 185,
+      "revenue": 4440,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-21T00:00:00Z"
+    },
+    {
+      "id": "sh-072",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-21",
+      "unitsSold": 78,
+      "revenue": 1872,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-22T00:00:00Z"
+    },
+    {
+      "id": "sh-073",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-22",
+      "unitsSold": 75,
+      "revenue": 1800,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-23T00:00:00Z"
+    },
+    {
+      "id": "sh-074",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-23",
+      "unitsSold": 112,
+      "revenue": 2688,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-24T00:00:00Z"
+    },
+    {
+      "id": "sh-075",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-24",
+      "unitsSold": 115,
+      "revenue": 2760,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-25T00:00:00Z"
+    },
+    {
+      "id": "sh-076",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-25",
+      "unitsSold": 42,
+      "revenue": 1008,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-26T00:00:00Z"
+    },
+    {
+      "id": "sh-077",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-26",
+      "unitsSold": 98,
+      "revenue": 2352,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-27T00:00:00Z"
+    },
+    {
+      "id": "sh-078",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-27",
+      "unitsSold": 95,
+      "revenue": 2280,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-28T00:00:00Z"
+    },
+    {
+      "id": "sh-079",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-28",
+      "unitsSold": 68,
+      "revenue": 1632,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-29T00:00:00Z"
+    },
+    {
+      "id": "sh-080",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-29",
+      "unitsSold": 65,
+      "revenue": 1560,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-30T00:00:00Z"
+    },
+    {
+      "id": "sh-081",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-30",
+      "unitsSold": 88,
+      "revenue": 2112,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2024-12-31T00:00:00Z"
+    },
+    {
+      "id": "sh-082",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2024-12-31",
+      "unitsSold": 72,
+      "revenue": 1728,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2025-01-01T00:00:00Z"
+    },
+    {
+      "id": "sh-083",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2025-01-01",
+      "unitsSold": 38,
+      "revenue": 912,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2025-01-02T00:00:00Z"
+    },
+    {
+      "id": "sh-084",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2025-01-02",
+      "unitsSold": 52,
+      "revenue": 1248,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2025-01-03T00:00:00Z"
+    },
+    {
+      "id": "sh-085",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2025-01-03",
+      "unitsSold": 55,
+      "revenue": 1320,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2025-01-04T00:00:00Z"
+    },
+    {
+      "id": "sh-086",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2025-01-04",
+      "unitsSold": 42,
+      "revenue": 1008,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2025-01-05T00:00:00Z"
+    },
+    {
+      "id": "sh-087",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2025-01-05",
+      "unitsSold": 39,
+      "revenue": 936,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2025-01-06T00:00:00Z"
+    },
+    {
+      "id": "sh-088",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2025-01-06",
+      "unitsSold": 48,
+      "revenue": 1152,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2025-01-07T00:00:00Z"
+    },
+    {
+      "id": "sh-089",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2025-01-07",
+      "unitsSold": 51,
+      "revenue": 1224,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2025-01-08T00:00:00Z"
+    },
+    {
+      "id": "sh-090",
+      "productId": "prod-001",
+      "sku": "WB-TUMBLER-20-NEW",
+      "productName": "Insulated Water Bottle 20oz - Midnight Black",
+      "locationId": "loc-004",
+      "locationName": "PHX7 Amazon FBA",
+      "date": "2025-01-08",
+      "unitsSold": 54,
+      "revenue": 1296,
+      "currency": "USD",
+      "source": "amazon-api",
+      "createdAt": "2025-01-09T00:00:00Z"
+    }
+  ],
+  "forecastModelConfigs": [
+    {
+      "id": "model-sma-30",
+      "name": "30-Day Moving Average",
+      "description": "Simple average of the last 30 days. Best for stable products with minimal trend.",
+      "type": "simple-moving-average",
+      "parameters": {
+        "windowDays": 30
+      },
+      "isDefault": false,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "model-sma-14",
+      "name": "14-Day Moving Average",
+      "description": "Simple average of the last 14 days. More responsive to recent changes.",
+      "type": "simple-moving-average",
+      "parameters": {
+        "windowDays": 14
+      },
+      "isDefault": false,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "model-exp-03",
+      "name": "Exponential Smoothing (α=0.3)",
+      "description": "Weighted average favoring recent data. Good for products with gradual trend changes.",
+      "type": "exponential-smoothing",
+      "parameters": {
+        "alpha": 0.3
+      },
+      "isDefault": false,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "model-seasonal-weekly",
+      "name": "Weekly Seasonal Naive",
+      "description": "Uses same day of week pattern. Best for products with strong weekday/weekend differences.",
+      "type": "seasonal-naive",
+      "parameters": {
+        "seasonType": "weekly"
+      },
+      "isDefault": false,
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "model-hw-weekly",
+      "name": "Holt-Winters Weekly",
+      "description": "Triple exponential smoothing with weekly seasonality. Best for products with trend AND weekly patterns.",
+      "type": "holt-winters",
+      "parameters": {
+        "seasonLength": 7,
+        "alpha": 0.2,
+        "beta": 0.1,
+        "gamma": 0.3,
+        "trendType": "additive",
+        "seasonalTypeConfig": "multiplicative"
+      },
+      "isDefault": true,
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ],
+  "accuracyRatings": [
+    {
+      "id": "excellent",
+      "label": "Excellent",
+      "maxMape": 10,
+      "color": "green"
+    },
+    {
+      "id": "good",
+      "label": "Good",
+      "maxMape": 20,
+      "color": "lime"
+    },
+    {
+      "id": "acceptable",
+      "label": "Acceptable",
+      "maxMape": 30,
+      "color": "yellow"
+    },
+    {
+      "id": "poor",
+      "label": "Poor",
+      "maxMape": 100,
+      "color": "red"
+    }
+  ],
+  "accountForecastAdjustments": [
+    {
+      "id": "afa-1",
+      "name": "Black Friday Weekend",
+      "startDate": "2024-11-28",
+      "endDate": "2024-12-02",
+      "effect": "multiply",
+      "multiplier": 1.5,
+      "isRecurring": true,
+      "notes": "Peak shopping period - expect 50% increase in sales",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "afa-2",
+      "name": "Christmas Week",
+      "startDate": "2024-12-23",
+      "endDate": "2024-12-26",
+      "effect": "exclude",
+      "isRecurring": true,
+      "notes": "Warehouse closed, no reliable sales data",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "afa-3",
+      "name": "New Year Period",
+      "startDate": "2024-12-31",
+      "endDate": "2025-01-02",
+      "effect": "exclude",
+      "isRecurring": true,
+      "notes": "Holiday period - irregular sales patterns",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "afa-4",
+      "name": "Prime Day",
+      "startDate": "2024-07-16",
+      "endDate": "2024-07-17",
+      "effect": "multiply",
+      "multiplier": 2.0,
+      "isRecurring": true,
+      "notes": "Amazon Prime Day - expect 100% increase in sales",
+      "createdAt": "2024-01-01T00:00:00Z"
+    },
+    {
+      "id": "afa-5",
+      "name": "Summer Slowdown",
+      "startDate": "2024-08-01",
+      "endDate": "2024-08-31",
+      "effect": "multiply",
+      "multiplier": 0.85,
+      "isRecurring": true,
+      "notes": "Typical summer slowdown - 15% decrease expected",
+      "createdAt": "2024-01-01T00:00:00Z"
+    }
+  ]
+}

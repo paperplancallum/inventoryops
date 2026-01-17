@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Removed 'output: export' to support server-side auth routes
+  images: {
+    unoptimized: true,
+  },
 };
 
 export default nextConfig;

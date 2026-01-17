@@ -1,0 +1,13 @@
+/* Design Tokens for InventoryOps */
+
+:root {
+  /* Colors */
+  --color-primary: theme('colors.indigo');
+  --color-secondary: theme('colors.amber');
+  --color-neutral: theme('colors.slate');
+
+  /* Typography */
+  --font-heading: 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}

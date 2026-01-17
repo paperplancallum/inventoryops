@@ -1,0 +1,858 @@
+{
+  "_meta": {
+    "models": {
+      "locations": "Named physical locations where inventory can reside, including factories, warehouses, 3PL facilities, and Amazon FBA/AWD centers.",
+      "transfers": "Physical movements of inventory between locations with carrier, tracking, costs, customs, and Amazon receiving information. Uses lineItems to specify batch + quantity for partial transfer support.",
+      "lineItems": "A line item within a Transfer specifying a source Batch and quantity to move. Enables partial transfers (e.g., transferring 500 of 1000 units from a batch). Links to debit/credit StockLedgerEntries.",
+      "trackingNumbers": "Carrier tracking references linked to a transfer.",
+      "documents": "Shipping documents attached to transfers (BOL, customs forms, etc.).",
+      "availableStock": "Current stock positions available for transfer selection. Derived from Stock records showing available quantities at each location."
+    },
+    "relationships": [
+      "Each Transfer has a source Location and destination Location",
+      "Transfers contain multiple LineItems specifying batch + quantity to move",
+      "LineItems link to StockLedgerEntries (debit at source, credit at destination)",
+      "Transfers have multiple tracking numbers for different carriers/legs",
+      "Transfers have attached documents for logistics paperwork",
+      "When Transfer processes, Stock quantities update via ledger entries",
+      "Amazon destinations track receiving status through check-in process"
+    ]
+  },
+  "locations": [
+    {
+      "id": "loc-001",
+      "name": "Shenzhen Drinkware Factory",
+      "type": "factory",
+      "address": "123 Industrial Park Road, Building A",
+      "city": "Shenzhen",
+      "state": "Guangdong",
+      "country": "CN",
+      "postalCode": "518000",
+      "contactName": "Wang Lei",
+      "contactEmail": "wang.lei@szdrinkware.com",
+      "contactPhone": "+86-755-1234-5678",
+      "notes": "Primary drinkware supplier",
+      "isActive": true
+    },
+    {
+      "id": "loc-002",
+      "name": "Hangzhou Silicone Factory",
+      "type": "factory",
+      "address": "456 Manufacturing Zone, Unit 12",
+      "city": "Hangzhou",
+      "state": "Zhejiang",
+      "country": "CN",
+      "postalCode": "310000",
+      "contactName": "Chen Ming",
+      "contactEmail": "chen.ming@hzsilicone.com",
+      "contactPhone": "+86-571-8765-4321",
+      "notes": "Silicone products supplier",
+      "isActive": true
+    },
+    {
+      "id": "loc-003",
+      "name": "FlexPort LA Warehouse",
+      "type": "3pl",
+      "address": "789 Port Commerce Way",
+      "city": "Long Beach",
+      "state": "CA",
+      "country": "US",
+      "postalCode": "90802",
+      "contactName": "Mike Johnson",
+      "contactEmail": "mike.j@flexport.com",
+      "contactPhone": "+1-562-555-0123",
+      "notes": "Primary 3PL for West Coast receiving",
+      "isActive": true
+    },
+    {
+      "id": "loc-004",
+      "name": "PHX7 Amazon FBA",
+      "type": "amazon-fba",
+      "address": "800 N 75th Ave",
+      "city": "Phoenix",
+      "state": "AZ",
+      "country": "US",
+      "postalCode": "85043",
+      "contactName": "",
+      "contactEmail": "",
+      "contactPhone": "",
+      "notes": "Amazon FBA receiving center - Phoenix",
+      "isActive": true
+    },
+    {
+      "id": "loc-005",
+      "name": "ONT8 Amazon FBA",
+      "type": "amazon-fba",
+      "address": "24208 San Michele Rd",
+      "city": "Moreno Valley",
+      "state": "CA",
+      "country": "US",
+      "postalCode": "92551",
+      "contactName": "",
+      "contactEmail": "",
+      "contactPhone": "",
+      "notes": "Amazon FBA California",
+      "isActive": true
+    },
+    {
+      "id": "loc-006",
+      "name": "SBD1 Amazon AWD",
+      "type": "amazon-awd",
+      "address": "1910 E Central Ave",
+      "city": "San Bernardino",
+      "state": "CA",
+      "country": "US",
+      "postalCode": "92408",
+      "contactName": "",
+      "contactEmail": "",
+      "contactPhone": "",
+      "notes": "Amazon AWD bulk storage facility",
+      "isActive": true
+    },
+    {
+      "id": "loc-007",
+      "name": "Port of Long Beach",
+      "type": "port",
+      "address": "415 W Ocean Blvd",
+      "city": "Long Beach",
+      "state": "CA",
+      "country": "US",
+      "postalCode": "90802",
+      "contactName": "",
+      "contactEmail": "",
+      "contactPhone": "",
+      "notes": "Primary US port of entry",
+      "isActive": true
+    },
+    {
+      "id": "loc-amazon-fba-tbd",
+      "name": "Amazon FBA (TBD)",
+      "type": "amazon-fba",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "US",
+      "postalCode": "",
+      "contactName": "",
+      "contactEmail": "",
+      "contactPhone": "",
+      "notes": "Placeholder for Amazon FBA shipments where FC is not yet assigned",
+      "isActive": true
+    },
+    {
+      "id": "loc-amazon-awd-tbd",
+      "name": "Amazon AWD (TBD)",
+      "type": "amazon-awd",
+      "address": "",
+      "city": "",
+      "state": "",
+      "country": "US",
+      "postalCode": "",
+      "contactName": "",
+      "contactEmail": "",
+      "contactPhone": "",
+      "notes": "Placeholder for Amazon AWD shipments where facility is not yet assigned",
+      "isActive": true
+    }
+  ],
+  "transfers": [
+    {
+      "id": "trf-001",
+      "transferNumber": "TRF-2024-001",
+      "status": "completed",
+      "sourceLocationId": "loc-001",
+      "sourceLocationName": "Shenzhen Drinkware Factory",
+      "destinationLocationId": "loc-003",
+      "destinationLocationName": "FlexPort LA Warehouse",
+      "lineItems": [
+        {
+          "id": "li-001",
+          "transferId": "trf-001",
+          "batchId": "batch-001",
+          "sku": "WB-TUMBLER-32",
+          "productName": "Insulated Water Bottle 32oz - Midnight Black",
+          "quantity": 1500,
+          "unitCost": 8.50,
+          "totalCost": 12750.00,
+          "status": "received",
+          "receivedQuantity": 1500,
+          "discrepancy": 0,
+          "receivedAt": "2024-11-06T15:00:00Z",
+          "receivedNotes": "All units received in good condition",
+          "debitLedgerEntryId": "sle-003",
+          "creditLedgerEntryId": "sle-004"
+        }
+      ],
+      "totalUnits": 1500,
+      "totalValue": 12750.00,
+      "carrier": "Maersk Line",
+      "carrierAccountNumber": "MAEU-12345",
+      "shippingMethod": "ocean-fcl",
+      "trackingNumbers": [
+        { "id": "trk-001", "carrier": "Maersk", "number": "MAEU1234567", "url": "https://www.maersk.com/tracking/MAEU1234567" }
+      ],
+      "containerNumbers": ["MSKU1234567"],
+      "scheduledDepartureDate": "2024-10-15",
+      "actualDepartureDate": "2024-10-15",
+      "scheduledArrivalDate": "2024-11-08",
+      "actualArrivalDate": "2024-11-06",
+      "incoterms": "FOB",
+      "costs": {
+        "freight": 2800.00,
+        "insurance": 175.00,
+        "duties": 1240.00,
+        "taxes": 0,
+        "handling": 350.00,
+        "other": 0,
+        "currency": "USD"
+      },
+      "documents": [
+        { "id": "doc-001", "type": "bill-of-lading", "name": "BOL-MAEU1234567.pdf", "uploadedAt": "2024-10-15T10:00:00Z" },
+        { "id": "doc-002", "type": "commercial-invoice", "name": "invoice-TRF-2024-001.pdf", "uploadedAt": "2024-10-15T10:05:00Z" },
+        { "id": "doc-003", "type": "packing-list", "name": "packing-list-TRF-2024-001.pdf", "uploadedAt": "2024-10-15T10:10:00Z" }
+      ],
+      "customsInfo": {
+        "hsCode": "9617.00.10",
+        "customsBroker": "ABC Customs Brokers",
+        "customsStatus": "cleared",
+        "entryNumber": "ABC-2024-78901",
+        "clearanceDate": "2024-11-07",
+        "notes": "Cleared without issues"
+      },
+      "amazonReceiving": null,
+      "amazonShipmentId": null,
+      "notes": "Q4 restock shipment - water bottles",
+      "statusHistory": [
+        { "status": "draft", "date": "2024-10-10T09:00:00Z", "note": "Transfer created" },
+        { "status": "booked", "date": "2024-10-12T14:00:00Z", "note": "Booking confirmed with Maersk" },
+        { "status": "in-transit", "date": "2024-10-15T16:00:00Z", "note": "Departed Shenzhen" },
+        { "status": "delivered", "date": "2024-11-06T11:00:00Z", "note": "Arrived at FlexPort LA" },
+        { "status": "completed", "date": "2024-11-06T15:00:00Z", "note": "Unloaded and inventoried" }
+      ],
+      "createdAt": "2024-10-10T09:00:00Z",
+      "createdBy": "user-001",
+      "updatedAt": "2024-11-06T15:00:00Z",
+      "updatedBy": "user-001"
+    },
+    {
+      "id": "trf-002",
+      "transferNumber": "TRF-2024-002",
+      "status": "in-transit",
+      "sourceLocationId": "loc-002",
+      "sourceLocationName": "Hangzhou Silicone Factory",
+      "destinationLocationId": "loc-003",
+      "destinationLocationName": "FlexPort LA Warehouse",
+      "lineItems": [
+        {
+          "id": "li-002",
+          "transferId": "trf-002",
+          "batchId": "batch-003",
+          "sku": "KT-SILMAT-LG",
+          "productName": "Silicone Baking Mat Large (16x24)",
+          "quantity": 3000,
+          "unitCost": 4.25,
+          "totalCost": 12750.00,
+          "status": "in_transit",
+          "receivedQuantity": null,
+          "discrepancy": null,
+          "receivedAt": null,
+          "receivedNotes": "",
+          "debitLedgerEntryId": "sle-007",
+          "creditLedgerEntryId": null
+        }
+      ],
+      "totalUnits": 3000,
+      "totalValue": 12750.00,
+      "carrier": "FedEx International",
+      "carrierAccountNumber": "FEDX-98765",
+      "shippingMethod": "air-freight",
+      "trackingNumbers": [
+        { "id": "trk-002", "carrier": "FedEx", "number": "794644790126", "url": "https://www.fedex.com/track?tracknumbers=794644790126" }
+      ],
+      "containerNumbers": [],
+      "scheduledDepartureDate": "2024-12-01",
+      "actualDepartureDate": "2024-12-01",
+      "scheduledArrivalDate": "2024-12-18",
+      "actualArrivalDate": null,
+      "incoterms": "DDP",
+      "costs": {
+        "freight": 4200.00,
+        "insurance": 215.00,
+        "duties": 580.00,
+        "taxes": 0,
+        "handling": 275.00,
+        "other": 0,
+        "currency": "USD"
+      },
+      "documents": [
+        { "id": "doc-004", "type": "bill-of-lading", "name": "AWB-794644790126.pdf", "uploadedAt": "2024-12-01T08:00:00Z" },
+        { "id": "doc-005", "type": "commercial-invoice", "name": "invoice-TRF-2024-002.pdf", "uploadedAt": "2024-12-01T08:05:00Z" }
+      ],
+      "customsInfo": {
+        "hsCode": "3924.10.40",
+        "customsBroker": "ABC Customs Brokers",
+        "customsStatus": "in-progress",
+        "entryNumber": "",
+        "clearanceDate": null,
+        "notes": "Expedited air freight for holiday season"
+      },
+      "amazonReceiving": null,
+      "amazonShipmentId": null,
+      "notes": "Holiday season restock - air freight for faster delivery",
+      "statusHistory": [
+        { "status": "draft", "date": "2024-11-28T10:00:00Z", "note": "Transfer created" },
+        { "status": "booked", "date": "2024-11-29T11:00:00Z", "note": "Air freight booked with FedEx" },
+        { "status": "in-transit", "date": "2024-12-01T08:00:00Z", "note": "Departed Hangzhou" }
+      ],
+      "createdAt": "2024-11-28T10:00:00Z",
+      "createdBy": "user-001",
+      "updatedAt": "2024-12-01T08:00:00Z",
+      "updatedBy": "user-001"
+    },
+    {
+      "id": "trf-003",
+      "transferNumber": "TRF-2024-003",
+      "status": "completed",
+      "sourceLocationId": "loc-003",
+      "sourceLocationName": "FlexPort LA Warehouse",
+      "destinationLocationId": "loc-004",
+      "destinationLocationName": "PHX7 Amazon FBA",
+      "lineItems": [
+        {
+          "id": "li-003",
+          "transferId": "trf-003",
+          "batchId": "batch-001",
+          "sku": "WB-TUMBLER-32",
+          "productName": "Insulated Water Bottle 32oz - Midnight Black",
+          "quantity": 1000,
+          "unitCost": 8.50,
+          "totalCost": 8500.00,
+          "status": "partial",
+          "receivedQuantity": 987,
+          "discrepancy": -13,
+          "receivedAt": "2024-11-12T10:00:00Z",
+          "receivedNotes": "13 units short - likely damaged in transit or receiving error",
+          "debitLedgerEntryId": "sle-005",
+          "creditLedgerEntryId": "sle-006"
+        }
+      ],
+      "totalUnits": 1000,
+      "totalValue": 8500.00,
+      "carrier": "SAIA LTL Freight",
+      "carrierAccountNumber": "",
+      "shippingMethod": "ground",
+      "trackingNumbers": [
+        { "id": "trk-003", "carrier": "SAIA", "number": "2151234567", "url": "https://www.saia.com/tracking/2151234567" }
+      ],
+      "containerNumbers": [],
+      "scheduledDepartureDate": "2024-11-08",
+      "actualDepartureDate": "2024-11-08",
+      "scheduledArrivalDate": "2024-11-10",
+      "actualArrivalDate": "2024-11-10",
+      "incoterms": "",
+      "costs": {
+        "freight": 425.00,
+        "insurance": 0,
+        "duties": 0,
+        "taxes": 0,
+        "handling": 75.00,
+        "other": 0,
+        "currency": "USD"
+      },
+      "documents": [
+        { "id": "doc-006", "type": "bill-of-lading", "name": "BOL-SAIA-2151234567.pdf", "uploadedAt": "2024-11-08T09:00:00Z" }
+      ],
+      "customsInfo": {
+        "hsCode": "",
+        "customsBroker": "",
+        "customsStatus": "pending",
+        "entryNumber": "",
+        "clearanceDate": null,
+        "notes": "Domestic transfer - no customs required"
+      },
+      "amazonReceiving": {
+        "status": "closed",
+        "checkedInDate": "2024-11-10T14:00:00Z",
+        "receivingStartedDate": "2024-11-11T08:00:00Z",
+        "receivedDate": "2024-11-12T10:00:00Z",
+        "closedDate": "2024-11-12T16:00:00Z",
+        "discrepancy": -13,
+        "notes": "13 units short - likely damaged in transit or receiving error"
+      },
+      "amazonShipmentId": "FBA17ABC1234",
+      "notes": "FBA shipment from 3PL to Amazon PHX7 - partial batch transfer",
+      "statusHistory": [
+        { "status": "draft", "date": "2024-11-07T16:00:00Z", "note": "FBA shipment created" },
+        { "status": "booked", "date": "2024-11-08T08:00:00Z", "note": "LTL pickup scheduled" },
+        { "status": "in-transit", "date": "2024-11-08T10:00:00Z", "note": "Picked up by SAIA" },
+        { "status": "delivered", "date": "2024-11-10T13:00:00Z", "note": "Delivered to PHX7" },
+        { "status": "completed", "date": "2024-11-12T16:00:00Z", "note": "Amazon receiving closed" }
+      ],
+      "createdAt": "2024-11-07T16:00:00Z",
+      "createdBy": "user-001",
+      "updatedAt": "2024-11-12T16:00:00Z",
+      "updatedBy": "user-001"
+    },
+    {
+      "id": "trf-004",
+      "transferNumber": "TRF-2024-004",
+      "status": "delivered",
+      "sourceLocationId": "loc-003",
+      "sourceLocationName": "FlexPort LA Warehouse",
+      "destinationLocationId": "loc-006",
+      "destinationLocationName": "SBD1 Amazon AWD",
+      "lineItems": [
+        {
+          "id": "li-004",
+          "transferId": "trf-004",
+          "batchId": "batch-005",
+          "sku": "FIT-BAND-SET",
+          "productName": "Resistance Band Set (5 Bands with Bag)",
+          "quantity": 2500,
+          "unitCost": 6.75,
+          "totalCost": 16875.00,
+          "status": "in_transit",
+          "receivedQuantity": null,
+          "discrepancy": null,
+          "receivedAt": null,
+          "receivedNotes": "",
+          "debitLedgerEntryId": "sle-011",
+          "creditLedgerEntryId": null
+        },
+        {
+          "id": "li-005",
+          "transferId": "trf-004",
+          "batchId": "batch-006",
+          "sku": "FIT-YOGAMAT",
+          "productName": "Non-Slip Yoga Mat 6mm",
+          "quantity": 800,
+          "unitCost": 12.50,
+          "totalCost": 10000.00,
+          "status": "in_transit",
+          "receivedQuantity": null,
+          "discrepancy": null,
+          "receivedAt": null,
+          "receivedNotes": "",
+          "debitLedgerEntryId": "sle-012",
+          "creditLedgerEntryId": null
+        }
+      ],
+      "totalUnits": 3300,
+      "totalValue": 26875.00,
+      "carrier": "XPO Logistics",
+      "carrierAccountNumber": "XPO-44521",
+      "shippingMethod": "ground",
+      "trackingNumbers": [
+        { "id": "trk-004", "carrier": "XPO", "number": "XPO789456123", "url": "https://www.xpo.com/track/XPO789456123" }
+      ],
+      "containerNumbers": [],
+      "scheduledDepartureDate": "2024-12-05",
+      "actualDepartureDate": "2024-12-05",
+      "scheduledArrivalDate": "2024-12-06",
+      "actualArrivalDate": "2024-12-06",
+      "incoterms": "",
+      "costs": {
+        "freight": 580.00,
+        "insurance": 0,
+        "duties": 0,
+        "taxes": 0,
+        "handling": 125.00,
+        "other": 0,
+        "currency": "USD"
+      },
+      "documents": [
+        { "id": "doc-007", "type": "bill-of-lading", "name": "BOL-XPO789456123.pdf", "uploadedAt": "2024-12-05T07:00:00Z" }
+      ],
+      "customsInfo": {
+        "hsCode": "",
+        "customsBroker": "",
+        "customsStatus": "pending",
+        "entryNumber": "",
+        "clearanceDate": null,
+        "notes": "Domestic transfer - no customs required"
+      },
+      "amazonReceiving": {
+        "status": "receiving",
+        "checkedInDate": "2024-12-06T15:00:00Z",
+        "receivingStartedDate": "2024-12-07T09:00:00Z",
+        "receivedDate": null,
+        "closedDate": null,
+        "discrepancy": 0,
+        "notes": "In receiving - expected completion Dec 8"
+      },
+      "amazonShipmentId": "FBA17GHI9012",
+      "notes": "Bulk AWD shipment for Q1 inventory buffer",
+      "statusHistory": [
+        { "status": "draft", "date": "2024-12-03T10:00:00Z", "note": "AWD shipment created" },
+        { "status": "booked", "date": "2024-12-04T11:00:00Z", "note": "XPO pickup confirmed" },
+        { "status": "in-transit", "date": "2024-12-05T08:00:00Z", "note": "Picked up from FlexPort" },
+        { "status": "delivered", "date": "2024-12-06T14:00:00Z", "note": "Delivered to SBD1 AWD" }
+      ],
+      "createdAt": "2024-12-03T10:00:00Z",
+      "createdBy": "user-001",
+      "updatedAt": "2024-12-07T09:00:00Z",
+      "updatedBy": "user-001"
+    },
+    {
+      "id": "trf-005",
+      "transferNumber": "TRF-2024-005",
+      "status": "draft",
+      "sourceLocationId": "loc-001",
+      "sourceLocationName": "Shenzhen Drinkware Factory",
+      "destinationLocationId": "loc-003",
+      "destinationLocationName": "FlexPort LA Warehouse",
+      "lineItems": [
+        {
+          "id": "li-006",
+          "transferId": "trf-005",
+          "batchId": "batch-007",
+          "sku": "WB-TUMBLER-20",
+          "productName": "Insulated Water Bottle 20oz - Arctic White",
+          "quantity": 2000,
+          "unitCost": 7.25,
+          "totalCost": 14500.00,
+          "status": "pending",
+          "receivedQuantity": null,
+          "discrepancy": null,
+          "receivedAt": null,
+          "receivedNotes": "",
+          "debitLedgerEntryId": null,
+          "creditLedgerEntryId": null
+        }
+      ],
+      "totalUnits": 2000,
+      "totalValue": 14500.00,
+      "carrier": "",
+      "carrierAccountNumber": "",
+      "shippingMethod": "ocean-lcl",
+      "trackingNumbers": [],
+      "containerNumbers": [],
+      "scheduledDepartureDate": "2024-12-20",
+      "actualDepartureDate": null,
+      "scheduledArrivalDate": "2025-01-15",
+      "actualArrivalDate": null,
+      "incoterms": "FOB",
+      "costs": {
+        "freight": 0,
+        "insurance": 0,
+        "duties": 0,
+        "taxes": 0,
+        "handling": 0,
+        "other": 0,
+        "currency": "USD"
+      },
+      "documents": [],
+      "customsInfo": {
+        "hsCode": "9617.00.10",
+        "customsBroker": "",
+        "customsStatus": "pending",
+        "entryNumber": "",
+        "clearanceDate": null,
+        "notes": ""
+      },
+      "amazonReceiving": null,
+      "amazonShipmentId": null,
+      "notes": "Waiting to consolidate with other shipments for LCL",
+      "statusHistory": [
+        { "status": "draft", "date": "2024-12-08T10:00:00Z", "note": "Transfer created - pending carrier booking" }
+      ],
+      "createdAt": "2024-12-08T10:00:00Z",
+      "createdBy": "user-001",
+      "updatedAt": "2024-12-08T10:00:00Z",
+      "updatedBy": "user-001"
+    }
+  ],
+  "transferStatuses": [
+    { "id": "draft", "label": "Draft", "order": 1 },
+    { "id": "booked", "label": "Booked", "order": 2 },
+    { "id": "in-transit", "label": "In Transit", "order": 3 },
+    { "id": "delivered", "label": "Delivered", "order": 4 },
+    { "id": "completed", "label": "Completed", "order": 5 },
+    { "id": "cancelled", "label": "Cancelled", "order": 6 }
+  ],
+  "shippingMethods": [
+    { "id": "ocean-fcl", "label": "Ocean Freight (FCL)" },
+    { "id": "ocean-lcl", "label": "Ocean Freight (LCL)" },
+    { "id": "air-freight", "label": "Air Freight" },
+    { "id": "air-express", "label": "Air Express" },
+    { "id": "ground", "label": "Ground/Truck" },
+    { "id": "rail", "label": "Rail" },
+    { "id": "courier", "label": "Courier/Parcel" }
+  ],
+  "locationTypes": [
+    { "id": "factory", "label": "Factory" },
+    { "id": "warehouse", "label": "Warehouse" },
+    { "id": "3pl", "label": "3PL" },
+    { "id": "amazon-fba", "label": "Amazon FBA" },
+    { "id": "amazon-awd", "label": "Amazon AWD" },
+    { "id": "port", "label": "Port" },
+    { "id": "customs", "label": "Customs" }
+  ],
+  "documentTypes": [
+    { "id": "bill-of-lading", "label": "Bill of Lading" },
+    { "id": "customs-form", "label": "Customs Form" },
+    { "id": "commercial-invoice", "label": "Commercial Invoice" },
+    { "id": "packing-list", "label": "Packing List" },
+    { "id": "certificate-of-origin", "label": "Certificate of Origin" },
+    { "id": "insurance-certificate", "label": "Insurance Certificate" },
+    { "id": "other", "label": "Other" }
+  ],
+  "shippingServices": [
+    { "id": "ocean", "label": "Ocean Freight" },
+    { "id": "air", "label": "Air Freight" },
+    { "id": "trucking", "label": "Trucking/Ground" },
+    { "id": "rail", "label": "Rail" },
+    { "id": "courier", "label": "Courier/Express" }
+  ],
+  "shippingAgents": [
+    {
+      "id": "agent-001",
+      "name": "FlexPort",
+      "contactName": "David Chen",
+      "email": "david.chen@flexport.com",
+      "phone": "+1-415-555-0123",
+      "services": ["ocean", "air", "trucking"],
+      "address": {
+        "street": "760 Market St, Floor 9",
+        "city": "San Francisco",
+        "state": "CA",
+        "country": "US",
+        "postalCode": "94102"
+      },
+      "accountNumber": "FP-2024-001",
+      "website": "https://flexport.com",
+      "notes": "Primary freight forwarder for China imports. Excellent visibility and tracking.",
+      "isActive": true,
+      "paymentTerms": "Net 30 after departure",
+      "paymentTermsTemplateId": "shipping-net-30",
+      "messages": [
+        {
+          "id": "msg-agent-001",
+          "direction": "outbound",
+          "senderName": "Sarah Chen",
+          "senderEmail": "sarah@inventoryops.com",
+          "timestamp": "2024-11-01T10:00:00Z",
+          "content": "Hi David,\n\nWe have a Q4 shipment coming up from Shenzhen - 2000 units of water bottles. Can you provide a quote for FCL ocean freight?\n\nTarget delivery: December 15\nOrigin: Shenzhen Drinkware Factory\nDestination: FlexPort LA Warehouse\n\nThanks,\nSarah"
+        },
+        {
+          "id": "msg-agent-002",
+          "direction": "inbound",
+          "senderName": "David Chen",
+          "senderEmail": "david.chen@flexport.com",
+          "timestamp": "2024-11-02T09:30:00Z",
+          "content": "Hi Sarah,\n\nThanks for reaching out! Here's our quote for the Q4 shipment:\n\n- Ocean FCL (20ft): $2,800\n- Transit time: 18-22 days\n- Port of entry: Long Beach\n- Last free day at port: 5 business days\n\nWe can also offer Air Freight if you need faster delivery:\n- Air Express: $8,500 (5-7 days)\n\nLet me know which option works best!\n\nBest,\nDavid"
+        },
+        {
+          "id": "msg-agent-003",
+          "direction": "note",
+          "senderName": "Sarah Chen",
+          "timestamp": "2024-11-02T14:00:00Z",
+          "content": "Called David to confirm FCL option. Booking will be placed Nov 5 for Nov 8 pickup."
+        }
+      ],
+      "unreadCount": 0,
+      "createdAt": "2024-06-15T10:00:00Z",
+      "updatedAt": "2024-11-02T14:00:00Z"
+    },
+    {
+      "id": "agent-002",
+      "name": "Maersk Line Direct",
+      "contactName": "Lisa Park",
+      "email": "lisa.park@maersk.com",
+      "phone": "+1-973-514-5000",
+      "services": ["ocean"],
+      "address": {
+        "street": "185 Hudson St, Suite 2500",
+        "city": "Jersey City",
+        "state": "NJ",
+        "country": "US",
+        "postalCode": "07311"
+      },
+      "accountNumber": "MAEU-12345",
+      "website": "https://maersk.com",
+      "notes": "Direct booking with carrier. Good rates for high volume FCL.",
+      "isActive": true,
+      "paymentTerms": "Net 7 after departure",
+      "paymentTermsTemplateId": "shipping-net-7",
+      "messages": [
+        {
+          "id": "msg-agent-004",
+          "direction": "inbound",
+          "senderName": "Lisa Park",
+          "senderEmail": "lisa.park@maersk.com",
+          "timestamp": "2024-10-15T11:00:00Z",
+          "content": "Hi,\n\nYour shipment MAEU1234567 has departed Shenzhen on schedule. ETA Long Beach: November 8.\n\nYou can track your container at: https://maersk.com/tracking/MAEU1234567\n\nBest regards,\nLisa Park\nMaersk Customer Service"
+        }
+      ],
+      "unreadCount": 0,
+      "createdAt": "2024-01-20T10:00:00Z",
+      "updatedAt": "2024-10-15T11:00:00Z"
+    },
+    {
+      "id": "agent-003",
+      "name": "DHL Express",
+      "contactName": "Mike Torres",
+      "email": "mike.torres@dhl.com",
+      "phone": "+1-800-225-5345",
+      "services": ["air", "courier"],
+      "address": {
+        "city": "Plantation",
+        "state": "FL",
+        "country": "US"
+      },
+      "accountNumber": "DHL-998877",
+      "website": "https://dhl.com",
+      "notes": "Express air shipping. Good for urgent small shipments and samples.",
+      "isActive": true,
+      "paymentTerms": "Net 7 after departure",
+      "paymentTermsTemplateId": "shipping-net-7",
+      "messages": [],
+      "unreadCount": 0,
+      "createdAt": "2024-03-10T10:00:00Z",
+      "updatedAt": "2024-03-10T10:00:00Z"
+    },
+    {
+      "id": "agent-004",
+      "name": "ABC Customs Brokers",
+      "contactName": "Jennifer Wu",
+      "email": "jennifer@abccustoms.com",
+      "phone": "+1-310-555-0199",
+      "services": ["trucking"],
+      "address": {
+        "street": "1200 Harbor Ave",
+        "city": "Long Beach",
+        "state": "CA",
+        "country": "US",
+        "postalCode": "90802"
+      },
+      "accountNumber": "ABC-2024-001",
+      "notes": "Licensed customs broker. Handles all US port entries for our imports.",
+      "isActive": true,
+      "paymentTerms": "Due on customs clearance",
+      "paymentTermsTemplateId": "duties-on-clearance",
+      "messages": [
+        {
+          "id": "msg-agent-005",
+          "direction": "outbound",
+          "senderName": "Sarah Chen",
+          "senderEmail": "sarah@inventoryops.com",
+          "timestamp": "2024-11-06T08:00:00Z",
+          "content": "Hi Jennifer,\n\nContainer MSKU1234567 arriving today at Long Beach. Can you prioritize customs clearance?\n\nPO details:\n- HS Code: 9617.00.10\n- Value: $12,750\n- Commercial invoice attached\n\nThanks,\nSarah",
+          "attachments": [
+            {
+              "id": "att-agent-001",
+              "name": "invoice-TRF-2024-001.pdf",
+              "type": "application/pdf",
+              "url": "/documents/invoice-TRF-2024-001.pdf"
+            }
+          ]
+        },
+        {
+          "id": "msg-agent-006",
+          "direction": "inbound",
+          "senderName": "Jennifer Wu",
+          "senderEmail": "jennifer@abccustoms.com",
+          "timestamp": "2024-11-06T10:30:00Z",
+          "content": "Hi Sarah,\n\nGot it! I've submitted the entry. Everything looks good - no flags or holds.\n\nExpecting clearance by end of day. Entry number: ABC-2024-78901\n\nI'll send confirmation once cleared.\n\nJennifer"
+        },
+        {
+          "id": "msg-agent-007",
+          "direction": "inbound",
+          "senderName": "Jennifer Wu",
+          "senderEmail": "jennifer@abccustoms.com",
+          "timestamp": "2024-11-07T14:00:00Z",
+          "content": "Hi Sarah,\n\nGood news - your shipment has cleared customs! \n\nEntry Number: ABC-2024-78901\nClearance Date: November 7, 2024\nDuties Paid: $1,240.00\n\nContainer is now available for pickup at the terminal.\n\nBest,\nJennifer"
+        }
+      ],
+      "unreadCount": 0,
+      "createdAt": "2024-02-01T10:00:00Z",
+      "updatedAt": "2024-11-07T14:00:00Z"
+    }
+  ],
+  "availableStock": [
+    {
+      "id": "stock-001",
+      "batchId": "batch-001",
+      "sku": "WB-TUMBLER-32",
+      "productName": "Insulated Water Bottle 32oz - Midnight Black",
+      "locationId": "loc-003",
+      "locationName": "FlexPort LA Warehouse",
+      "availableQuantity": 500,
+      "unitCost": 8.50,
+      "poNumber": "PO-2024-001",
+      "supplierName": "Shenzhen Drinkware Co."
+    },
+    {
+      "id": "stock-002",
+      "batchId": "batch-002",
+      "sku": "WB-TUMBLER-32-SG",
+      "productName": "Insulated Water Bottle 32oz - Sage Green",
+      "locationId": "loc-003",
+      "locationName": "FlexPort LA Warehouse",
+      "availableQuantity": 2000,
+      "unitCost": 8.50,
+      "poNumber": "PO-2024-002",
+      "supplierName": "Shenzhen Drinkware Co."
+    },
+    {
+      "id": "stock-003",
+      "batchId": "batch-003",
+      "sku": "KT-SILMAT-LG",
+      "productName": "Silicone Baking Mat Large (16x24)",
+      "locationId": "loc-002",
+      "locationName": "Hangzhou Silicone Factory",
+      "availableQuantity": 5000,
+      "unitCost": 4.25,
+      "poNumber": "PO-2024-003",
+      "supplierName": "Hangzhou Silicone Products"
+    },
+    {
+      "id": "stock-004",
+      "batchId": "batch-004",
+      "sku": "KT-SILMAT-SM",
+      "productName": "Silicone Baking Mat Small (12x16)",
+      "locationId": "loc-003",
+      "locationName": "FlexPort LA Warehouse",
+      "availableQuantity": 3500,
+      "unitCost": 3.50,
+      "poNumber": "PO-2024-003",
+      "supplierName": "Hangzhou Silicone Products"
+    },
+    {
+      "id": "stock-005",
+      "batchId": "batch-005",
+      "sku": "FIT-BAND-SET",
+      "productName": "Resistance Band Set (5 Bands with Bag)",
+      "locationId": "loc-003",
+      "locationName": "FlexPort LA Warehouse",
+      "availableQuantity": 1500,
+      "unitCost": 6.75,
+      "poNumber": "PO-2024-004",
+      "supplierName": "Fitness Equipment Ltd."
+    },
+    {
+      "id": "stock-006",
+      "batchId": "batch-006",
+      "sku": "FIT-YOGAMAT",
+      "productName": "Non-Slip Yoga Mat 6mm",
+      "locationId": "loc-003",
+      "locationName": "FlexPort LA Warehouse",
+      "availableQuantity": 1200,
+      "unitCost": 12.50,
+      "poNumber": "PO-2024-004",
+      "supplierName": "Fitness Equipment Ltd."
+    },
+    {
+      "id": "stock-007",
+      "batchId": "batch-007",
+      "sku": "WB-TUMBLER-20",
+      "productName": "Insulated Water Bottle 20oz - Arctic White",
+      "locationId": "loc-001",
+      "locationName": "Shenzhen Drinkware Factory",
+      "availableQuantity": 2000,
+      "unitCost": 7.25,
+      "poNumber": "PO-2024-005",
+      "supplierName": "Shenzhen Drinkware Co."
+    }
+  ]
+}

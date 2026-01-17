@@ -1,0 +1,134 @@
+{
+  "products": [
+    {
+      "id": "prod-001",
+      "sku": "WB-TUMBLER-20",
+      "name": "Insulated Water Bottle 20oz - Midnight Black",
+      "unitCost": 4.85,
+      "supplierId": "sup-001",
+      "stockLevel": 2450,
+      "asin": "B09K3NXMPL",
+      "fnsku": "X001ABC123",
+      "status": "active"
+    },
+    {
+      "id": "prod-002",
+      "sku": "WB-TUMBLER-32",
+      "name": "Insulated Water Bottle 32oz - Midnight Black",
+      "unitCost": 5.20,
+      "supplierId": "sup-001",
+      "stockLevel": 1820,
+      "asin": "B09K3NXMQR",
+      "fnsku": "X001ABC124",
+      "status": "active"
+    },
+    {
+      "id": "prod-003",
+      "sku": "KT-SILMAT-LG",
+      "name": "Silicone Baking Mat Large (16x24)",
+      "unitCost": 2.15,
+      "supplierId": "sup-002",
+      "stockLevel": 5200,
+      "asin": "B08HTJKLMN",
+      "fnsku": "X002DEF456",
+      "status": "active"
+    },
+    {
+      "id": "prod-004",
+      "sku": "KT-SILMAT-SM",
+      "name": "Silicone Baking Mat Small (12x16)",
+      "unitCost": 1.45,
+      "supplierId": "sup-002",
+      "stockLevel": 890,
+      "asin": "B08HTJKLOP",
+      "fnsku": "X002DEF457",
+      "status": "active"
+    },
+    {
+      "id": "prod-005",
+      "sku": "PET-BOWL-SS",
+      "name": "Stainless Steel Pet Bowl - Medium",
+      "unitCost": 3.10,
+      "supplierId": "sup-003",
+      "stockLevel": 0,
+      "asin": "B07PQRSTUV",
+      "fnsku": "X003GHI789",
+      "status": "inactive"
+    },
+    {
+      "id": "prod-006",
+      "sku": "FIT-BAND-SET",
+      "name": "Resistance Band Set (5 Bands with Bag)",
+      "unitCost": 6.75,
+      "supplierId": "sup-004",
+      "stockLevel": 3100,
+      "asin": "B09MNOPQRS",
+      "fnsku": "X004JKL012",
+      "status": "active"
+    },
+    {
+      "id": "prod-007",
+      "sku": "FIT-YOGAMAT",
+      "name": "Non-Slip Yoga Mat 6mm - Ocean Blue",
+      "unitCost": 8.40,
+      "supplierId": "sup-004",
+      "stockLevel": 420,
+      "asin": "B09MNOPTUV",
+      "fnsku": "X004JKL013",
+      "status": "active"
+    },
+    {
+      "id": "prod-008",
+      "sku": "WB-TUMBLER-LID",
+      "name": "Replacement Lid for Tumbler (Universal)",
+      "unitCost": 0.85,
+      "supplierId": "sup-001",
+      "stockLevel": 12500,
+      "asin": "B09K3NXWXY",
+      "fnsku": "X001ABC125",
+      "status": "archived"
+    }
+  ],
+  "suppliers": [
+    {
+      "id": "sup-001",
+      "name": "Shenzhen Drinkware Co.",
+      "contactName": "Li Wei",
+      "contactEmail": "liwei@szdrinkware.com",
+      "country": "China",
+      "productCount": 3,
+      "leadTimeDays": 35,
+      "paymentTerms": "30% deposit, 70% before shipping"
+    },
+    {
+      "id": "sup-002",
+      "name": "Hangzhou Silicone Products Ltd.",
+      "contactName": "Zhang Mei",
+      "contactEmail": "sales@hzsilicone.cn",
+      "country": "China",
+      "productCount": 2,
+      "leadTimeDays": 28,
+      "paymentTerms": "50% deposit, 50% on delivery"
+    },
+    {
+      "id": "sup-003",
+      "name": "Saigon Pet Supplies",
+      "contactName": "Nguyen Thi Lan",
+      "contactEmail": "lan.nguyen@saigonpet.vn",
+      "country": "Vietnam",
+      "productCount": 1,
+      "leadTimeDays": 42,
+      "paymentTerms": "100% before shipping"
+    },
+    {
+      "id": "sup-004",
+      "name": "Fitness Factory Thailand",
+      "contactName": "Somchai Prasert",
+      "contactEmail": "somchai@fitfactoryth.com",
+      "country": "Thailand",
+      "productCount": 2,
+      "leadTimeDays": 30,
+      "paymentTerms": "30% deposit, 70% before shipping"
+    }
+  ]
+}
