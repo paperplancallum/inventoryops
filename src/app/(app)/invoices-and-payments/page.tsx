@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { FileText, Ship } from 'lucide-react'
 import { useInvoices } from '@/lib/supabase/hooks/useInvoices'
 import { useShippingInvoices } from '@/lib/supabase/hooks/useShippingInvoices'
@@ -30,6 +31,9 @@ const PO_STATUSES: POStatusOption[] = [
 ]
 
 export default function InvoicesAndPaymentsPage() {
+  const searchParams = useSearchParams()
+  const selectedInvoiceId = searchParams.get('invoice')
+
   const {
     invoices,
     paymentsWithInvoice,
@@ -198,6 +202,7 @@ export default function InvoicesAndPaymentsPage() {
             summary={summary}
             loading={loading}
             error={error}
+            selectedInvoiceId={selectedInvoiceId}
             onRecordPayment={handleRecordPayment}
             onUpdateMilestones={handleUpdateMilestones}
             onAddPaymentAttachments={handleAddPaymentAttachments}

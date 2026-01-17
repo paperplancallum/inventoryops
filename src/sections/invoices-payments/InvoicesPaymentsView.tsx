@@ -1,10 +1,12 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
 import {
   Search,
   Filter,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
   DollarSign,
   CheckCircle,
   Clock,
@@ -44,6 +46,7 @@ interface InvoicesPaymentsViewProps {
   summary: FinancialSummary
   loading?: boolean
   error?: Error | null
+  selectedInvoiceId?: string | null
   onRecordPayment?: (invoiceId: string, payment: NewPayment) => Promise<void>
   onUpdateMilestones?: (invoiceId: string, items: EditableScheduleItem[]) => Promise<boolean>
   onAddPaymentAttachments?: (invoiceId: string, paymentId: string, files: File[]) => Promise<boolean>
@@ -61,6 +64,7 @@ export function InvoicesPaymentsView({
   brands,
   summary,
   loading = false,
+  selectedInvoiceId,
   onRecordPayment,
   onUpdateMilestones,
   onAddPaymentAttachments,
@@ -75,6 +79,10 @@ export function InvoicesPaymentsView({
   const [sortField, setSortField] = useState<'date' | 'amount' | 'balance'>('date')
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc')
 
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pageSize, setPageSize] = useState(25)
+
   // Modal state
   const [showPaymentModal, setShowPaymentModal] = useState(false)
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
@@ -83,6 +91,40 @@ export function InvoicesPaymentsView({
   // Edit milestones modal state
   const [showEditMilestonesModal, setShowEditMilestonesModal] = useState(false)
   const [editingMilestonesInvoice, setEditingMilestonesInvoice] = useState<Invoice | null>(null)
+
+  // Clear filters and navigate to correct page for selected invoice
+  const hasScrolledRef = useRef(false)
+  useEffect(() => {
+    if (selectedInvoiceId && !loading && invoices.length > 0 && !hasScrolledRef.current) {
+      hasScrolledRef.current = true
+      // Clear all filters to ensure the invoice is visible
+      setSearchQuery('')
+      setTypeFilter('all')
+      setStatusFilter('all')
+      setBrandFilters([])
+      setActiveTab('invoices')
+
+      // Find the index of the selected invoice and calculate which page it's on
+      const invoiceIndex = invoices.findIndex(inv => inv.id === selectedInvoiceId)
+      if (invoiceIndex !== -1) {
+        const targetPage = Math.floor(invoiceIndex / pageSize) + 1
+        setCurrentPage(targetPage)
+      }
+
+      // Small delay to ensure DOM is ready after page change
+      setTimeout(() => {
+        const element = document.getElementById(`invoice-${selectedInvoiceId}`)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'center' })
+        }
+      }, 100)
+    }
+  }, [selectedInvoiceId, loading, invoices.length, invoices, pageSize])
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [searchQuery, typeFilter, statusFilter, brandFilters, sortField, sortDirection])
 
   // Brand options for the multi-select
   const brandOptions = useMemo(() => {
@@ -115,6 +157,29 @@ export function InvoicesPaymentsView({
     }
     return sortDirection === 'desc' ? -comparison : comparison
   })
+
+  // Pagination calculations
+  const totalPages = Math.ceil(sortedInvoices.length / pageSize)
+  const startIndex = (currentPage - 1) * pageSize
+  const endIndex = startIndex + pageSize
+  const paginatedInvoices = sortedInvoices.slice(startIndex, endIndex)
+
+  // Generate page numbers to show
+  const getPageNumbers = () => {
+    const pages: (number | 'ellipsis')[] = []
+    if (totalPages <= 7) {
+      for (let i = 1; i <= totalPages; i++) pages.push(i)
+    } else {
+      pages.push(1)
+      if (currentPage > 3) pages.push('ellipsis')
+      for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+        pages.push(i)
+      }
+      if (currentPage < totalPages - 2) pages.push('ellipsis')
+      pages.push(totalPages)
+    }
+    return pages
+  }
 
   const handleSort = (field: 'date' | 'amount' | 'balance') => {
     if (sortField === field) {
@@ -425,12 +490,14 @@ export function InvoicesPaymentsView({
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                    {sortedInvoices.map(invoice => (
+                    {paginatedInvoices.map(invoice => (
                       <InvoiceTableRow
                         key={invoice.id}
                         invoice={invoice}
                         invoiceTypes={invoiceTypes}
                         paymentMethods={paymentMethods}
+                        isSelected={invoice.id === selectedInvoiceId}
+                        initialExpanded={invoice.id === selectedInvoiceId}
                         onRecordPayment={() => handleRecordPaymentClick(invoice)}
                         onViewLinkedEntity={() => onViewLinkedEntity?.(invoice.linkedEntityType, invoice.linkedEntityId)}
                         onEditMilestones={onUpdateMilestones ? () => handleEditMilestonesClick(invoice) : undefined}
@@ -453,10 +520,74 @@ export function InvoicesPaymentsView({
                   </p>
                 </div>
               )}
-              <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700">
-                <p className="text-sm text-slate-500 dark:text-slate-400">
-                  Showing {sortedInvoices.length} of {invoices.length} invoices
-                </p>
+              {/* Pagination Footer */}
+              <div className="px-4 py-3 border-t border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div className="flex items-center gap-4">
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    Showing {sortedInvoices.length === 0 ? 0 : startIndex + 1} - {Math.min(endIndex, sortedInvoices.length)} of {sortedInvoices.length} invoices
+                    {sortedInvoices.length !== invoices.length && (
+                      <span className="text-slate-400 dark:text-slate-500"> (filtered from {invoices.length})</span>
+                    )}
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <label htmlFor="pageSize" className="text-sm text-slate-500 dark:text-slate-400">
+                      Per page:
+                    </label>
+                    <select
+                      id="pageSize"
+                      value={pageSize}
+                      onChange={(e) => {
+                        setPageSize(Number(e.target.value))
+                        setCurrentPage(1)
+                      }}
+                      className="px-2 py-1 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded text-sm text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    >
+                      <option value={10}>10</option>
+                      <option value={25}>25</option>
+                      <option value={50}>50</option>
+                      <option value={100}>100</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Pagination Controls */}
+                {totalPages > 1 && (
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                      disabled={currentPage === 1}
+                      className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    {getPageNumbers().map((page, idx) =>
+                      page === 'ellipsis' ? (
+                        <span key={`ellipsis-${idx}`} className="px-2 text-slate-400 dark:text-slate-500">
+                          ...
+                        </span>
+                      ) : (
+                        <button
+                          key={page}
+                          onClick={() => setCurrentPage(page)}
+                          className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                            currentPage === page
+                              ? 'bg-indigo-600 text-white'
+                              : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700'
+                          }`}
+                        >
+                          {page}
+                        </button>
+                      )
+                    )}
+                    <button
+                      onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                      disabled={currentPage === totalPages}
+                      className="p-1.5 rounded-lg text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                      <ChevronRight className="w-5 h-5" />
+                    </button>
+                  </div>
+                )}
               </div>
             </>
           ) : (
