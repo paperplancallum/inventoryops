@@ -46,6 +46,7 @@ export type {
   SupplierInvoiceSubmission,
   SubmissionLineItem,
   SubmissionAdditionalCost,
+  SubmissionAttachment,
   SubmissionReviewStatus,
   AdditionalCostType,
   SubmissionsSummary,

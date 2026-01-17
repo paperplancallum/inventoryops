@@ -18,12 +18,18 @@ import {
   RotateCcw,
   Copy,
   Mail,
+  Paperclip,
+  Download,
+  FileImage,
+  FileSpreadsheet,
 } from 'lucide-react'
+import { createClient } from '@/lib/supabase/client'
 import type {
   SupplierInvoiceSubmission,
   SubmissionLineItem,
   SubmissionAdditionalCost,
   SubmissionReviewStatus,
+  SubmissionAttachment,
 } from '@/lib/supabase/hooks'
 
 interface SubmissionReviewPanelProps {
@@ -75,6 +81,27 @@ function VarianceIndicator({ variance, percentage }: { variance: number; percent
   )
 }
 
+function formatFileSize(bytes: number): string {
+  if (bytes === 0) return '0 B'
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i]
+}
+
+function getFileIcon(mimeType: string) {
+  if (mimeType.startsWith('image/')) {
+    return <FileImage className="w-5 h-5 text-blue-500" />
+  }
+  if (mimeType.includes('spreadsheet') || mimeType.includes('excel')) {
+    return <FileSpreadsheet className="w-5 h-5 text-green-500" />
+  }
+  if (mimeType === 'application/pdf') {
+    return <FileText className="w-5 h-5 text-red-500" />
+  }
+  return <FileText className="w-5 h-5 text-slate-500" />
+}
+
 interface LineItemReviewState {
   [id: string]: {
     action: 'approve' | 'reject' | null
@@ -114,6 +141,10 @@ export function SubmissionReviewPanel({
   const [rejecting, setRejecting] = useState(false)
   const [revisionLinkUrl, setRevisionLinkUrl] = useState<string | null>(null)
   const [copiedLink, setCopiedLink] = useState(false)
+
+  // Attachments state
+  const [showAttachments, setShowAttachments] = useState(true)
+  const [downloadingAttachment, setDownloadingAttachment] = useState<string | null>(null)
 
   // Reset state when submission changes
   useEffect(() => {
@@ -268,6 +299,30 @@ export function SubmissionReviewPanel({
     }
   }
 
+  const handleDownloadAttachment = async (attachment: SubmissionAttachment) => {
+    setDownloadingAttachment(attachment.id)
+    try {
+      const supabase = createClient()
+      const { data, error } = await supabase.storage
+        .from('supplier-invoice-attachments')
+        .createSignedUrl(attachment.filePath, 60) // 60 second expiry
+
+      if (error) {
+        console.error('Error creating signed URL:', error)
+        return
+      }
+
+      // Open in new tab or trigger download
+      window.open(data.signedUrl, '_blank')
+    } catch (err) {
+      console.error('Failed to download attachment:', err)
+    } finally {
+      setDownloadingAttachment(null)
+    }
+  }
+
+  const attachments = submission?.attachments || []
+
   const allItemsReviewed = lineItems.every(item => lineItemStates[item.id]?.action) &&
     additionalCosts.every(cost => costStates[cost.id]?.action)
 
@@ -381,6 +436,57 @@ export function SubmissionReviewPanel({
               <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
                 <p className="text-sm font-medium text-amber-800 dark:text-amber-300 mb-1">Supplier Notes</p>
                 <p className="text-sm text-amber-700 dark:text-amber-400">{submission.supplierNotes}</p>
+              </div>
+            )}
+
+            {/* Attachments */}
+            {attachments.length > 0 && (
+              <div>
+                <button
+                  onClick={() => setShowAttachments(!showAttachments)}
+                  className="w-full flex items-center justify-between text-sm font-semibold text-slate-900 dark:text-white mb-3"
+                >
+                  <span className="flex items-center gap-2">
+                    <Paperclip className="w-4 h-4" />
+                    Attachments ({attachments.length})
+                  </span>
+                  {showAttachments ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+                </button>
+
+                {showAttachments && (
+                  <div className="space-y-2">
+                    {attachments.map(attachment => (
+                      <div
+                        key={attachment.id}
+                        className="flex items-center justify-between p-3 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-700 rounded-lg"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          {getFileIcon(attachment.mimeType)}
+                          <div className="min-w-0">
+                            <p className="text-sm font-medium text-slate-900 dark:text-white truncate">
+                              {attachment.fileName}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                              {formatFileSize(attachment.fileSize)} • {format(new Date(attachment.uploadedAt), 'MMM d, yyyy')}
+                            </p>
+                          </div>
+                        </div>
+                        <button
+                          onClick={() => handleDownloadAttachment(attachment)}
+                          disabled={downloadingAttachment === attachment.id}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-indigo-700 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 hover:bg-indigo-200 dark:hover:bg-indigo-900/50 rounded-lg transition-colors disabled:opacity-50"
+                        >
+                          {downloadingAttachment === attachment.id ? (
+                            <RefreshCw className="w-4 h-4 animate-spin" />
+                          ) : (
+                            <Download className="w-4 h-4" />
+                          )}
+                          {downloadingAttachment === attachment.id ? 'Opening...' : 'View'}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

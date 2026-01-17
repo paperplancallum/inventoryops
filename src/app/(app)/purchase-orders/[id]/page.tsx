@@ -2,9 +2,11 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Edit, FileDown, Link2, Boxes, ArrowRightLeft, MapPin, Calendar, Package, DollarSign, Clock, FileText, Check, ChevronLeft, ChevronRight, XCircle } from 'lucide-react'
+import { ArrowLeft, Edit, FileDown, Link2, Boxes, ArrowRightLeft, MapPin, Calendar, Package, DollarSign, Clock, FileText, Check, ChevronLeft, ChevronRight, XCircle, Receipt, Eye } from 'lucide-react'
 import Link from 'next/link'
-import { usePurchaseOrders, useBatches, useMagicLinks } from '@/lib/supabase/hooks'
+import { usePurchaseOrders, useBatches, useMagicLinks, useSendPO, useSupplierInvoiceSubmissions } from '@/lib/supabase/hooks'
+import type { SupplierInvoiceSubmission, SubmissionReviewStatus } from '@/lib/supabase/hooks'
+import { SubmissionReviewPanel } from '@/sections/supplier-submissions/components/SubmissionReviewPanel'
 import { downloadPOPDF } from '@/sections/purchase-orders/POPDFDocument'
 import { GenerateMagicLinkModal } from '@/sections/magic-links/components'
 import type { PurchaseOrder, POStatus, POStatusOption } from '@/sections/purchase-orders/types'
@@ -287,6 +289,7 @@ export default function PurchaseOrderDetailPage() {
   const { purchaseOrders, loading, updateStatus, refetch } = usePurchaseOrders()
   const { fetchBatchesByPO } = useBatches()
   const { createMagicLink } = useMagicLinks()
+  const { sendToSupplier, sending: sendingToSupplier } = useSendPO()
 
   const [purchaseOrder, setPurchaseOrder] = useState<PurchaseOrder | null>(null)
   const [linkedBatches, setLinkedBatches] = useState<Batch[]>([])
@@ -294,6 +297,25 @@ export default function PurchaseOrderDetailPage() {
   const [selectedBatchIds, setSelectedBatchIds] = useState<string[]>([])
   const [updatingStatus, setUpdatingStatus] = useState(false)
   const [isMagicLinkModalOpen, setIsMagicLinkModalOpen] = useState(false)
+
+  // Invoice submission state
+  const {
+    submissions,
+    fetchSubmission,
+    approveLineItem,
+    rejectLineItem,
+    approveCost,
+    rejectCost,
+    completeReview,
+    rejectForRevision,
+    refetch: refetchSubmissions,
+  } = useSupplierInvoiceSubmissions()
+  const [selectedSubmission, setSelectedSubmission] = useState<SupplierInvoiceSubmission | null>(null)
+  const [isReviewPanelOpen, setIsReviewPanelOpen] = useState(false)
+  const [loadingSubmission, setLoadingSubmission] = useState(false)
+
+  // Find submission for this PO
+  const poSubmission = submissions.find(s => s.purchaseOrderId === poId)
 
   // Find the PO from the list
   useEffect(() => {
@@ -316,13 +338,24 @@ export default function PurchaseOrderDetailPage() {
     if (!purchaseOrder) return
     setUpdatingStatus(true)
     try {
-      const success = await updateStatus(purchaseOrder.id, newStatus)
-      if (success) {
-        await refetch()
-        // Refetch batches if needed
-        if (['production_complete', 'partially-received', 'received'].includes(newStatus)) {
-          const batches = await fetchBatchesByPO(poId)
-          setLinkedBatches(batches)
+      // Special handling for sending to supplier - this sends an email
+      if (purchaseOrder.status === 'draft' && (newStatus === 'sent' || newStatus === 'awaiting_invoice')) {
+        const result = await sendToSupplier(purchaseOrder.id)
+        if (result.success) {
+          await refetch()
+        } else {
+          console.error('Failed to send to supplier:', result.error)
+          alert(result.error || 'Failed to send to supplier')
+        }
+      } else {
+        const success = await updateStatus(purchaseOrder.id, newStatus)
+        if (success) {
+          await refetch()
+          // Refetch batches if needed
+          if (['production_complete', 'partially-received', 'received'].includes(newStatus)) {
+            const batches = await fetchBatchesByPO(poId)
+            setLinkedBatches(batches)
+          }
         }
       }
     } catch (err) {
@@ -330,7 +363,7 @@ export default function PurchaseOrderDetailPage() {
     } finally {
       setUpdatingStatus(false)
     }
-  }, [purchaseOrder, updateStatus, refetch, fetchBatchesByPO, poId])
+  }, [purchaseOrder, updateStatus, sendToSupplier, refetch, fetchBatchesByPO, poId])
 
   const handleExportPDF = useCallback(async () => {
     if (purchaseOrder) {
@@ -342,6 +375,37 @@ export default function PurchaseOrderDetailPage() {
     sessionStorage.setItem('preselectedBatchIds', JSON.stringify(batchIds))
     router.push('/transfers?action=create')
   }, [router])
+
+  // Open the invoice review panel
+  const handleOpenReviewPanel = useCallback(async (submissionId: string) => {
+    setLoadingSubmission(true)
+    setIsReviewPanelOpen(true)
+    const submission = await fetchSubmission(submissionId)
+    setSelectedSubmission(submission)
+    setLoadingSubmission(false)
+  }, [fetchSubmission])
+
+  // Handle completing the review
+  const handleCompleteReview = useCallback(async (status: SubmissionReviewStatus, notes: string) => {
+    if (!selectedSubmission) return false
+    const success = await completeReview(selectedSubmission.id, status, notes)
+    if (success) {
+      await refetch()
+      await refetchSubmissions()
+    }
+    return success
+  }, [selectedSubmission, completeReview, refetch, refetchSubmissions])
+
+  // Handle rejecting for revision
+  const handleRejectForRevision = useCallback(async (notes: string) => {
+    if (!selectedSubmission) return { success: false, error: 'No submission selected' }
+    const result = await rejectForRevision(selectedSubmission.id, notes)
+    if (result.success) {
+      await refetch()
+      await refetchSubmissions()
+    }
+    return result
+  }, [selectedSubmission, rejectForRevision, refetch, refetchSubmissions])
 
   const formatDate = (dateStr: string) => {
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -499,9 +563,94 @@ export default function PurchaseOrderDetailPage() {
           <POTimeline
             currentStatus={purchaseOrder.status}
             onStatusChange={handleUpdateStatus}
-            updating={updatingStatus}
+            updating={updatingStatus || sendingToSupplier}
             isCancelled={purchaseOrder.status === 'cancelled'}
           />
+
+          {/* Invoice Submitted Section - show when there's a submission for this PO */}
+          {poSubmission && (
+            <div className={`rounded-lg border p-4 ${
+              poSubmission.reviewStatus === 'pending'
+                ? 'bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800'
+                : poSubmission.reviewStatus === 'approved'
+                ? 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800'
+                : poSubmission.reviewStatus === 'rejected'
+                ? 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800'
+                : 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${
+                    poSubmission.reviewStatus === 'pending'
+                      ? 'bg-amber-100 dark:bg-amber-900/40'
+                      : poSubmission.reviewStatus === 'approved'
+                      ? 'bg-green-100 dark:bg-green-900/40'
+                      : poSubmission.reviewStatus === 'rejected'
+                      ? 'bg-red-100 dark:bg-red-900/40'
+                      : 'bg-blue-100 dark:bg-blue-900/40'
+                  }`}>
+                    <Receipt className={`w-5 h-5 ${
+                      poSubmission.reviewStatus === 'pending'
+                        ? 'text-amber-600 dark:text-amber-400'
+                        : poSubmission.reviewStatus === 'approved'
+                        ? 'text-green-600 dark:text-green-400'
+                        : poSubmission.reviewStatus === 'rejected'
+                        ? 'text-red-600 dark:text-red-400'
+                        : 'text-blue-600 dark:text-blue-400'
+                    }`} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                      {poSubmission.reviewStatus === 'pending'
+                        ? 'Invoice Submitted - Awaiting Review'
+                        : poSubmission.reviewStatus === 'approved'
+                        ? 'Invoice Approved'
+                        : poSubmission.reviewStatus === 'rejected'
+                        ? 'Invoice Rejected'
+                        : 'Invoice Partially Approved'}
+                    </h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      Submitted by {poSubmission.submittedByName} on{' '}
+                      {new Date(poSubmission.submittedAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                        hour: 'numeric',
+                        minute: '2-digit',
+                      })}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="text-right mr-2">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Submitted Total</p>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                      ${poSubmission.submittedTotal.toLocaleString()}
+                    </p>
+                    {poSubmission.varianceAmount !== 0 && (
+                      <p className={`text-xs font-medium ${
+                        poSubmission.varianceAmount > 0 ? 'text-red-600' : 'text-green-600'
+                      }`}>
+                        {poSubmission.varianceAmount > 0 ? '+' : ''}
+                        ${poSubmission.varianceAmount.toLocaleString()} variance
+                      </p>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => handleOpenReviewPanel(poSubmission.id)}
+                    className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
+                      poSubmission.reviewStatus === 'pending'
+                        ? 'text-white bg-amber-600 hover:bg-amber-700'
+                        : 'text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600'
+                    }`}
+                  >
+                    <Eye className="w-4 h-4" />
+                    {poSubmission.reviewStatus === 'pending' ? 'Review Invoice' : 'View Invoice'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Line Items */}
           <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
@@ -698,6 +847,29 @@ export default function PurchaseOrderDetailPage() {
         onClose={() => setIsMagicLinkModalOpen(false)}
         onGenerate={createMagicLink}
       />
+
+      {/* Invoice Review Panel */}
+      {isReviewPanelOpen && (
+        <SubmissionReviewPanel
+          submission={selectedSubmission}
+          isLoading={loadingSubmission}
+          onClose={() => {
+            setIsReviewPanelOpen(false)
+            setSelectedSubmission(null)
+          }}
+          onApproveLineItem={approveLineItem}
+          onRejectLineItem={rejectLineItem}
+          onApproveCost={approveCost}
+          onRejectCost={rejectCost}
+          onCompleteReview={handleCompleteReview}
+          onRejectForRevision={handleRejectForRevision}
+          onViewPO={() => {
+            // Already viewing PO, just close the panel
+            setIsReviewPanelOpen(false)
+            setSelectedSubmission(null)
+          }}
+        />
+      )}
     </div>
   )
 }

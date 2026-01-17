@@ -40,6 +40,16 @@ export interface SubmissionAdditionalCost {
   sortOrder: number
 }
 
+export interface SubmissionAttachment {
+  id: string
+  submissionId: string
+  fileName: string
+  filePath: string
+  fileSize: number
+  mimeType: string
+  uploadedAt: string
+}
+
 export interface SupplierInvoiceSubmission {
   id: string
   magicLinkId: string
@@ -65,6 +75,7 @@ export interface SupplierInvoiceSubmission {
   previousSubmissionId: string | null
   lineItems?: SubmissionLineItem[]
   additionalCosts?: SubmissionAdditionalCost[]
+  attachments?: SubmissionAttachment[]
 }
 
 export interface SubmissionsSummary {
@@ -132,6 +143,16 @@ interface DbSubmissionCostRow {
   is_approved: boolean | null
   approved_amount: number | null
   sort_order: number
+}
+
+interface DbSubmissionAttachmentRow {
+  id: string
+  submission_id: string
+  file_name: string
+  file_path: string
+  file_size: number
+  mime_type: string
+  uploaded_at: string
 }
 
 // =============================================================================
@@ -219,6 +240,18 @@ function transformCost(row: DbSubmissionCostRow): SubmissionAdditionalCost {
   }
 }
 
+function transformAttachment(row: DbSubmissionAttachmentRow): SubmissionAttachment {
+  return {
+    id: row.id,
+    submissionId: row.submission_id,
+    fileName: row.file_name,
+    filePath: row.file_path,
+    fileSize: row.file_size,
+    mimeType: row.mime_type,
+    uploadedAt: row.uploaded_at,
+  }
+}
+
 // =============================================================================
 // Hook
 // =============================================================================
@@ -297,9 +330,22 @@ export function useSupplierInvoiceSubmissions(initialStatusFilter?: SubmissionRe
 
       if (costsError) throw costsError
 
+      // Fetch attachments
+      const { data: attachmentsData, error: attachmentsError } = await supabase
+        .from('supplier_invoice_submission_attachments')
+        .select('*')
+        .eq('submission_id', id)
+        .order('uploaded_at', { ascending: true })
+
+      if (attachmentsError) {
+        // Don't fail if attachments table doesn't exist yet
+        console.warn('Could not fetch attachments:', attachmentsError)
+      }
+
       const submission = transformSubmission(submissionData)
       submission.lineItems = (lineItemsData || []).map(transformLineItem)
       submission.additionalCosts = (costsData || []).map(transformCost)
+      submission.attachments = (attachmentsData || []).map(transformAttachment)
 
       return submission
     } catch (err) {
@@ -408,12 +454,25 @@ export function useSupplierInvoiceSubmissions(initialStatusFilter?: SubmissionRe
 
       // If approved, apply to PO
       if (status === 'approved' || status === 'partially_approved') {
-        const { error: applyError } = await supabase
+        console.log('Calling apply_submission_to_po RPC with submission_id:', submissionId)
+
+        const { data: rpcData, error: applyError } = await supabase
           .rpc('apply_submission_to_po', { submission_id: submissionId })
 
         if (applyError) {
-          console.error('Failed to apply submission to PO:', applyError)
+          // Log full error for debugging
+          console.error('Failed to apply submission to PO - Full error:', JSON.stringify(applyError, null, 2))
+          console.error('Failed to apply submission to PO - Error properties:', {
+            code: applyError.code,
+            message: applyError.message,
+            details: applyError.details,
+            hint: applyError.hint,
+            name: (applyError as Error).name,
+            stack: (applyError as Error).stack,
+          })
           // Don't fail the whole operation, just log
+        } else {
+          console.log('Successfully applied submission to PO:', rpcData)
         }
       }
 
