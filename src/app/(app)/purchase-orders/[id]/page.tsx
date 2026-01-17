@@ -113,6 +113,20 @@ const WORKFLOW_STEPS: { id: POStatus; label: string; shortLabel: string }[] = [
   { id: 'received', label: 'Received', shortLabel: 'Received' },
 ]
 
+// Action labels for advancing to the next status
+const FORWARD_ACTION_LABELS: Record<POStatus, string> = {
+  draft: 'Send to Supplier',
+  sent: 'Mark Awaiting Invoice',
+  awaiting_invoice: 'Mark Invoice Received',
+  invoice_received: 'Confirm Order',
+  confirmed: 'Mark Production Complete',
+  'production_complete': 'Mark Ready to Ship',
+  'ready-to-ship': 'Mark as Received',
+  'partially-received': 'Mark as Received',
+  received: '',
+  cancelled: '',
+}
+
 // Timeline component
 function POTimeline({
   currentStatus,
@@ -131,6 +145,7 @@ function POTimeline({
 
   const getPrevStatus = () => currentIndex > 0 ? WORKFLOW_STEPS[currentIndex - 1].id : null
   const getNextStatus = () => currentIndex < WORKFLOW_STEPS.length - 1 ? WORKFLOW_STEPS[currentIndex + 1].id : null
+  const getForwardActionLabel = () => FORWARD_ACTION_LABELS[currentStatus] || 'Next'
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
@@ -163,7 +178,7 @@ function POTimeline({
               disabled={!canGoForward || updating}
               className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              Next
+              {getForwardActionLabel()}
               <ChevronRight className="w-3.5 h-3.5" />
             </button>
           </div>
