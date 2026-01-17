@@ -78,30 +78,69 @@ export default function TransfersPage() {
   const [editingAgent, setEditingAgent] = useState<ShippingAgent | undefined>(undefined)
   const [preselectedBatchIds, setPreselectedBatchIds] = useState<string[]>([])
 
+  // Prefill data from Inventory Intelligence
+  const [prefillSourceLocationId, setPrefillSourceLocationId] = useState<string | undefined>(undefined)
+  const [prefillDestinationLocationId, setPrefillDestinationLocationId] = useState<string | undefined>(undefined)
+  const [prefillLineItems, setPrefillLineItems] = useState<Array<{ productId: string; sku: string; quantity: number }>>([])
+  const [suggestionId, setSuggestionId] = useState<string | undefined>(undefined)
+
   // Request Quotes dialog state
   const [isRequestQuotesOpen, setIsRequestQuotesOpen] = useState(false)
 
-  // Check for create action from URL params (e.g., from PO page)
+  // Check for create action from URL params (e.g., from PO page or Inventory Intelligence)
   useEffect(() => {
     const action = searchParams.get('action')
     if (action === 'create') {
-      // Check for preselected batch IDs in sessionStorage
-      const storedBatchIds = sessionStorage.getItem('preselectedBatchIds')
-      if (storedBatchIds) {
-        try {
-          const batchIds = JSON.parse(storedBatchIds)
-          setPreselectedBatchIds(batchIds)
-          sessionStorage.removeItem('preselectedBatchIds')
-        } catch {
-          console.error('Failed to parse preselected batch IDs')
+      const prefillParam = searchParams.get('prefill')
+
+      if (prefillParam === 'true') {
+        // Prefill from Inventory Intelligence
+        const sourceLocationId = searchParams.get('sourceLocationId')
+        const destinationLocationId = searchParams.get('destinationLocationId')
+        const productId = searchParams.get('productId')
+        const sku = searchParams.get('sku')
+        const quantity = searchParams.get('quantity')
+        const suggestionIdParam = searchParams.get('suggestionId')
+
+        if (sourceLocationId) setPrefillSourceLocationId(sourceLocationId)
+        if (destinationLocationId) setPrefillDestinationLocationId(destinationLocationId)
+        if (suggestionIdParam) setSuggestionId(suggestionIdParam)
+
+        if (productId && sku && quantity) {
+          setPrefillLineItems([{
+            productId,
+            sku,
+            quantity: parseInt(quantity, 10) || 0,
+          }])
         }
+
+        // Fetch available stock for the source location
+        if (sourceLocationId) {
+          fetchAvailableStock(sourceLocationId)
+        } else {
+          fetchAvailableStock()
+        }
+      } else {
+        // Check for preselected batch IDs in sessionStorage (legacy path)
+        const storedBatchIds = sessionStorage.getItem('preselectedBatchIds')
+        if (storedBatchIds) {
+          try {
+            const batchIds = JSON.parse(storedBatchIds)
+            setPreselectedBatchIds(batchIds)
+            sessionStorage.removeItem('preselectedBatchIds')
+          } catch {
+            console.error('Failed to parse preselected batch IDs')
+          }
+        }
+        fetchAvailableStock()
       }
+
       // Open the form
       setIsFormOpen(true)
-      // Clear the URL param
+      // Clear the URL params
       router.replace('/transfers')
     }
-  }, [searchParams, router])
+  }, [searchParams, router, fetchAvailableStock])
 
   // Transfer handlers
   const handleViewTransfer = useCallback((id: string) => {
@@ -160,6 +199,11 @@ export default function TransfersPage() {
     setIsFormOpen(false)
     setEditingTransfer(undefined)
     setPreselectedBatchIds([])
+    // Clear prefill state from Inventory Intelligence
+    setPrefillSourceLocationId(undefined)
+    setPrefillDestinationLocationId(undefined)
+    setPrefillLineItems([])
+    setSuggestionId(undefined)
   }, [])
 
   const handleCloseTransferDetail = useCallback(() => {
@@ -320,12 +364,36 @@ export default function TransfersPage() {
         preSelectedStockIds={
           preselectedBatchIds.length > 0
             ? availableStock.filter(s => preselectedBatchIds.includes(s.batchId)).map(s => s.id)
+            : prefillLineItems.length > 0
+              // Match stock by product SKU and source location for Inventory Intelligence prefill
+              ? availableStock.filter(stock =>
+                  prefillLineItems.some(item =>
+                    stock.sku === item.sku &&
+                    stock.locationId === prefillSourceLocationId
+                  )
+                ).map(s => s.id)
+              : undefined
+        }
+        initialLineItems={
+          prefillLineItems.length > 0
+            ? prefillLineItems.map(item => {
+                const matchingStock = availableStock.find(s => s.sku === item.sku && s.locationId === prefillSourceLocationId)
+                return {
+                  batchId: matchingStock?.batchId || '',
+                  sku: item.sku,
+                  productName: matchingStock?.productName || item.sku,
+                  quantity: item.quantity,
+                  availableQuantity: matchingStock?.availableQuantity || item.quantity,
+                  unitCost: matchingStock?.unitCost || 0,
+                }
+              })
             : undefined
         }
         initialSourceLocationId={
-          preselectedBatchIds.length > 0
+          prefillSourceLocationId ||
+          (preselectedBatchIds.length > 0
             ? availableStock.find(s => preselectedBatchIds.includes(s.batchId))?.locationId
-            : undefined
+            : undefined)
         }
         onSubmit={handleSubmitTransfer}
         onCancel={handleCloseTransferForm}

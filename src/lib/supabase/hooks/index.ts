@@ -72,3 +72,12 @@ export type {
   WorkOrderCostType,
   AvailableComponentStock,
 } from './useWorkOrders'
+
+// Inventory Intelligence hooks
+export { useShippingRoutes } from './useShippingRoutes'
+export { useSalesForecasts } from './useSalesForecasts'
+export { useSafetyStockRules } from './useSafetyStockRules'
+export { useReplenishmentSuggestions } from './useReplenishmentSuggestions'
+export { useIntelligenceSettings } from './useIntelligenceSettings'
+export { useAccountForecastAdjustments } from './useAccountForecastAdjustments'
+export { useSalesHistory } from './useSalesHistory'

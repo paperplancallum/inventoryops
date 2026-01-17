@@ -89,6 +89,17 @@ export default function PurchaseOrdersPage() {
   // Tab state
   const [activeTab, setActiveTab] = useState<'orders' | 'line-items'>('orders')
 
+  // Prefill data from Inventory Intelligence
+  const [prefillSupplierId, setPrefillSupplierId] = useState<string | undefined>(undefined)
+  const [prefillLineItems, setPrefillLineItems] = useState<Array<{
+    productId: string
+    sku: string
+    productName: string
+    quantity: number
+    unitCost: number
+  }>>([])
+  const [suggestionId, setSuggestionId] = useState<string | undefined>(undefined)
+
   // Modal state
   const [isFormModalOpen, setIsFormModalOpen] = useState(false)
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
@@ -117,15 +128,51 @@ export default function PurchaseOrdersPage() {
     window.history.replaceState(null, '', newUrl)
   }, [searchParams])
 
-  // Handle URL params for deep linking
+  // Handle URL params for deep linking and prefill from Inventory Intelligence
   useEffect(() => {
     const viewId = searchParams.get('view')
     const editId = searchParams.get('edit')
+    const action = searchParams.get('action')
 
     // Redirect ?view= URLs to full page view
     if (viewId) {
       router.replace(`/purchase-orders/${viewId}`)
       return
+    }
+
+    // Handle prefill from Inventory Intelligence
+    if (action === 'create') {
+      const prefillParam = searchParams.get('prefill')
+
+      if (prefillParam === 'true') {
+        const supplierId = searchParams.get('supplierId')
+        const productId = searchParams.get('productId')
+        const sku = searchParams.get('sku')
+        const quantity = searchParams.get('quantity')
+        const suggestionIdParam = searchParams.get('suggestionId')
+
+        if (supplierId) setPrefillSupplierId(supplierId)
+        if (suggestionIdParam) setSuggestionId(suggestionIdParam)
+
+        if (productId && sku && quantity) {
+          // Find product details from products list
+          const product = products.find(p => p.id === productId || p.sku === sku)
+          setPrefillLineItems([{
+            productId,
+            sku,
+            productName: product?.name || sku,
+            quantity: parseInt(quantity, 10) || 0,
+            unitCost: product?.unitCost || 0,
+          }])
+        }
+
+        // Open the form modal
+        setEditingPO(null)
+        setIsFormModalOpen(true)
+        // Clear the URL params
+        router.replace('/purchase-orders')
+        return
+      }
     }
 
     if (posLoading || purchaseOrders.length === 0) return
@@ -138,7 +185,7 @@ export default function PurchaseOrdersPage() {
         setIsFormModalOpen(true)
       }
     }
-  }, [searchParams, purchaseOrders, posLoading, isFormModalOpen, router])
+  }, [searchParams, purchaseOrders, posLoading, isFormModalOpen, router, products])
 
   // Handlers
   const handleCreatePO = useCallback(() => {
@@ -388,12 +435,18 @@ export default function PurchaseOrdersPage() {
           setIsFormModalOpen(false)
           setEditingPO(null)
           updateUrlParam('edit', null)
+          // Clear prefill state from Inventory Intelligence
+          setPrefillSupplierId(undefined)
+          setPrefillLineItems([])
+          setSuggestionId(undefined)
         }}
         onSubmit={handlePOSubmit}
         purchaseOrder={editingPO}
         suppliers={supplierOptions}
         products={productOptions}
         paymentTermsOptions={paymentTermsOptions}
+        initialSupplierId={prefillSupplierId}
+        initialLineItems={prefillLineItems.length > 0 ? prefillLineItems : undefined}
       />
 
       {/* PO Detail Modal */}
