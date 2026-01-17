@@ -139,6 +139,10 @@ CREATE TABLE sales_forecasts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
   location_id UUID NOT NULL REFERENCES locations(id) ON DELETE CASCADE,
+  -- Denormalized fields for display (avoids joins in queries)
+  sku TEXT,
+  product_name TEXT,
+  location_name TEXT,
   daily_rate DECIMAL(10,2) NOT NULL DEFAULT 0,
   confidence confidence_level NOT NULL DEFAULT 'medium',
   accuracy_mape DECIMAL(5,2), -- Mean Absolute Percentage Error
@@ -207,9 +211,13 @@ CREATE TABLE replenishment_suggestions (
 
   -- Product information
   product_id UUID NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+  -- Denormalized fields for display (avoids joins in queries)
+  sku TEXT,
+  product_name TEXT,
 
   -- Destination (usually Amazon location)
   destination_location_id UUID NOT NULL REFERENCES locations(id) ON DELETE CASCADE,
+  destination_location_name TEXT,
 
   -- Current state at destination
   current_stock INTEGER NOT NULL DEFAULT 0,
@@ -230,14 +238,18 @@ CREATE TABLE replenishment_suggestions (
 
   -- Source (for transfers)
   source_location_id UUID REFERENCES locations(id) ON DELETE SET NULL,
+  source_location_name TEXT,
   source_available_qty INTEGER,
 
   -- Supplier (for POs)
   supplier_id UUID REFERENCES suppliers(id) ON DELETE SET NULL,
+  supplier_name TEXT,
   supplier_lead_time_days INTEGER,
 
   -- Route information
   route_id UUID REFERENCES shipping_routes(id) ON DELETE SET NULL,
+  route_name TEXT,
+  route_method shipping_method,
   route_transit_days INTEGER,
 
   -- Reasoning (stored as JSON array)
@@ -314,6 +326,7 @@ INSERT INTO intelligence_settings (
 
 -- ============================================================================
 -- Updated_at Triggers
+-- Note: CREATE OR REPLACE is idempotent - safe if function already exists
 -- ============================================================================
 
 CREATE OR REPLACE FUNCTION update_updated_at_column()

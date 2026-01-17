@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Fragment } from 'react'
 import { Search, Filter, ChevronDown, ChevronRight, MoreHorizontal, Clock, AlertTriangle, X } from 'lucide-react'
 import type { ReplenishmentSuggestion, SuggestionUrgency, SuggestionType, ShippingRoute, Location } from '../types'
 import { UrgencyBadge } from './UrgencyBadge'
@@ -33,9 +33,9 @@ export function SuggestionsView({
   urgencyOptions,
   routes,
   onAccept,
-  onDismiss: _onDismiss,
   onSnooze,
-  onViewDetail: _onViewDetail,
+  // onDismiss and onViewDetail are defined in props but not yet implemented
+  // They will be used when dismiss/detail functionality is added
 }: SuggestionsViewProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [urgencyFilter, setUrgencyFilter] = useState<SuggestionUrgency[]>([])
@@ -235,9 +235,8 @@ export function SuggestionsView({
               </thead>
               <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                 {filteredSuggestions.map((suggestion) => (
-                  <>
+                  <Fragment key={suggestion.id}>
                     <tr
-                      key={suggestion.id}
                       className="hover:bg-slate-50 dark:hover:bg-slate-800/50"
                     >
                       <td className="px-4 py-3">
@@ -364,7 +363,7 @@ export function SuggestionsView({
                     </tr>
                     {/* Expanded Row */}
                     {expandedRows.has(suggestion.id) && (
-                      <tr key={`${suggestion.id}-expanded`}>
+                      <tr>
                         <td colSpan={8} className="bg-slate-50 px-8 py-4 dark:bg-slate-800/50">
                           <div className="max-w-3xl space-y-6">
                             {/* Timeline - Transfer suggestions */}
@@ -436,7 +435,7 @@ export function SuggestionsView({
                         </td>
                       </tr>
                     )}
-                  </>
+                  </Fragment>
                 ))}
               </tbody>
             </table>

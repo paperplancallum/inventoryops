@@ -284,9 +284,9 @@ describe('DaysRemainingBadge', () => {
     expect(screen.getByText('5 days')).toBeInTheDocument()
   })
 
-  it('shows "1 days" for single day', () => {
+  it('shows "1 day" for single day', () => {
     render(<DaysRemainingBadge days={1} />)
-    expect(screen.getByText('1 days')).toBeInTheDocument()
+    expect(screen.getByText('1 day')).toBeInTheDocument()
   })
 
   it('handles null days gracefully', () => {

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '../client'
 import type {
   ShippingRoute,
@@ -63,7 +63,7 @@ export function useShippingRoutes() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
 
   const fetchRoutes = useCallback(async () => {
     setLoading(true)
@@ -211,20 +211,24 @@ export function useShippingRoutes() {
     if (!route) return false
 
     try {
-      // First, unset default for all routes with same from/to pair
-      await supabase
+      // Unset default for all routes with same from/to pair, then set new default
+      // Note: These operations are not atomic, but the unique index constraint
+      // on (from_location_id, to_location_id) WHERE is_default = true ensures
+      // database consistency even if there's a race condition
+      const { error: unsetError } = await supabase
         .from('shipping_routes')
         .update({ is_default: false })
         .eq('from_location_id', route.fromLocationId)
         .eq('to_location_id', route.toLocationId)
 
-      // Then set this route as default
-      const { error } = await supabase
+      if (unsetError) throw unsetError
+
+      const { error: setError } = await supabase
         .from('shipping_routes')
         .update({ is_default: true })
         .eq('id', id)
 
-      if (error) throw error
+      if (setError) throw setError
 
       setRoutes(prev => prev.map(r => {
         if (r.fromLocationId === route.fromLocationId && r.toLocationId === route.toLocationId) {
@@ -234,10 +238,12 @@ export function useShippingRoutes() {
       }))
       return true
     } catch (err) {
+      // Refetch to ensure UI is in sync with database state
+      await fetchRoutes()
       setError(err instanceof Error ? err : new Error('Failed to set default route'))
       return false
     }
-  }, [supabase, routes])
+  }, [supabase, routes, fetchRoutes])
 
   // Get routes for a specific location pair
   const getRoutesForLocations = useCallback((fromLocationId: string, toLocationId: string): ShippingRoute[] => {

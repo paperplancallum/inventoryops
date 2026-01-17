@@ -101,7 +101,7 @@ export function useReplenishmentSuggestions() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
 
   const fetchSuggestions = useCallback(async () => {
     setLoading(true)

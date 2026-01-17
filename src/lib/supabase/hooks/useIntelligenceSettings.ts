@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '../client'
 import type { IntelligenceSettings } from '@/sections/inventory-intelligence/types'
 
@@ -57,7 +57,7 @@ export function useIntelligenceSettings() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<Error | null>(null)
 
-  const supabase = createClient()
+  const supabase = useMemo(() => createClient(), [])
 
   const fetchSettings = useCallback(async () => {
     setLoading(true)

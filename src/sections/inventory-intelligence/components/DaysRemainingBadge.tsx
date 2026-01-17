@@ -37,7 +37,7 @@ export function DaysRemainingBadge({ days, stockoutDate, urgency }: DaysRemainin
     if (days === null) return 'Unknown'
     if (effectiveDays < 0) return 'Stockout!'
     if (effectiveDays === 0) return 'Stockout today'
-    return `${effectiveDays} days`
+    return `${effectiveDays} ${effectiveDays === 1 ? 'day' : 'days'}`
   }
 
   return (

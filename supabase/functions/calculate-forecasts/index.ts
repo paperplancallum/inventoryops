@@ -10,6 +10,10 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 }
 
+// Minimum number of daily data points required to calculate trend
+// We need data spanning at least 2 calendar months to detect meaningful trends
+const MIN_DATA_POINTS_FOR_TREND = 60
+
 interface SalesHistoryEntry {
   date: string
   unitsSold: number
@@ -67,7 +71,7 @@ function calculateSeasonalMultipliers(
 
 // Calculate trend rate (monthly growth rate)
 function calculateTrendRate(sales: SalesHistoryEntry[]): number {
-  if (sales.length < 60) return 0 // Need at least 2 months of data
+  if (sales.length < MIN_DATA_POINTS_FOR_TREND) return 0
 
   // Group by month
   const monthlyData = new Map<string, number>()
@@ -349,7 +353,10 @@ serve(async (req: Request) => {
   } catch (error) {
     console.error('Error in calculate-forecasts:', error)
     return new Response(
-      JSON.stringify({ error: 'Internal server error', message: error.message }),
+      JSON.stringify({
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : String(error),
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, Fragment } from 'react'
 import { Search, Filter, ChevronDown, ChevronRight, Plus, X, Building2, TrendingUp, Ban, Calendar } from 'lucide-react'
 import type {
   SalesForecast,
@@ -253,10 +253,9 @@ export function ForecastsView({
                   const isExpanded = expandedRowId === forecast.id
 
                   return (
-                    <>
+                    <Fragment key={forecast.id}>
                       {/* Main Row */}
                       <tr
-                        key={forecast.id}
                         className={`cursor-pointer transition-colors ${
                           isExpanded
                             ? 'bg-slate-100 dark:bg-slate-700/50'
@@ -324,14 +323,14 @@ export function ForecastsView({
                         </td>
                         <td className="px-4 py-3 text-sm text-slate-700 dark:text-slate-300">
                           {forecast.accuracyMAPE !== undefined
-                            ? `${(forecast.accuracyMAPE * 100).toFixed(1)}%`
+                            ? `${forecast.accuracyMAPE.toFixed(1)}%`
                             : '—'}
                         </td>
                       </tr>
 
                       {/* Expanded Row */}
                       {isExpanded && (
-                        <tr key={`${forecast.id}-expanded`}>
+                        <tr>
                           <td colSpan={7} className="bg-slate-50 px-8 py-4 dark:bg-slate-800/50">
                             <div className="max-w-2xl space-y-4">
                               <h4 className="text-sm font-medium text-slate-900 dark:text-white">
@@ -402,7 +401,7 @@ export function ForecastsView({
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   )
                 })}
               </tbody>

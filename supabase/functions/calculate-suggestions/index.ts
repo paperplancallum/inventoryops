@@ -466,56 +466,59 @@ async function calculateSuggestions(supabase: SupabaseClient): Promise<{
         // Check for existing suggestion
         if (existingSet.has(`${stock.productId}-${stock.locationId}-purchase-order`)) continue
 
-        if (supplierInfo) {
-          const estimatedArrival = new Date(
-            Date.now() + supplierInfo.leadTimeDays * 24 * 60 * 60 * 1000
-          ).toISOString().split('T')[0]
+        if (!supplierInfo) {
+          console.warn(`No supplier found for product ${stock.sku} (${stock.productId}) - skipping PO suggestion`)
+          continue
+        }
 
+        const estimatedArrival = new Date(
+          Date.now() + supplierInfo.leadTimeDays * 24 * 60 * 60 * 1000
+        ).toISOString().split('T')[0]
+
+        reasoning.push({
+          type: 'info',
+          message: `Supplier: ${supplierInfo.supplierName} (${supplierInfo.leadTimeDays} day lead time)`,
+        })
+
+        if (sourceLocation) {
           reasoning.push({
-            type: 'info',
-            message: `Supplier: ${supplierInfo.supplierName} (${supplierInfo.leadTimeDays} day lead time)`,
-          })
-
-          if (sourceLocation) {
-            reasoning.push({
-              type: 'warning',
-              message: `Insufficient stock at ${sourceLocation.locationName} (${sourceLocation.availableQty} available)`,
-            })
-          }
-
-          poSuggestions.push({
-            type: 'purchase-order',
-            urgency,
-            status: 'pending',
-            productId: stock.productId,
-            sku: stock.sku,
-            productName: stock.productName,
-            destinationLocationId: stock.locationId,
-            destinationLocationName: stock.locationName,
-            currentStock: stock.quantity,
-            inTransitQuantity: stock.inTransitQuantity,
-            reservedQuantity: stock.reservedQuantity,
-            availableStock,
-            dailySalesRate,
-            weeklySalesRate: dailySalesRate * 7,
-            daysOfStockRemaining: daysRemaining,
-            stockoutDate,
-            safetyStockThreshold: safetyThreshold,
-            recommendedQty,
-            estimatedArrival,
-            sourceLocationId: null,
-            sourceLocationName: null,
-            sourceAvailableQty: null,
-            supplierId: supplierInfo.supplierId,
-            supplierName: supplierInfo.supplierName,
-            supplierLeadTimeDays: supplierInfo.leadTimeDays,
-            routeId: null,
-            routeName: null,
-            routeMethod: null,
-            routeTransitDays: null,
-            reasoning,
+            type: 'warning',
+            message: `Insufficient stock at ${sourceLocation.locationName} (${sourceLocation.availableQty} available)`,
           })
         }
+
+        poSuggestions.push({
+          type: 'purchase-order',
+          urgency,
+          status: 'pending',
+          productId: stock.productId,
+          sku: stock.sku,
+          productName: stock.productName,
+          destinationLocationId: stock.locationId,
+          destinationLocationName: stock.locationName,
+          currentStock: stock.quantity,
+          inTransitQuantity: stock.inTransitQuantity,
+          reservedQuantity: stock.reservedQuantity,
+          availableStock,
+          dailySalesRate,
+          weeklySalesRate: dailySalesRate * 7,
+          daysOfStockRemaining: daysRemaining,
+          stockoutDate,
+          safetyStockThreshold: safetyThreshold,
+          recommendedQty,
+          estimatedArrival,
+          sourceLocationId: null,
+          sourceLocationName: null,
+          sourceAvailableQty: null,
+          supplierId: supplierInfo.supplierId,
+          supplierName: supplierInfo.supplierName,
+          supplierLeadTimeDays: supplierInfo.leadTimeDays,
+          routeId: null,
+          routeName: null,
+          routeMethod: null,
+          routeTransitDays: null,
+          reasoning,
+        })
       }
     }
   } catch (err) {
@@ -611,7 +614,10 @@ serve(async (req: Request) => {
   } catch (error) {
     console.error('Error in calculate-suggestions:', error)
     return new Response(
-      JSON.stringify({ error: 'Internal server error', message: error.message }),
+      JSON.stringify({
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : String(error),
+      }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
   }
