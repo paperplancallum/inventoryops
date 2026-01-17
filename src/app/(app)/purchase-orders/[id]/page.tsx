@@ -4,8 +4,9 @@ import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Edit, FileDown, Link2, Boxes, ArrowRightLeft, MapPin, Calendar, Package, DollarSign, Clock, FileText, Check, ChevronLeft, ChevronRight, XCircle, Receipt, Eye } from 'lucide-react'
 import Link from 'next/link'
-import { usePurchaseOrders, useBatches, useMagicLinks, useSendPO, useSupplierInvoiceSubmissions } from '@/lib/supabase/hooks'
+import { usePurchaseOrders, useBatches, useMagicLinks, useSendPO, useSupplierInvoiceSubmissions, useInvoices } from '@/lib/supabase/hooks'
 import type { SupplierInvoiceSubmission, SubmissionReviewStatus } from '@/lib/supabase/hooks'
+import type { Invoice, PaymentScheduleItem } from '@/sections/invoices-payments/types'
 import { SubmissionReviewPanel } from '@/sections/supplier-submissions/components/SubmissionReviewPanel'
 import { downloadPOPDF } from '@/sections/purchase-orders/POPDFDocument'
 import { GenerateMagicLinkModal } from '@/sections/magic-links/components'
@@ -317,6 +318,12 @@ export default function PurchaseOrderDetailPage() {
   // Find submission for this PO
   const poSubmission = submissions.find(s => s.purchaseOrderId === poId)
 
+  // Invoice state - fetch linked invoice for this PO
+  const { invoices, loading: invoicesLoading, refetch: refetchInvoices } = useInvoices()
+  const poInvoice = invoices.find((inv: Invoice) =>
+    inv.linkedEntityType === 'purchase-order' && inv.linkedEntityId === poId
+  )
+
   // Find the PO from the list
   useEffect(() => {
     if (!loading && purchaseOrders.length > 0) {
@@ -390,11 +397,15 @@ export default function PurchaseOrderDetailPage() {
     if (!selectedSubmission) return false
     const success = await completeReview(selectedSubmission.id, status, notes)
     if (success) {
-      await refetch()
-      await refetchSubmissions()
+      // Refresh all data after approval - PO, submissions, and invoices
+      await Promise.all([
+        refetch(),
+        refetchSubmissions(),
+        refetchInvoices(),
+      ])
     }
     return success
-  }, [selectedSubmission, completeReview, refetch, refetchSubmissions])
+  }, [selectedSubmission, completeReview, refetch, refetchSubmissions, refetchInvoices])
 
   // Handle rejecting for revision
   const handleRejectForRevision = useCallback(async (notes: string) => {
@@ -454,9 +465,15 @@ export default function PurchaseOrderDetailPage() {
     )
   }
 
-  const statusStyle = statusColors[purchaseOrder.status]
-  const statusLabel = PO_STATUSES.find(s => s.id === purchaseOrder.status)?.label || purchaseOrder.status
-  const availableTransitions = STATUS_TRANSITIONS[purchaseOrder.status] || []
+  // Compute effective status - if invoice was approved but PO status hasn't updated, show as confirmed
+  const effectiveStatus: POStatus = (
+    purchaseOrder.status === 'invoice_received' &&
+    poSubmission?.reviewStatus === 'approved'
+  ) ? 'confirmed' : purchaseOrder.status
+
+  const statusStyle = statusColors[effectiveStatus]
+  const statusLabel = PO_STATUSES.find(s => s.id === effectiveStatus)?.label || effectiveStatus
+  const availableTransitions = STATUS_TRANSITIONS[effectiveStatus] || []
 
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
@@ -561,10 +578,10 @@ export default function PurchaseOrderDetailPage() {
 
           {/* Order Progress Timeline */}
           <POTimeline
-            currentStatus={purchaseOrder.status}
+            currentStatus={effectiveStatus}
             onStatusChange={handleUpdateStatus}
             updating={updatingStatus || sendingToSupplier}
-            isCancelled={purchaseOrder.status === 'cancelled'}
+            isCancelled={effectiveStatus === 'cancelled'}
           />
 
           {/* Invoice Submitted Section - show when there's a submission for this PO */}
@@ -649,6 +666,153 @@ export default function PurchaseOrderDetailPage() {
                   </button>
                 </div>
               </div>
+            </div>
+          )}
+
+          {/* Invoice Section - show when there's an invoice linked to this PO */}
+          {poInvoice && (
+            <div className="bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${
+                    poInvoice.status === 'paid'
+                      ? 'bg-green-100 dark:bg-green-900/40'
+                      : poInvoice.status === 'overdue'
+                      ? 'bg-red-100 dark:bg-red-900/40'
+                      : poInvoice.status === 'partial'
+                      ? 'bg-blue-100 dark:bg-blue-900/40'
+                      : 'bg-amber-100 dark:bg-amber-900/40'
+                  }`}>
+                    <DollarSign className={`w-4 h-4 ${
+                      poInvoice.status === 'paid'
+                        ? 'text-green-600 dark:text-green-400'
+                        : poInvoice.status === 'overdue'
+                        ? 'text-red-600 dark:text-red-400'
+                        : poInvoice.status === 'partial'
+                        ? 'text-blue-600 dark:text-blue-400'
+                        : 'text-amber-600 dark:text-amber-400'
+                    }`} />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                      Invoice {poInvoice.invoiceNumber}
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      {poInvoice.description}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <div className="text-right">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Total</p>
+                    <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                      ${poInvoice.amount.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Paid</p>
+                    <p className="text-sm font-semibold text-green-600 dark:text-green-400">
+                      ${poInvoice.paidAmount.toLocaleString()}
+                    </p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">Balance</p>
+                    <p className={`text-sm font-semibold ${
+                      poInvoice.balance > 0
+                        ? 'text-amber-600 dark:text-amber-400'
+                        : 'text-green-600 dark:text-green-400'
+                    }`}>
+                      ${poInvoice.balance.toLocaleString()}
+                    </p>
+                  </div>
+                  <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                    poInvoice.status === 'paid'
+                      ? 'bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-300'
+                      : poInvoice.status === 'overdue'
+                      ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
+                      : poInvoice.status === 'partial'
+                      ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
+                      : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
+                  }`}>
+                    {poInvoice.status === 'paid' ? 'Paid' :
+                     poInvoice.status === 'overdue' ? 'Overdue' :
+                     poInvoice.status === 'partial' ? 'Partial' : 'Unpaid'}
+                  </span>
+                  <Link
+                    href={`/invoices-and-payments?invoice=${poInvoice.id}`}
+                    className="inline-flex items-center gap-2 px-3 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-600 transition-colors"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    View Invoice
+                  </Link>
+                </div>
+              </div>
+
+              {/* Payment Schedule */}
+              {poInvoice.paymentSchedule.length > 0 && (
+                <div className="px-4 py-3">
+                  <h4 className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase mb-2">
+                    Payment Schedule
+                  </h4>
+                  <div className="space-y-2">
+                    {poInvoice.paymentSchedule.map((item: PaymentScheduleItem) => (
+                      <div
+                        key={item.id}
+                        className={`flex items-center justify-between p-2 rounded-lg ${
+                          item.paidAmount >= item.amount
+                            ? 'bg-green-50 dark:bg-green-900/20'
+                            : item.paidAmount > 0
+                            ? 'bg-blue-50 dark:bg-blue-900/20'
+                            : item.triggerStatus === 'triggered'
+                            ? 'bg-amber-50 dark:bg-amber-900/20'
+                            : 'bg-slate-50 dark:bg-slate-700/50'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-6 h-6 rounded-full flex items-center justify-center ${
+                            item.paidAmount >= item.amount
+                              ? 'bg-green-500 text-white'
+                              : item.paidAmount > 0
+                              ? 'bg-blue-500 text-white'
+                              : 'bg-slate-300 dark:bg-slate-600'
+                          }`}>
+                            {item.paidAmount >= item.amount ? (
+                              <Check className="w-3.5 h-3.5" />
+                            ) : (
+                              <span className="text-xs font-medium text-slate-600 dark:text-slate-300">
+                                {item.sortOrder}
+                              </span>
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-sm font-medium text-slate-900 dark:text-white">
+                              {item.milestoneName}
+                            </p>
+                            <p className="text-xs text-slate-500 dark:text-slate-400">
+                              {item.percentage}% - {item.dueDate
+                                ? `Due ${new Date(item.dueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
+                                : item.triggerStatus === 'pending'
+                                ? 'Pending trigger'
+                                : 'Triggered'
+                              }
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                            ${item.amount.toLocaleString()}
+                          </p>
+                          {item.paidAmount > 0 && item.paidAmount < item.amount && (
+                            <p className="text-xs text-green-600 dark:text-green-400">
+                              ${item.paidAmount.toLocaleString()} paid
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 

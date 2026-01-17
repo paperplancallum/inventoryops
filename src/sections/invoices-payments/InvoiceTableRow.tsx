@@ -16,6 +16,8 @@ interface InvoiceTableRowProps {
   invoice: Invoice
   invoiceTypes: InvoiceTypeOption[]
   paymentMethods: PaymentMethodOption[]
+  isSelected?: boolean
+  initialExpanded?: boolean
   onRecordPayment?: () => void
   onViewLinkedEntity?: () => void
   onEditMilestones?: () => void
@@ -65,12 +67,14 @@ export function InvoiceTableRow({
   invoice,
   invoiceTypes,
   paymentMethods,
+  isSelected = false,
+  initialExpanded = false,
   onRecordPayment,
   onViewLinkedEntity,
   onEditMilestones,
   onViewPayment,
 }: InvoiceTableRowProps) {
-  const [expanded, setExpanded] = useState(false)
+  const [expanded, setExpanded] = useState(initialExpanded)
 
   const typeStyle = typeColors[invoice.type]
   const statusStyle = statusColors[invoice.status]
@@ -97,7 +101,14 @@ export function InvoiceTableRow({
 
   return (
     <>
-      <tr className="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors">
+      <tr
+        id={`invoice-${invoice.id}`}
+        className={`transition-colors ${
+          isSelected
+            ? 'bg-indigo-50 dark:bg-indigo-900/20 ring-2 ring-indigo-500 ring-inset'
+            : 'hover:bg-slate-50 dark:hover:bg-slate-700/50'
+        }`}
+      >
         {/* Date */}
         <td className="px-4 py-3">
           <span className="text-sm text-slate-600 dark:text-slate-400">

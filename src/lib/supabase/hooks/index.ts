@@ -52,6 +52,8 @@ export type {
   SubmissionsSummary,
 } from './useSupplierInvoiceSubmissions'
 
+export { useInvoices } from './useInvoices'
+
 export { useBOMs } from './useBOMs'
 export type {
   BOM,
