@@ -75,3 +75,79 @@ export type {
   WorkOrderCostType,
   AvailableComponentStock,
 } from './useWorkOrders'
+
+// Inventory Intelligence hooks
+export { useShippingRouteLegs } from './useShippingRouteLegs'
+export type {
+  ShippingRouteLeg,
+  ShippingRouteLegInsert,
+  ShippingMethod,
+  TransitDays,
+  RouteCosts,
+} from './useShippingRouteLegs'
+
+export { useShippingRoutes } from './useShippingRoutes'
+export type {
+  ShippingRoute,
+  ShippingRouteExpanded,
+  ShippingRouteInsert,
+} from './useShippingRoutes'
+
+export { useSafetyStockRules } from './useSafetyStockRules'
+export type {
+  SafetyStockRule,
+  SafetyStockRuleInsert,
+  ThresholdType,
+  SeasonalMultiplier,
+} from './useSafetyStockRules'
+
+export { useSalesForecasts } from './useSalesForecasts'
+export type {
+  SalesForecast,
+  SalesForecastInsert,
+  ConfidenceLevel,
+} from './useSalesForecasts'
+
+export { useReplenishmentSuggestions } from './useReplenishmentSuggestions'
+export type {
+  ReplenishmentSuggestion,
+  SuggestionType,
+  SuggestionUrgency,
+  SuggestionStatus,
+  ReasoningItem,
+  ReasoningItemType,
+  UrgencyCounts,
+  SuggestionFilters,
+} from './useReplenishmentSuggestions'
+
+export { useSalesHistory } from './useSalesHistory'
+export type {
+  SalesHistoryEntry,
+  SalesHistoryInsert,
+  SalesHistorySource,
+  SalesHistoryFilters,
+} from './useSalesHistory'
+
+export { useForecastAdjustments } from './useForecastAdjustments'
+export type {
+  AccountForecastAdjustment,
+  ProductForecastAdjustment,
+  AccountAdjustmentInsert,
+  ProductAdjustmentInsert,
+  AdjustmentEffect,
+} from './useForecastAdjustments'
+
+export { useIntelligenceSettings } from './useIntelligenceSettings'
+export type {
+  IntelligenceSettings,
+  IntelligenceSettingsUpdate,
+  UrgencyThresholds,
+} from './useIntelligenceSettings'
+
+export { useInventoryNotifications } from './useInventoryNotifications'
+export type {
+  InventoryNotification,
+  NotificationInsert,
+  NotificationType,
+  NotificationStatus,
+} from './useInventoryNotifications'
