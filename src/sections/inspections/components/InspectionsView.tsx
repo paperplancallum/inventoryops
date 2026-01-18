@@ -321,7 +321,7 @@ export function InspectionsView({
           />
         ) : (
         <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto min-h-[250px]">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-slate-200 dark:border-slate-700">
