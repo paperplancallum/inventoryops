@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { RefreshCw, Link2, Link2Off, Search, AlertTriangle, Package, Warehouse, ChevronRight, ChevronDown, ArrowUpDown, ArrowUp, ArrowDown, Copy, Check, Filter } from 'lucide-react'
+import { RefreshCw, Link2, Link2Off, Search, AlertTriangle, Package, Warehouse, ChevronRight, ChevronDown, ArrowUpDown, ArrowUp, ArrowDown, Copy, Check, Filter, X } from 'lucide-react'
 import type {
   AmazonInventoryItem,
   AmazonInventorySummary,
@@ -148,7 +148,7 @@ interface AmazonInventoryTableProps {
 
 type FilterType = 'all' | 'mapped' | 'unmapped'
 
-type SortColumn = 'productName' | 'fbaFulfillable' | 'fbaReserved' | 'fbaInbound' | 'fbaUnfulfillable' | 'awdOnhand' | 'awdInbound'
+type SortColumn = 'productName' | 'fbaFulfillable' | 'fbaReserved' | 'fbaInbound' | 'fbaUnfulfillable' | 'awdOnhand' | 'awdInbound' | 'totalInventory'
 type SortDirection = 'asc' | 'desc'
 
 interface SortState {
@@ -167,6 +167,7 @@ interface AsinGroup {
     fbaUnfulfillable: number
     awdOnhand: number
     awdInbound: number
+    totalInventory: number
   }
   allMapped: boolean
   allUnmapped: boolean
@@ -226,6 +227,60 @@ export function AmazonInventoryTable({
 
   // Visibility dropdown state
   const [showVisibilityDropdown, setShowVisibilityDropdown] = useState(false)
+
+  // Product filter state
+  const [showProductDropdown, setShowProductDropdown] = useState(false)
+  const [productSearchQuery, setProductSearchQuery] = useState('')
+  const [selectedAsins, setSelectedAsins] = useState<Set<string>>(new Set()) // Empty = all selected
+
+  // Get unique products from inventory (for filter dropdown)
+  const uniqueProducts = useMemo(() => {
+    const products = new Map<string, { asin: string; productName: string }>()
+    for (const item of inventory) {
+      if (!products.has(item.asin)) {
+        products.set(item.asin, { asin: item.asin, productName: item.productName })
+      }
+    }
+    return Array.from(products.values()).sort((a, b) => a.productName.localeCompare(b.productName))
+  }, [inventory])
+
+  // Filter products in dropdown by search query
+  const filteredProducts = useMemo(() => {
+    if (!productSearchQuery) return uniqueProducts
+    const query = productSearchQuery.toLowerCase()
+    return uniqueProducts.filter(p =>
+      p.productName.toLowerCase().includes(query) ||
+      p.asin.toLowerCase().includes(query)
+    )
+  }, [uniqueProducts, productSearchQuery])
+
+  // Product filter handlers
+  const toggleProductSelection = (asin: string) => {
+    setSelectedAsins(prev => {
+      const next = new Set(prev)
+      if (next.has(asin)) {
+        next.delete(asin)
+      } else {
+        next.add(asin)
+      }
+      return next
+    })
+  }
+
+  const selectAllProducts = () => {
+    // Only select products currently visible in filtered search
+    setSelectedAsins(prev => {
+      const next = new Set(prev)
+      for (const p of filteredProducts) {
+        next.add(p.asin)
+      }
+      return next
+    })
+  }
+
+  const deselectAllProducts = () => {
+    setSelectedAsins(new Set())
+  }
 
   // Count how many item types are currently hidden
   const hiddenFilterCount = useMemo(() => {
@@ -297,9 +352,14 @@ export function AmazonInventoryTable({
         return false
       }
 
+      // Apply product filter (empty set means "show all")
+      if (selectedAsins.size > 0 && !selectedAsins.has(item.asin)) {
+        return false
+      }
+
       return matchesSearch && matchesFilter
     })
-  }, [inventory, searchQuery, filter, showUsed, showNoStock, showDiscontinued, showPhantoms, phantomSkuIds])
+  }, [inventory, searchQuery, filter, showUsed, showNoStock, showDiscontinued, showPhantoms, phantomSkuIds, selectedAsins])
 
   // Group inventory by ASIN
   // FBA totals: Only non-phantom items (FBA is shared/commingled)
@@ -323,7 +383,14 @@ export function AmazonInventoryTable({
         // Always add AWD quantities (AWD is per-SKU, not shared)
         existing.totals.awdOnhand += item.awdQuantity
         existing.totals.awdInbound += item.awdInboundQuantity
+        // Recalculate total (FBA from non-phantoms + AWD from all)
+        existing.totals.totalInventory = existing.totals.fbaFulfillable + existing.totals.fbaReserved +
+          existing.totals.fbaInbound + existing.totals.fbaUnfulfillable +
+          existing.totals.awdOnhand + existing.totals.awdInbound
       } else {
+        const fbaTotal = isPhantom ? 0 : (item.fbaFulfillable + item.fbaReserved +
+          item.fbaInboundWorking + item.fbaInboundShipped + item.fbaInboundReceiving + item.fbaUnfulfillable)
+        const awdTotal = item.awdQuantity + item.awdInboundQuantity
         groups.set(item.asin, {
           asin: item.asin,
           productName: item.productName,
@@ -337,6 +404,7 @@ export function AmazonInventoryTable({
             // Always add AWD
             awdOnhand: item.awdQuantity,
             awdInbound: item.awdInboundQuantity,
+            totalInventory: fbaTotal + awdTotal,
           },
           allMapped: true,
           allUnmapped: true,
@@ -379,6 +447,9 @@ export function AmazonInventoryTable({
         case 'awdInbound':
           comparison = a.totals.awdInbound - b.totals.awdInbound
           break
+        case 'totalInventory':
+          comparison = a.totals.totalInventory - b.totals.totalInventory
+          break
       }
 
       return sort.direction === 'asc' ? comparison : -comparison
@@ -417,6 +488,11 @@ export function AmazonInventoryTable({
           break
         case 'awdInbound':
           comparison = a.awdInboundQuantity - b.awdInboundQuantity
+          break
+        case 'totalInventory':
+          const aTotal = a.fbaFulfillable + a.fbaReserved + a.fbaInboundWorking + a.fbaInboundShipped + a.fbaInboundReceiving + a.fbaUnfulfillable + a.awdQuantity + a.awdInboundQuantity
+          const bTotal = b.fbaFulfillable + b.fbaReserved + b.fbaInboundWorking + b.fbaInboundShipped + b.fbaInboundReceiving + b.fbaUnfulfillable + b.awdQuantity + b.awdInboundQuantity
+          comparison = aTotal - bTotal
           break
       }
       return sort.direction === 'asc' ? comparison : -comparison
@@ -705,6 +781,131 @@ export function AmazonInventoryTable({
               </>
             )}
           </div>
+
+          {/* Product filter dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setShowProductDropdown(!showProductDropdown)}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium rounded-lg transition-colors ${
+                selectedAsins.size > 0
+                  ? 'bg-lime-100 text-lime-700 dark:bg-lime-900/30 dark:text-lime-300'
+                  : 'text-stone-500 hover:text-stone-700 hover:bg-stone-100 dark:text-stone-400 dark:hover:text-stone-200 dark:hover:bg-stone-700'
+              }`}
+            >
+              <Package className="w-3.5 h-3.5" />
+              Products
+              {selectedAsins.size > 0 && (
+                <span className="ml-1 px-1.5 py-0.5 text-[10px] bg-lime-200 dark:bg-lime-800 rounded-full">
+                  {selectedAsins.size}
+                </span>
+              )}
+            </button>
+
+            {showProductDropdown && (
+              <>
+                {/* Backdrop to close dropdown */}
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => {
+                    setShowProductDropdown(false)
+                    setProductSearchQuery('')
+                  }}
+                />
+                {/* Dropdown panel */}
+                <div className="absolute top-full left-0 mt-1 z-50 bg-white dark:bg-stone-800 border border-stone-200 dark:border-stone-700 rounded-lg shadow-lg min-w-[280px] max-w-[320px]">
+                  {/* Search input */}
+                  <div className="p-2 border-b border-stone-200 dark:border-stone-700">
+                    <div className="relative">
+                      <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-stone-400" />
+                      <input
+                        type="text"
+                        placeholder="Search products..."
+                        value={productSearchQuery}
+                        onChange={(e) => setProductSearchQuery(e.target.value)}
+                        className="w-full pl-8 pr-3 py-1.5 text-sm bg-stone-50 dark:bg-stone-700 border border-stone-200 dark:border-stone-600 rounded-md text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-1 focus:ring-lime-500"
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      {productSearchQuery && (
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            setProductSearchQuery('')
+                          }}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-stone-400 hover:text-stone-600"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Select all / Deselect all buttons */}
+                  <div className="flex items-center gap-2 px-3 py-2 border-b border-stone-200 dark:border-stone-700">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        selectAllProducts()
+                      }}
+                      className="text-xs text-lime-600 hover:text-lime-700 dark:text-lime-400 dark:hover:text-lime-300 font-medium"
+                    >
+                      Select all
+                    </button>
+                    <span className="text-stone-300 dark:text-stone-600">|</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        deselectAllProducts()
+                      }}
+                      className="text-xs text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200 font-medium"
+                    >
+                      Clear all
+                    </button>
+                    {selectedAsins.size > 0 && (
+                      <span className="ml-auto text-[10px] text-stone-400 dark:text-stone-500">
+                        {selectedAsins.size} of {uniqueProducts.length}
+                      </span>
+                    )}
+                  </div>
+
+                  {/* Product list */}
+                  <div className="max-h-[280px] overflow-y-auto py-1">
+                    {filteredProducts.length === 0 ? (
+                      <p className="px-3 py-4 text-sm text-stone-400 dark:text-stone-500 text-center">
+                        No products found
+                      </p>
+                    ) : (
+                      filteredProducts.map((product) => (
+                        <button
+                          key={product.asin}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            toggleProductSelection(product.asin)
+                          }}
+                          className="w-full flex items-start gap-2.5 px-3 py-2 text-left hover:bg-stone-50 dark:hover:bg-stone-700/50 transition-colors"
+                        >
+                          <span className={`flex-shrink-0 mt-0.5 flex items-center justify-center w-4 h-4 rounded border ${
+                            selectedAsins.has(product.asin)
+                              ? 'bg-lime-500 border-lime-500 text-white'
+                              : 'border-stone-300 dark:border-stone-600'
+                          }`}>
+                            {selectedAsins.has(product.asin) && <Check className="w-3 h-3" />}
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm text-stone-700 dark:text-stone-200 truncate">
+                              {product.productName}
+                            </p>
+                            <p className="text-[10px] font-mono text-stone-400 dark:text-stone-500">
+                              {product.asin}
+                            </p>
+                          </div>
+                        </button>
+                      ))
+                    )}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
         </div>
 
         <div className="flex items-center gap-3">
@@ -775,6 +976,7 @@ export function AmazonInventoryTable({
                     </div>
                   </th>
                   <th className="py-2 px-4"></th>
+                  <th className="py-2 px-4"></th>
                 </tr>
                 {/* Column headers row */}
                 <tr className="bg-stone-100 dark:bg-stone-700 text-left text-xs font-medium uppercase text-stone-500 dark:text-stone-400">
@@ -801,6 +1003,10 @@ export function AmazonInventoryTable({
                   </th>
                   <th className="py-3 px-4 text-right border-r border-stone-200 dark:border-stone-600">
                     <SortHeader column="awdInbound">Inbound</SortHeader>
+                  </th>
+                  {/* Total column */}
+                  <th className="py-3 px-4 text-right">
+                    <SortHeader column="totalInventory">Total</SortHeader>
                   </th>
                   <th className="py-3 px-4 text-center">Mapping</th>
                 </tr>
@@ -899,6 +1105,12 @@ export function AmazonInventoryTable({
                           ) : (
                             <span className="text-sm text-stone-400">-</span>
                           )}
+                        </td>
+                        {/* Total inventory */}
+                        <td className="py-3 px-4 text-right tabular-nums">
+                          <span className="text-sm font-bold text-stone-900 dark:text-white">
+                            {formatNumber(group.totals.totalInventory)}
+                          </span>
                         </td>
                         <td className="py-3 px-4 text-center" onClick={(e) => e.stopPropagation()}>
                           {!hasMultipleSkus ? (
@@ -1005,6 +1217,12 @@ export function AmazonInventoryTable({
                             ) : (
                               <span className="text-xs text-stone-400">-</span>
                             )}
+                          </td>
+                          {/* Total inventory for child row */}
+                          <td className="py-2 px-4 text-right tabular-nums">
+                            <span className="text-xs font-semibold text-stone-700 dark:text-stone-200">
+                              {formatNumber(item.fbaFulfillable + item.fbaReserved + item.fbaInboundWorking + item.fbaInboundShipped + item.fbaInboundReceiving + item.fbaUnfulfillable + item.awdQuantity + item.awdInboundQuantity)}
+                            </span>
                           </td>
                           <td className="py-2 px-4 text-center">
                             {item.mappingStatus === 'mapped' ? (
