@@ -2,9 +2,9 @@
 
 ## Define Section Variables
 
-- **SECTION_NAME** = [Human-readable name, e.g., "Invoices" or "Project Dashboard"]
-- **SECTION_ID** = [Folder name in sections/, e.g., "invoices" or "project-dashboard"]
-- **NN** = [Milestone number, e.g., "02" or "03" — sections start at 02 since 01 is Foundation]
+- **SECTION_NAME** = [Settings]
+- **SECTION_ID** = [settings]
+- **NN** = [16]
 
 ---
 
