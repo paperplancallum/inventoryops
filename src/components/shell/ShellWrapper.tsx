@@ -28,7 +28,7 @@ import { useAuth } from '@/providers/AuthProvider'
 import type { NavigationItem } from './MainNav'
 
 const navigationItems: NavigationItem[] = [
-  { label: 'Dashboard', href: '/', icon: <LayoutDashboard className="w-5 h-5" /> },
+  { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="w-5 h-5" /> },
   { label: 'Catalog', href: '/catalog', icon: <Package className="w-5 h-5" /> },
   { label: 'Brands', href: '/brands', icon: <Tag className="w-5 h-5" /> },
   { label: 'Suppliers', href: '/suppliers', icon: <Users className="w-5 h-5" /> },
