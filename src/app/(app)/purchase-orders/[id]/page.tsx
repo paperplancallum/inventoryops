@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from 'react'
 import { useParams, useRouter } from 'next/navigation'
-import { ArrowLeft, Edit, FileDown, Link2, Boxes, ArrowRightLeft, MapPin, Calendar, Package, DollarSign, Clock, FileText, Check, ChevronLeft, ChevronRight, XCircle, Receipt, Eye } from 'lucide-react'
+import { ArrowLeft, Edit, FileDown, Link2, Boxes, ArrowRightLeft, MapPin, Calendar, Package, DollarSign, Clock, FileText, Check, ChevronLeft, ChevronRight, XCircle, Receipt, Eye, ClipboardCheck } from 'lucide-react'
 import Link from 'next/link'
 import { usePurchaseOrders, useBatches, useMagicLinks, useSendPO, useSupplierInvoiceSubmissions, useInvoices } from '@/lib/supabase/hooks'
 import type { SupplierInvoiceSubmission, SubmissionReviewStatus } from '@/lib/supabase/hooks'
@@ -383,6 +383,11 @@ export default function PurchaseOrderDetailPage() {
     router.push('/transfers?action=create')
   }, [router])
 
+  const handleAddToInspection = useCallback(() => {
+    sessionStorage.setItem('preselectedPOIds', JSON.stringify([poId]))
+    router.push('/inspections?action=create')
+  }, [poId, router])
+
   // Open the invoice review panel
   const handleOpenReviewPanel = useCallback(async (submissionId: string) => {
     setLoadingSubmission(true)
@@ -504,6 +509,15 @@ export default function PurchaseOrderDetailPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
+              {effectiveStatus !== 'cancelled' && (
+                <button
+                  onClick={handleAddToInspection}
+                  className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-600 rounded-lg transition-colors"
+                >
+                  <ClipboardCheck className="w-4 h-4" />
+                  Add to Inspection
+                </button>
+              )}
               <button
                 onClick={() => setIsMagicLinkModalOpen(true)}
                 className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors"
