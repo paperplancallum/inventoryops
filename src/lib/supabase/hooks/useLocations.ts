@@ -2,9 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '../client'
-import type { DbLocation, LocationType } from '../database.types'
+import type { Database } from '../database.types'
 import type { Location, FactoryLocationOption } from '@/sections/suppliers/types'
 import type { LocationReferences } from '@/sections/locations/types'
+
+// Derive types from Database
+type DbLocation = Database['public']['Tables']['locations']['Row']
+type LocationType = Database['public']['Enums']['location_type']
 
 // Database location with optional supplier relation
 interface DbLocationWithSupplier extends DbLocation {

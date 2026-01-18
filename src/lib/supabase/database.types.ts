@@ -7,11 +7,6 @@ export type Json =
   | Json[]
 
 export type Database = {
-  // Allows to automatically instantiate createClient with right options
-  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
-  __InternalSupabase: {
-    PostgrestVersion: "14.1"
-  }
   graphql_public: {
     Tables: {
       [_ in never]: never
@@ -713,6 +708,57 @@ export type Database = {
           },
         ]
       }
+      bom_expense_items: {
+        Row: {
+          amount: number
+          bom_id: string
+          created_at: string
+          description: string | null
+          id: string
+          is_per_unit: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          bom_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_per_unit?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          bom_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_per_unit?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bom_expense_items_bom_id_fkey"
+            columns: ["bom_id"]
+            isOneToOne: false
+            referencedRelation: "active_boms_summary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_expense_items_bom_id_fkey"
+            columns: ["bom_id"]
+            isOneToOne: false
+            referencedRelation: "boms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bom_history: {
         Row: {
           bom_id: string
@@ -888,6 +934,7 @@ export type Database = {
       }
       brands: {
         Row: {
+          amazon_connection_ids: string[] | null
           created_at: string
           description: string | null
           id: string
@@ -897,6 +944,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          amazon_connection_ids?: string[] | null
           created_at?: string
           description?: string | null
           id?: string
@@ -906,6 +954,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          amazon_connection_ids?: string[] | null
           created_at?: string
           description?: string | null
           id?: string
@@ -2276,6 +2325,8 @@ export type Database = {
           description: string | null
           fnsku: string | null
           id: string
+          image_storage_path: string | null
+          image_url: string | null
           name: string
           product_type: Database["public"]["Enums"]["product_type"]
           sku: string
@@ -2292,6 +2343,8 @@ export type Database = {
           description?: string | null
           fnsku?: string | null
           id?: string
+          image_storage_path?: string | null
+          image_url?: string | null
           name: string
           product_type?: Database["public"]["Enums"]["product_type"]
           sku: string
@@ -2308,6 +2361,8 @@ export type Database = {
           description?: string | null
           fnsku?: string | null
           id?: string
+          image_storage_path?: string | null
+          image_url?: string | null
           name?: string
           product_type?: Database["public"]["Enums"]["product_type"]
           sku?: string
@@ -2345,6 +2400,7 @@ export type Database = {
             | Database["public"]["Enums"]["inspection_decision_status"]
             | null
           invoice_link_sent_at: string | null
+          invoice_received_at: string | null
           invoice_reviewed_at: string | null
           invoice_submitted_at: string | null
           invoice_variance: number | null
@@ -2356,6 +2412,7 @@ export type Database = {
           po_number: string
           received_date: string | null
           requires_inspection: boolean | null
+          sent_to_supplier_at: string | null
           status: Database["public"]["Enums"]["po_status"]
           subtotal: number
           supplier_id: string
@@ -2378,6 +2435,7 @@ export type Database = {
             | Database["public"]["Enums"]["inspection_decision_status"]
             | null
           invoice_link_sent_at?: string | null
+          invoice_received_at?: string | null
           invoice_reviewed_at?: string | null
           invoice_submitted_at?: string | null
           invoice_variance?: number | null
@@ -2389,6 +2447,7 @@ export type Database = {
           po_number?: string
           received_date?: string | null
           requires_inspection?: boolean | null
+          sent_to_supplier_at?: string | null
           status?: Database["public"]["Enums"]["po_status"]
           subtotal?: number
           supplier_id: string
@@ -2411,6 +2470,7 @@ export type Database = {
             | Database["public"]["Enums"]["inspection_decision_status"]
             | null
           invoice_link_sent_at?: string | null
+          invoice_received_at?: string | null
           invoice_reviewed_at?: string | null
           invoice_submitted_at?: string | null
           invoice_variance?: number | null
@@ -2422,6 +2482,7 @@ export type Database = {
           po_number?: string
           received_date?: string | null
           requires_inspection?: boolean | null
+          sent_to_supplier_at?: string | null
           status?: Database["public"]["Enums"]["po_status"]
           subtotal?: number
           supplier_id?: string
@@ -2745,6 +2806,69 @@ export type Database = {
           },
         ]
       }
+      shipping_legs: {
+        Row: {
+          cost_currency: string
+          cost_flat_fee: number | null
+          cost_per_kg: number | null
+          cost_per_unit: number | null
+          created_at: string
+          from_location_name: string
+          from_location_type: Database["public"]["Enums"]["location_type"]
+          id: string
+          is_active: boolean
+          method: Database["public"]["Enums"]["shipping_method"]
+          name: string
+          notes: string | null
+          to_location_name: string
+          to_location_type: Database["public"]["Enums"]["location_type"]
+          transit_days_max: number
+          transit_days_min: number
+          transit_days_typical: number
+          updated_at: string
+        }
+        Insert: {
+          cost_currency?: string
+          cost_flat_fee?: number | null
+          cost_per_kg?: number | null
+          cost_per_unit?: number | null
+          created_at?: string
+          from_location_name: string
+          from_location_type: Database["public"]["Enums"]["location_type"]
+          id?: string
+          is_active?: boolean
+          method: Database["public"]["Enums"]["shipping_method"]
+          name: string
+          notes?: string | null
+          to_location_name: string
+          to_location_type: Database["public"]["Enums"]["location_type"]
+          transit_days_max: number
+          transit_days_min: number
+          transit_days_typical: number
+          updated_at?: string
+        }
+        Update: {
+          cost_currency?: string
+          cost_flat_fee?: number | null
+          cost_per_kg?: number | null
+          cost_per_unit?: number | null
+          created_at?: string
+          from_location_name?: string
+          from_location_type?: Database["public"]["Enums"]["location_type"]
+          id?: string
+          is_active?: boolean
+          method?: Database["public"]["Enums"]["shipping_method"]
+          name?: string
+          notes?: string | null
+          to_location_name?: string
+          to_location_type?: Database["public"]["Enums"]["location_type"]
+          transit_days_max?: number
+          transit_days_min?: number
+          transit_days_typical?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       shipping_quote_line_items: {
         Row: {
           amount: number
@@ -2886,6 +3010,57 @@ export type Database = {
           },
         ]
       }
+      shipping_routes: {
+        Row: {
+          created_at: string
+          destination_location_type:
+            | Database["public"]["Enums"]["location_type"]
+            | null
+          id: string
+          is_active: boolean
+          is_default: boolean
+          leg_ids: string[]
+          name: string
+          notes: string | null
+          origin_location_type:
+            | Database["public"]["Enums"]["location_type"]
+            | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          destination_location_type?:
+            | Database["public"]["Enums"]["location_type"]
+            | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          leg_ids: string[]
+          name: string
+          notes?: string | null
+          origin_location_type?:
+            | Database["public"]["Enums"]["location_type"]
+            | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          destination_location_type?:
+            | Database["public"]["Enums"]["location_type"]
+            | null
+          id?: string
+          is_active?: boolean
+          is_default?: boolean
+          leg_ids?: string[]
+          name?: string
+          notes?: string | null
+          origin_location_type?:
+            | Database["public"]["Enums"]["location_type"]
+            | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       stock_ledger_entries: {
         Row: {
           batch_id: string
@@ -2986,6 +3161,44 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_invoice_submission_attachments: {
+        Row: {
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          mime_type: string
+          submission_id: string
+          uploaded_at: string
+        }
+        Insert: {
+          file_name: string
+          file_path: string
+          file_size: number
+          id?: string
+          mime_type: string
+          submission_id: string
+          uploaded_at?: string
+        }
+        Update: {
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          mime_type?: string
+          submission_id?: string
+          uploaded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_invoice_submission_attachments_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoice_submissions"
             referencedColumns: ["id"]
           },
         ]
@@ -3130,12 +3343,14 @@ export type Database = {
           id: string
           magic_link_id: string
           po_number: string
+          previous_submission_id: string | null
           purchase_order_id: string
           review_notes: string | null
           review_status: Database["public"]["Enums"]["supplier_submission_review_status"]
           reviewed_at: string | null
           reviewed_by_user_id: string | null
           reviewed_by_user_name: string | null
+          revision_number: number
           submitted_at: string
           submitted_by_email: string
           submitted_by_name: string
@@ -3153,12 +3368,14 @@ export type Database = {
           id?: string
           magic_link_id: string
           po_number: string
+          previous_submission_id?: string | null
           purchase_order_id: string
           review_notes?: string | null
           review_status?: Database["public"]["Enums"]["supplier_submission_review_status"]
           reviewed_at?: string | null
           reviewed_by_user_id?: string | null
           reviewed_by_user_name?: string | null
+          revision_number?: number
           submitted_at?: string
           submitted_by_email: string
           submitted_by_name: string
@@ -3176,12 +3393,14 @@ export type Database = {
           id?: string
           magic_link_id?: string
           po_number?: string
+          previous_submission_id?: string | null
           purchase_order_id?: string
           review_notes?: string | null
           review_status?: Database["public"]["Enums"]["supplier_submission_review_status"]
           reviewed_at?: string | null
           reviewed_by_user_id?: string | null
           reviewed_by_user_name?: string | null
+          revision_number?: number
           submitted_at?: string
           submitted_by_email?: string
           submitted_by_name?: string
@@ -3202,6 +3421,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "supplier_invoice_submissions_previous_submission_id_fkey"
+            columns: ["previous_submission_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoice_submissions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "supplier_invoice_submissions_purchase_order_id_fkey"
             columns: ["purchase_order_id"]
             isOneToOne: false
@@ -3219,7 +3445,7 @@ export type Database = {
       }
       suppliers: {
         Row: {
-          contact_email: string | null
+          contact_email: string
           contact_name: string | null
           contact_phone: string | null
           country: string
@@ -3237,7 +3463,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          contact_email?: string | null
+          contact_email: string
           contact_name?: string | null
           contact_phone?: string | null
           country: string
@@ -3255,7 +3481,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          contact_email?: string | null
+          contact_email?: string
           contact_name?: string | null
           contact_phone?: string | null
           country?: string
@@ -4585,6 +4811,14 @@ export type Database = {
         }
         Returns: string
       }
+      create_revision_magic_link: {
+        Args: { p_rejection_notes?: string; p_submission_id: string }
+        Returns: {
+          new_magic_link_id: string
+          new_revision_number: number
+          new_token: string
+        }[]
+      }
       detect_field_changes: {
         Args: { p_field_config: Json; p_new: Json; p_old: Json }
         Returns: Json
@@ -4774,7 +5008,7 @@ export type Database = {
         | "failed"
         | "pending-rework"
         | "re-inspection"
-      invoice_creation_method: "manual" | "automatic"
+      invoice_creation_method: "manual" | "automatic" | "from-pi-approval"
       invoice_type:
         | "product"
         | "shipping"
@@ -5150,7 +5384,7 @@ export const Constants = {
         "pending-rework",
         "re-inspection",
       ],
-      invoice_creation_method: ["manual", "automatic"],
+      invoice_creation_method: ["manual", "automatic", "from-pi-approval"],
       invoice_type: [
         "product",
         "shipping",
@@ -5334,90 +5568,3 @@ export const Constants = {
     },
   },
 } as const
-
-// ============================================================================
-// Type Aliases for Convenience
-// These provide shorter names for commonly used database types
-// ============================================================================
-
-// Table Row Types
-export type DbBatch = Database["public"]["Tables"]["batches"]["Row"]
-export type DbBatchStageHistory = Database["public"]["Tables"]["batch_stage_history"]["Row"]
-export type DbBatchAttachment = Database["public"]["Tables"]["batch_attachments"]["Row"]
-export type DbBrand = Database["public"]["Tables"]["brands"]["Row"]
-export type DbProduct = Database["public"]["Tables"]["products"]["Row"]
-export type DbProductSku = Database["public"]["Tables"]["product_skus"]["Row"]
-export type DbProductSpecSheet = Database["public"]["Tables"]["product_spec_sheets"]["Row"]
-export type DbSupplier = Database["public"]["Tables"]["suppliers"]["Row"]
-export type DbLocation = Database["public"]["Tables"]["locations"]["Row"]
-export type DbPurchaseOrder = Database["public"]["Tables"]["purchase_orders"]["Row"]
-export type DbPOLineItem = Database["public"]["Tables"]["po_line_items"]["Row"]
-export type DbPOStatusHistory = Database["public"]["Tables"]["po_status_history"]["Row"]
-export type DbPOMessage = Database["public"]["Tables"]["po_messages"]["Row"]
-export type DbPaymentTermsTemplate = Database["public"]["Tables"]["payment_terms_templates"]["Row"]
-export type DbInvoice = Database["public"]["Tables"]["invoices"]["Row"]
-export type DbInvoicePayment = Database["public"]["Tables"]["invoice_payments"]["Row"]
-export type DbInvoicePaymentScheduleItem = Database["public"]["Tables"]["invoice_payment_schedule_items"]["Row"]
-export type DbInvoicePaymentAttachment = Database["public"]["Tables"]["invoice_payment_attachments"]["Row"]
-export type DbStockLedgerEntry = Database["public"]["Tables"]["stock_ledger_entries"]["Row"]
-export type DbTransfer = Database["public"]["Tables"]["transfers"]["Row"]
-export type DbTransferLineItem = Database["public"]["Tables"]["transfer_line_items"]["Row"]
-export type DbInspection = Database["public"]["Tables"]["inspections"]["Row"]
-export type DbInspectionLineItem = Database["public"]["Tables"]["inspection_line_items"]["Row"]
-export type DbInspectionDefect = Database["public"]["Tables"]["inspection_defects"]["Row"]
-export type DbInspectionMeasurement = Database["public"]["Tables"]["inspection_measurements"]["Row"]
-export type DbInspectionPhoto = Database["public"]["Tables"]["inspection_photos"]["Row"]
-export type DbReworkRequest = Database["public"]["Tables"]["rework_requests"]["Row"]
-export type DbInspectionMessage = Database["public"]["Tables"]["inspection_messages"]["Row"]
-export type DbInspectionMessageAttachment = Database["public"]["Tables"]["inspection_message_attachments"]["Row"]
-export type DbInspectionAgent = Database["public"]["Tables"]["inspection_agents"]["Row"]
-export type DbPOAttachment = Database["public"]["Tables"]["po_attachments"]["Row"]
-export type DbPODocument = Database["public"]["Tables"]["po_documents"]["Row"]
-export type DbBOM = Database["public"]["Tables"]["boms"]["Row"]
-export type DbBOMLineItem = Database["public"]["Tables"]["bom_line_items"]["Row"]
-export type DbBOMHistory = Database["public"]["Tables"]["bom_history"]["Row"]
-export type DbWorkOrder = Database["public"]["Tables"]["work_orders"]["Row"]
-export type DbWorkOrderComponent = Database["public"]["Tables"]["work_order_components"]["Row"]
-export type DbWorkOrderCost = Database["public"]["Tables"]["work_order_costs"]["Row"]
-export type DbWorkOrderStatusHistory = Database["public"]["Tables"]["work_order_status_history"]["Row"]
-
-// Insert Types
-export type DbBatchInsert = Database["public"]["Tables"]["batches"]["Insert"]
-export type DbBrandInsert = Database["public"]["Tables"]["brands"]["Insert"]
-export type DbProductInsert = Database["public"]["Tables"]["products"]["Insert"]
-export type DbSupplierInsert = Database["public"]["Tables"]["suppliers"]["Insert"]
-export type DbLocationInsert = Database["public"]["Tables"]["locations"]["Insert"]
-export type DbPurchaseOrderInsert = Database["public"]["Tables"]["purchase_orders"]["Insert"]
-export type DbInspectionAgentInsert = Database["public"]["Tables"]["inspection_agents"]["Insert"]
-
-// Enum Types
-export type BatchStage = Database["public"]["Enums"]["batch_stage"]
-export type BrandStatus = Database["public"]["Enums"]["brand_status"]
-export type ProductStatus = Database["public"]["Enums"]["product_status"]
-export type SkuCondition = Database["public"]["Enums"]["sku_condition"]
-export type SupplierStatus = Database["public"]["Enums"]["supplier_status"]
-export type LocationType = Database["public"]["Enums"]["location_type"]
-export type POStatus = Database["public"]["Enums"]["po_status"]
-export type PaymentStatus = Database["public"]["Enums"]["payment_status"]
-export type InvoiceType = Database["public"]["Enums"]["invoice_type"]
-export type LinkedEntityType = Database["public"]["Enums"]["linked_entity_type"]
-export type StockMovementType = Database["public"]["Enums"]["stock_movement_type"]
-export type TransferStatus = Database["public"]["Enums"]["transfer_status"]
-export type InspectionStatus = Database["public"]["Enums"]["inspection_status"]
-export type ProductType = Database["public"]["Enums"]["product_type"]
-export type WorkOrderStatus = Database["public"]["Enums"]["work_order_status"]
-export type WorkOrderCostType = Database["public"]["Enums"]["work_order_cost_type"]
-export type MessageDirection = Database["public"]["Enums"]["message_direction"]
-export type PaymentMethod = Database["public"]["Enums"]["payment_method"]
-export type PaymentMilestoneTrigger = Database["public"]["Enums"]["payment_milestone_trigger"]
-export type PaymentTriggerStatus = Database["public"]["Enums"]["payment_trigger_status"]
-export type InvoiceCreationMethod = Database["public"]["Enums"]["invoice_creation_method"]
-
-// Alternate name aliases (for backwards compatibility)
-export type DbProductSKU = Database["public"]["Tables"]["product_skus"]["Row"]
-
-// View Types
-export type DbFinancialSummary = Database["public"]["Views"]["financial_summary"]["Row"]
-export type DbStockByLocation = Database["public"]["Views"]["stock_by_location"]["Row"]
-export type DbStockPosition = Database["public"]["Views"]["stock_positions"]["Row"]
-export type DbStockByProduct = Database["public"]["Views"]["stock_by_product"]["Row"]

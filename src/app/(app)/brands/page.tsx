@@ -52,7 +52,7 @@ export default function BrandsPage() {
             description: data.description || null,
           })
         } else {
-          await createBrand(data.name, data.description || undefined)
+          await createBrand({ name: data.name, description: data.description || null })
         }
         setShowForm(false)
         setEditingBrand(undefined)

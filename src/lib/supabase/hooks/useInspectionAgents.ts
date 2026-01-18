@@ -2,8 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '../client'
-import type { DbInspectionAgent, DbInspectionAgentInsert } from '../database.types'
+import type { Database } from '../database.types'
 import type { InspectionAgent, InspectionAgentFormData, PaymentMilestone } from '@/sections/inspections/types'
+
+// Derive types from Database
+type DbInspectionAgent = Database['public']['Tables']['inspection_agents']['Row']
+type DbInspectionAgentInsert = Database['public']['Tables']['inspection_agents']['Insert']
 
 // =============================================================================
 // Transform Functions

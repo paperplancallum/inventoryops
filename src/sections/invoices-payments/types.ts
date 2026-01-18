@@ -2,27 +2,16 @@
 // Invoices & Payments - Frontend Types
 // =============================================================================
 
-// Re-export enum types from database.types.ts
-export type {
-  InvoiceType,
-  PaymentStatus,
-  LinkedEntityType,
-  PaymentMethod,
-  InvoiceCreationMethod,
-  PaymentTriggerStatus,
-  PaymentMilestoneTrigger,
-} from '@/lib/supabase/database.types'
+import type { Database } from '@/lib/supabase/database.types'
 
-// Import for type checking
-import type {
-  InvoiceType,
-  PaymentStatus,
-  LinkedEntityType,
-  PaymentMethod,
-  PaymentMilestoneTrigger,
-  PaymentTriggerStatus,
-  InvoiceCreationMethod,
-} from '@/lib/supabase/database.types'
+// Derive enum types from Database
+export type InvoiceType = Database['public']['Enums']['invoice_type']
+export type PaymentStatus = Database['public']['Enums']['payment_status']
+export type LinkedEntityType = Database['public']['Enums']['linked_entity_type']
+export type PaymentMethod = Database['public']['Enums']['payment_method']
+export type InvoiceCreationMethod = Database['public']['Enums']['invoice_creation_method']
+export type PaymentTriggerStatus = Database['public']['Enums']['payment_trigger_status']
+export type PaymentMilestoneTrigger = Database['public']['Enums']['payment_milestone_trigger']
 
 // =============================================================================
 // Brand Type (used for filtering)

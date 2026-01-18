@@ -1,0 +1,59 @@
+# Settings Section - Progress Tracker
+
+## Feature: Settings Section Implementation
+**Started**: 2026-01-18
+**Status**: Planning Complete
+
+---
+
+## Codebase Patterns (Preserve Across Iterations)
+
+### Database
+- Supabase PostgreSQL with migrations in `supabase/migrations/`
+- Naming: snake_case for columns, enums
+- Always add created_at, updated_at timestamps
+- Use UUID for primary keys
+- Storage buckets created via SQL migrations
+
+### Hooks Pattern
+- Location: `src/lib/supabase/hooks/`
+- Use `createClient()` from `../client`
+- Return { data, loading, error, refetch, ...methods }
+- Transform DB snake_case to frontend camelCase
+- Optimistic updates for better UX
+
+### Component Pattern
+- Sections in `src/sections/[feature]/`
+- Page in `src/app/(app)/[feature]/page.tsx`
+- 'use client' for interactive components
+- Props-based (state lives in page)
+- Tailwind CSS with dark: variants
+- Modal pattern: fixed inset-0 z-50 with backdrop
+
+### Existing Implementations to Reference
+- Brands: `src/lib/supabase/hooks/useBrands.ts`, `src/sections/brands/`
+- Locations: `src/sections/locations/`
+- Amazon OAuth: `src/app/api/amazon/`
+
+---
+
+## Resolved Decisions
+
+1. **Scope**: Organization-level (shared across account)
+2. **Routes**: Use location TYPES, not specific locations
+3. **Marketplaces**: NA only (US, CA, MX, BR), all manual selection
+4. **Leg deletion**: Prevent if used in routes, show warning
+5. **Default routes**: One per origin-destination type pair
+6. **Token refresh**: Manual trigger only
+
+---
+
+## Task Completion Log
+
+(Updated as tasks complete)
+
+---
+
+## Learnings
+
+(Updated during execution)

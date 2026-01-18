@@ -2,8 +2,11 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '../client'
-import type { DbPaymentTermsTemplate } from '../database.types'
+import type { Database } from '../database.types'
 import type { PaymentTermsTemplate, PaymentMilestoneTrigger } from '@/sections/suppliers/types'
+
+// Derive types from Database
+type DbPaymentTermsTemplate = Database['public']['Tables']['payment_terms_templates']['Row']
 
 interface MilestoneJson {
   id: string

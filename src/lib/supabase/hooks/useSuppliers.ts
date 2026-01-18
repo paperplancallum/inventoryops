@@ -2,8 +2,12 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '../client'
-import type { DbSupplier, SupplierStatus } from '../database.types'
+import type { Database } from '../database.types'
 import type { Supplier, SupplierFormData, PaymentMilestoneTrigger } from '@/sections/suppliers/types'
+
+// Derive types from Database
+type DbSupplier = Database['public']['Tables']['suppliers']['Row']
+type SupplierStatus = Database['public']['Enums']['supplier_status']
 
 interface MilestoneJson {
   id: string

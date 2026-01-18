@@ -2,8 +2,13 @@
 
 import { useState, useCallback } from 'react'
 import { createClient } from '../client'
-import type { DbPOMessage, DbPOAttachment, MessageDirection } from '../database.types'
+import type { Database } from '../database.types'
 import type { Message, Attachment } from '@/sections/purchase-orders/types'
+
+// Derive types from Database
+type DbPOMessage = Database['public']['Tables']['po_messages']['Row']
+type DbPOAttachment = Database['public']['Tables']['po_attachments']['Row']
+type MessageDirection = Database['public']['Enums']['message_direction']
 
 function transformAttachment(dbAttachment: DbPOAttachment): Attachment {
   return {

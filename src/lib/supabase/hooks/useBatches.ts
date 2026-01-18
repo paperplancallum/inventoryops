@@ -2,17 +2,18 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '../client'
-import type {
-  DbBatch,
-  DbBatchStageHistory,
-  DbBatchAttachment,
-  BatchStage,
-} from '../database.types'
+import type { Database } from '../database.types'
 import type {
   Batch,
   StageHistoryEntry,
   Attachment,
 } from '@/sections/inventory/types'
+
+// Derive types from Database
+type DbBatch = Database['public']['Tables']['batches']['Row']
+type DbBatchStageHistory = Database['public']['Tables']['batch_stage_history']['Row']
+type DbBatchAttachment = Database['public']['Tables']['batch_attachments']['Row']
+export type BatchStage = Database['public']['Enums']['batch_stage']
 
 // Transform database batch to frontend batch
 function transformBatch(

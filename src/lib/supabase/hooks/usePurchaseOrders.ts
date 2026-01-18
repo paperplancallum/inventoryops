@@ -2,15 +2,16 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '../client'
-import type {
-  DbPurchaseOrder,
-  DbPOLineItem,
-  DbPOStatusHistory,
-  DbPOMessage,
-  DbPOAttachment,
-  DbPODocument,
-  POStatus,
-} from '../database.types'
+import type { Database } from '../database.types'
+
+// Derive types from Database
+type DbPurchaseOrder = Database['public']['Tables']['purchase_orders']['Row']
+type DbPOLineItem = Database['public']['Tables']['po_line_items']['Row']
+type DbPOStatusHistory = Database['public']['Tables']['po_status_history']['Row']
+type DbPOMessage = Database['public']['Tables']['po_messages']['Row']
+type DbPOAttachment = Database['public']['Tables']['po_attachments']['Row']
+type DbPODocument = Database['public']['Tables']['po_documents']['Row']
+type POStatus = Database['public']['Enums']['po_status']
 import type {
   PurchaseOrder,
   LineItem,

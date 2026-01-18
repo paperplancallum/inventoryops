@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '../client'
-import type {
-  DbInvoice,
-  DbInvoicePayment,
-  DbInvoicePaymentScheduleItem,
-  DbInvoicePaymentAttachment,
-  DbFinancialSummary,
-} from '../database.types'
+import type { Database } from '../database.types'
+
+// Derive types from Database
+type DbInvoice = Database['public']['Tables']['invoices']['Row']
+type DbInvoicePayment = Database['public']['Tables']['invoice_payments']['Row']
+type DbInvoicePaymentScheduleItem = Database['public']['Tables']['invoice_payment_schedule_items']['Row']
+type DbInvoicePaymentAttachment = Database['public']['Tables']['invoice_payment_attachments']['Row']
+type DbFinancialSummary = Database['public']['Views']['financial_summary']['Row']
 import type {
   Invoice,
   Payment,

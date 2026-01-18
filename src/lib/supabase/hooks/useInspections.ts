@@ -2,17 +2,18 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '../client'
-import type {
-  DbInspection,
-  DbInspectionLineItem,
-  DbInspectionDefect,
-  DbInspectionMeasurement,
-  DbInspectionPhoto,
-  DbReworkRequest,
-  DbInspectionMessage,
-  DbInspectionMessageAttachment,
-  InspectionStatus,
-} from '../database.types'
+import type { Database } from '../database.types'
+
+// Derive types from Database
+type DbInspection = Database['public']['Tables']['inspections']['Row']
+type DbInspectionLineItem = Database['public']['Tables']['inspection_line_items']['Row']
+type DbInspectionDefect = Database['public']['Tables']['inspection_defects']['Row']
+type DbInspectionMeasurement = Database['public']['Tables']['inspection_measurements']['Row']
+type DbInspectionPhoto = Database['public']['Tables']['inspection_photos']['Row']
+type DbReworkRequest = Database['public']['Tables']['rework_requests']['Row']
+type DbInspectionMessage = Database['public']['Tables']['inspection_messages']['Row']
+type DbInspectionMessageAttachment = Database['public']['Tables']['inspection_message_attachments']['Row']
+type InspectionStatus = Database['public']['Enums']['inspection_status']
 import type {
   Inspection,
   InspectionLineItem,

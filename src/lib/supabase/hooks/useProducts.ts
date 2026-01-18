@@ -2,8 +2,14 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { createClient } from '../client'
-import type { DbProduct, DbProductSKU, ProductStatus, ProductType } from '../database.types'
+import type { Database } from '../database.types'
 import type { Product, ProductSKU, ProductFormData } from '@/sections/catalog/types'
+
+// Derive types from Database
+type DbProduct = Database['public']['Tables']['products']['Row']
+type DbProductSKU = Database['public']['Tables']['product_skus']['Row']
+type ProductStatus = Database['public']['Enums']['product_status']
+type ProductType = Database['public']['Enums']['product_type']
 
 // Transform database product to frontend product
 function transformProduct(

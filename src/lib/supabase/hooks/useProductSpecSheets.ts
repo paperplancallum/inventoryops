@@ -2,8 +2,11 @@
 
 import { useState, useCallback } from 'react'
 import { createClient } from '../client'
-import type { DbProductSpecSheet } from '../database.types'
+import type { Database } from '../database.types'
 import type { ProductSpecSheet } from '@/sections/catalog/types'
+
+// Derive types from Database
+type DbProductSpecSheet = Database['public']['Tables']['product_spec_sheets']['Row']
 
 // Transform database spec sheet to frontend spec sheet
 function transformSpecSheet(dbSpec: DbProductSpecSheet): ProductSpecSheet {

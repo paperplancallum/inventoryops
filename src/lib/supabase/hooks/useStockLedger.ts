@@ -2,12 +2,13 @@
 
 import { useState, useEffect, useCallback, useMemo } from 'react'
 import { createClient } from '../client'
-import type {
-  DbStockLedgerEntry,
-  DbStockByLocation,
-  DbStockByProduct,
-  StockMovementType,
-} from '../database.types'
+import type { Database } from '../database.types'
+
+// Derive types from Database
+type DbStockLedgerEntry = Database['public']['Tables']['stock_ledger_entries']['Row']
+type DbStockByLocation = Database['public']['Views']['stock_by_location']['Row']
+type DbStockByProduct = Database['public']['Views']['stock_by_product']['Row']
+type StockMovementType = Database['public']['Enums']['stock_movement_type']
 import type {
   Stock,
   StockLedgerEntry,
