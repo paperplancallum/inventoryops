@@ -319,9 +319,11 @@ export default function InventoryPage() {
       id: p.id,
       name: p.name,
       sku: p.sku,
+      asin: p.asin,
       skus: (p.skus || []).map(s => ({
         id: s.id,
         sku: s.sku,
+        asin: s.asin,
       })),
     }))
   }, [products])

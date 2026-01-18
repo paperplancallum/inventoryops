@@ -8,9 +8,11 @@ interface Product {
   id: string
   name: string
   sku: string
+  asin?: string
   skus: Array<{
     id: string
     sku: string
+    asin?: string
   }>
 }
 
@@ -43,7 +45,8 @@ export function AmazonSkuMappingModal({
       p =>
         p.name.toLowerCase().includes(query) ||
         p.sku.toLowerCase().includes(query) ||
-        p.skus.some(s => s.sku.toLowerCase().includes(query))
+        (p.asin && p.asin.toLowerCase().includes(query)) ||
+        p.skus.some(s => s.sku.toLowerCase().includes(query) || (s.asin && s.asin.toLowerCase().includes(query)))
     )
   }, [products, searchQuery])
 
@@ -150,7 +153,7 @@ export function AmazonSkuMappingModal({
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-stone-400" />
                   <input
                     type="text"
-                    placeholder="Search by name or SKU..."
+                    placeholder="Search by name, SKU, or ASIN..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full pl-9 pr-4 py-2 bg-white dark:bg-stone-800 border border-stone-300 dark:border-stone-600 rounded-lg text-stone-900 dark:text-white placeholder-stone-400 focus:outline-none focus:ring-2 focus:ring-lime-500"
