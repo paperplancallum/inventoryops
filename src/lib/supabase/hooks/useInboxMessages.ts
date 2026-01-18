@@ -201,6 +201,7 @@ export function useInboxMessages(options: UseInboxMessagesOptions = {}) {
         awaitingReply,
       })
     } catch (err) {
+      console.error('Inbox fetch error:', err)
       setError(err instanceof Error ? err : new Error('Failed to fetch messages'))
     } finally {
       setLoading(false)
