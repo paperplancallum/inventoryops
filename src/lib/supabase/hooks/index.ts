@@ -75,3 +75,11 @@ export type {
   WorkOrderCostType,
   AvailableComponentStock,
 } from './useWorkOrders'
+
+export { useInboxMessages } from './useInboxMessages'
+
+export { useShippingAgentMessages } from './useShippingAgentMessages'
+export type {
+  ShippingAgentMessage,
+  ShippingAgentAttachment,
+} from './useShippingAgentMessages'
