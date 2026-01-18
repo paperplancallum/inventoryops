@@ -1,18 +1,12 @@
 'use client'
 
-import { useState, useMemo, useRef, useEffect } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import {
   X,
   Plus,
   Trash2,
   ChevronDown,
   Search,
-  Paperclip,
-  FileText,
-  Factory,
-  Warehouse,
-  Truck,
-  Ship,
 } from 'lucide-react'
 import type {
   Transfer,
@@ -51,28 +45,11 @@ interface TransferFormProps {
   preSelectedStockIds?: string[]
   initialLineItems?: TransferLineItemInput[]
   initialSourceLocationId?: string
+  initialDestinationLocationId?: string
   isOpen?: boolean
   onSubmit?: (data: TransferFormData) => void
   onCancel?: () => void
   onClose?: () => void
-}
-
-// Amazon icon component
-const AmazonIcon = ({ className = "w-4 h-4" }: { className?: string }) => (
-  <svg className={className} fill="currentColor" viewBox="0 0 24 24">
-    <path d="M.045 18.02c.072-.116.187-.124.348-.022 3.636 2.11 7.594 3.166 11.87 3.166 2.852 0 5.668-.533 8.447-1.595.394-.15.763-.3 1.108-.447.2-.085.397-.134.59-.134.18 0 .338.04.473.117.136.08.197.196.186.35-.01.154-.103.32-.278.496-.174.176-.442.377-.803.603-1.027.646-2.198 1.186-3.516 1.62-1.318.435-2.58.732-3.788.893-.363.048-.615.093-.756.133-.14.04-.21.12-.21.24v.08c.092.255.314.548.665.88.351.333.73.673 1.138 1.02.407.347.683.678.826.993.143.315.066.544-.232.686-.448.215-1.092.322-1.932.322-1.057 0-2.013-.19-2.87-.57-.857-.38-1.538-.888-2.04-1.522-.502-.634-.758-1.324-.768-2.07-.01-.745.237-1.434.74-2.067z" />
-  </svg>
-)
-
-// Location type icons
-const locationTypeIcons: Record<LocationType, React.ReactNode> = {
-  factory: <Factory className="w-4 h-4" />,
-  warehouse: <Warehouse className="w-4 h-4" />,
-  '3pl': <Truck className="w-4 h-4" />,
-  'amazon_fba': <AmazonIcon className="w-4 h-4" />,
-  'amazon_awd': <AmazonIcon className="w-4 h-4" />,
-  port: <Ship className="w-4 h-4" />,
-  customs: <FileText className="w-4 h-4" />,
 }
 
 const locationTypeLabels: Record<LocationType, string> = {
@@ -94,13 +71,12 @@ export function TransferForm({
   preSelectedStockIds,
   initialLineItems,
   initialSourceLocationId,
+  initialDestinationLocationId,
   isOpen = true,
   onSubmit,
   onCancel,
   onClose,
 }: TransferFormProps) {
-  if (!isOpen) return null
-
   const isEditing = !!transfer
 
   // Initialize line items from transfer, initialLineItems prop, or pre-selected stock
@@ -243,6 +219,13 @@ export function TransferForm({
     }
   }, [initialSourceLocationId, transfer, formData.sourceLocationId])
 
+  // Also handle initialDestinationLocationId prop
+  useEffect(() => {
+    if (!transfer && initialDestinationLocationId && !formData.destinationLocationId) {
+      setFormData(prev => ({ ...prev, destinationLocationId: initialDestinationLocationId }))
+    }
+  }, [initialDestinationLocationId, transfer, formData.destinationLocationId])
+
   // Filter out Amazon locations from source
   const sourceLocations = locations.filter(l => l.isActive && l.type !== 'amazon_fba' && l.type !== 'amazon_awd')
 
@@ -280,6 +263,9 @@ export function TransferForm({
       return hasAvailable && matchesLocation && matchesSearch && notAlreadyAdded
     })
   }, [availableStock, formData.sourceLocationId, stockSearchQuery, lineItems])
+
+  // Early return after all hooks
+  if (!isOpen) return null
 
   // Calculate totals
   const totalUnits = lineItems.reduce((sum, li) => sum + li.quantity, 0)

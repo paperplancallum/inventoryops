@@ -53,10 +53,19 @@ const statusStyles: Record<Product['status'], { bg: string; text: string; label:
   },
 }
 
+// Sort icon helper - defined outside component to avoid recreation on each render
+function SortIcon({ column, sortKey, sortDir }: { column: SortKey; sortKey: SortKey; sortDir: SortDir }) {
+  if (sortKey !== column) return null
+  return sortDir === 'asc' ? (
+    <ChevronUp className="w-4 h-4" />
+  ) : (
+    <ChevronDown className="w-4 h-4" />
+  )
+}
+
 export function ProductsTable({
   products,
   suppliers,
-  brands: _brands = [],
   getSupplierName,
   getBrandName,
   onCreate,
@@ -125,15 +134,6 @@ export function ProductsTable({
       setSortKey(key)
       setSortDir('asc')
     }
-  }
-
-  const SortIcon = ({ column }: { column: SortKey }) => {
-    if (sortKey !== column) return null
-    return sortDir === 'asc' ? (
-      <ChevronUp className="w-4 h-4" />
-    ) : (
-      <ChevronDown className="w-4 h-4" />
-    )
   }
 
   const hasFilters = statusFilter !== 'all' || supplierFilter !== 'all' || search
@@ -242,7 +242,7 @@ export function ProductsTable({
                     className="flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300"
                   >
                     SKU
-                    <SortIcon column="sku" />
+                    <SortIcon column="sku" sortKey={sortKey} sortDir={sortDir} />
                   </button>
                 </th>
                 <th className="text-left px-4 py-3">
@@ -251,7 +251,7 @@ export function ProductsTable({
                     className="flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300"
                   >
                     Product
-                    <SortIcon column="name" />
+                    <SortIcon column="name" sortKey={sortKey} sortDir={sortDir} />
                   </button>
                 </th>
                 <th className="text-left px-4 py-3 hidden lg:table-cell">
@@ -265,7 +265,7 @@ export function ProductsTable({
                     className="flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300 ml-auto"
                   >
                     Cost
-                    <SortIcon column="unitCost" />
+                    <SortIcon column="unitCost" sortKey={sortKey} sortDir={sortDir} />
                   </button>
                 </th>
                 <th className="text-right px-4 py-3 hidden md:table-cell">
@@ -274,7 +274,7 @@ export function ProductsTable({
                     className="flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300 ml-auto"
                   >
                     Stock
-                    <SortIcon column="stockLevel" />
+                    <SortIcon column="stockLevel" sortKey={sortKey} sortDir={sortDir} />
                   </button>
                 </th>
                 <th className="text-left px-4 py-3">
@@ -283,7 +283,7 @@ export function ProductsTable({
                     className="flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider hover:text-slate-700 dark:hover:text-slate-300"
                   >
                     Status
-                    <SortIcon column="status" />
+                    <SortIcon column="status" sortKey={sortKey} sortDir={sortDir} />
                   </button>
                 </th>
                 <th className="w-12 px-4 py-3"></th>

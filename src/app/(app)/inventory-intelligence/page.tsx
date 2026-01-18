@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useCallback } from 'react'
+import { useRouter } from 'next/navigation'
 import { InventoryIntelligenceView } from '@/sections/inventory-intelligence/components'
 import { useReplenishmentSuggestions } from '@/lib/supabase/hooks/useReplenishmentSuggestions'
 import { useSalesForecasts } from '@/lib/supabase/hooks/useSalesForecasts'
@@ -8,7 +9,8 @@ import { useSalesHistory } from '@/lib/supabase/hooks/useSalesHistory'
 import { useForecastAdjustments } from '@/lib/supabase/hooks/useForecastAdjustments'
 import { useLocations } from '@/lib/supabase/hooks/useLocations'
 import { useShippingRoutes } from '@/lib/supabase/hooks/useShippingRoutes'
-import type { InventoryIntelligenceTab, DashboardSummary, UrgencyOption, LocationReference } from '@/sections/inventory-intelligence/types'
+import { useProducts } from '@/lib/supabase/hooks/useProducts'
+import type { InventoryIntelligenceTab, DashboardSummary, UrgencyOption, LocationReference, ProductReference } from '@/sections/inventory-intelligence/types'
 
 const URGENCY_OPTIONS: UrgencyOption[] = [
   { id: 'critical', label: 'Critical', color: 'red' },
@@ -18,6 +20,7 @@ const URGENCY_OPTIONS: UrgencyOption[] = [
 ]
 
 export default function InventoryIntelligencePage() {
+  const router = useRouter()
   const [activeTab, setActiveTab] = useState<InventoryIntelligenceTab>('dashboard')
 
   // Fetch data using hooks
@@ -33,11 +36,14 @@ export default function InventoryIntelligencePage() {
     snoozeSuggestion,
   } = useReplenishmentSuggestions()
 
+  const { products: rawProducts, loading: productsLoading } = useProducts()
+
   const {
     forecasts,
     loading: forecastsLoading,
     updateForecast,
     toggleEnabled,
+    recalculateForecast,
   } = useSalesForecasts()
 
   const { history: salesHistory, loading: historyLoading } = useSalesHistory()
@@ -61,6 +67,16 @@ export default function InventoryIntelligencePage() {
       type: loc.type,
     }))
   }, [rawLocations])
+
+  // Transform products to ProductReference
+  const products: ProductReference[] = useMemo(() => {
+    return (rawProducts || []).map((p) => ({
+      id: p.id,
+      sku: p.sku,
+      name: p.name,
+      supplierId: p.supplierId,
+    }))
+  }, [rawProducts])
 
   // Build dashboard summary
   const dashboardSummary: DashboardSummary = useMemo(() => {
@@ -118,6 +134,56 @@ export default function InventoryIntelligencePage() {
     }
   }, [suggestions, urgencyCounts])
 
+  // Accept transfer suggestion handler - stores prefill data and navigates
+  const handleAcceptTransferSuggestion = useCallback((id: string) => {
+    const suggestion = transferSuggestions.find(s => s.id === id)
+    if (!suggestion) return
+
+    // Store prefill data in sessionStorage
+    const prefillData = {
+      sourceLocationId: suggestion.sourceLocationId || undefined,
+      destinationLocationId: suggestion.destinationLocationId,
+      lineItems: [{
+        productId: suggestion.productId,
+        sku: suggestion.sku,
+        quantity: suggestion.recommendedQty,
+      }],
+      routeId: suggestion.routeId || undefined,
+      suggestionId: suggestion.id,
+    }
+    sessionStorage.setItem('transferPrefill', JSON.stringify(prefillData))
+
+    // Mark as accepted
+    acceptSuggestion(id, undefined, 'transfer')
+
+    // Navigate to transfers page
+    router.push('/transfers?action=create')
+  }, [transferSuggestions, acceptSuggestion, router])
+
+  // Accept PO suggestion handler - stores prefill data and navigates
+  const handleAcceptPOSuggestion = useCallback((id: string) => {
+    const suggestion = poSuggestions.find(s => s.id === id)
+    if (!suggestion) return
+
+    // Store prefill data in sessionStorage
+    const prefillData = {
+      supplierId: suggestion.supplierId || undefined,
+      lineItems: [{
+        productId: suggestion.productId,
+        sku: suggestion.sku,
+        quantity: suggestion.recommendedQty,
+      }],
+      suggestionId: suggestion.id,
+    }
+    sessionStorage.setItem('poPrefill', JSON.stringify(prefillData))
+
+    // Mark as accepted
+    acceptSuggestion(id, undefined, 'purchase-order')
+
+    // Navigate to purchase orders page
+    router.push('/purchase-orders?action=create')
+  }, [poSuggestions, acceptSuggestion, router])
+
   // Check loading state
   const isLoading =
     suggestionsLoading ||
@@ -125,7 +191,8 @@ export default function InventoryIntelligencePage() {
     historyLoading ||
     adjustmentsLoading ||
     locationsLoading ||
-    routesLoading
+    routesLoading ||
+    productsLoading
 
   if (isLoading) {
     return (
@@ -148,16 +215,18 @@ export default function InventoryIntelligencePage() {
       locations={locations}
       routes={routes}
       urgencyOptions={URGENCY_OPTIONS}
-      onAcceptTransferSuggestion={(id) => acceptSuggestion(id)}
-      onAcceptPOSuggestion={(id) => acceptSuggestion(id)}
+      onAcceptTransferSuggestion={handleAcceptTransferSuggestion}
+      onAcceptPOSuggestion={handleAcceptPOSuggestion}
       onDismissSuggestion={dismissSuggestion}
       onSnoozeSuggestion={snoozeSuggestion}
       onRefreshSuggestions={regenerateSuggestions}
       forecasts={forecasts}
       salesHistory={salesHistory}
       accountForecastAdjustments={accountAdjustments}
+      products={products}
       onUpdateForecast={updateForecast}
       onToggleEnabled={toggleEnabled}
+      onRecalculateForecast={recalculateForecast}
       onAddAccountAdjustment={(adjustment) => {
         createAccountAdjustment({
           name: adjustment.name,

@@ -150,9 +150,6 @@ export function ActivityLogView({
   onViewEntity,
   onFilterChange,
   onExport,
-  onLoadMore: _onLoadMore,
-  hasMore: _hasMore = false,
-  isLoading: _isLoading = false,
 }: ActivityLogProps) {
   const [filters, setFilters] = useState<ActivityLogFiltersType>({
     searchQuery: '',

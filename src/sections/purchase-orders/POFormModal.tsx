@@ -33,6 +33,9 @@ interface POFormModalProps {
   suppliers: Supplier[]
   products: Product[]
   paymentTermsOptions?: PaymentTermsSelectOption[]
+  // Prefill props for inventory intelligence suggestions
+  initialSupplierId?: string
+  initialLineItems?: { productId: string; sku: string; quantity: number }[]
 }
 
 type Step = 'supplier' | 'items' | 'details'
@@ -45,6 +48,8 @@ export function POFormModal({
   suppliers,
   products,
   paymentTermsOptions = [],
+  initialSupplierId,
+  initialLineItems,
 }: POFormModalProps) {
   const [step, setStep] = useState<Step>('supplier')
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -70,20 +75,44 @@ export function POFormModal({
         setNotes(purchaseOrder.notes)
         setStep('supplier')
       } else {
-        const firstSupplier = suppliers[0]
+        // Use prefill data if provided, otherwise use defaults
+        const prefillSupplier = initialSupplierId ? suppliers.find(s => s.id === initialSupplierId) : null
+        const firstSupplier = prefillSupplier || suppliers[0]
         setSupplierId(firstSupplier?.id || '')
-        setLineItems([])
+
+        // Convert initial line items to the expected format
+        if (initialLineItems && initialLineItems.length > 0) {
+          const prefillLines: LineItem[] = initialLineItems.map((item, index) => {
+            const product = products.find(p => p.id === item.productId)
+            const unitCost = product?.unitCost || 0
+            return {
+              id: `prefill-${index}`,
+              productId: item.productId,
+              sku: item.sku || product?.sku || '',
+              productName: product?.name || '',
+              quantity: item.quantity,
+              unitCost,
+              subtotal: item.quantity * unitCost,
+            }
+          })
+          setLineItems(prefillLines)
+          // Skip to items step since we have prefill data
+          setStep('items')
+        } else {
+          setLineItems([])
+          setStep('supplier')
+        }
+
         setOrderDate(new Date().toISOString().split('T')[0])
         setExpectedDate('')
-        // Pre-select payment terms based on first supplier
+        // Pre-select payment terms based on supplier
         setPaymentTermsTemplateId(firstSupplier?.paymentTermsTemplateId || '')
         setNotes('')
-        setStep('supplier')
         setUsingDefaultLeadTime(false)
       }
       setErrors({})
     }
-  }, [isOpen, purchaseOrder, suppliers])
+  }, [isOpen, purchaseOrder, suppliers, products, initialSupplierId, initialLineItems])
 
   const selectedSupplier = suppliers.find((s) => s.id === supplierId)
 

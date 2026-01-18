@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import type { ActivityLogEntryRowProps, ActionType, EntityType } from '@/../product/sections/activity-log/types'
 import { FieldChangeDisplay } from './FieldChangeDisplay'
 
@@ -178,7 +179,7 @@ export function ActivityLogEntryRow({
         <div className="flex items-center gap-2 w-32 flex-shrink-0">
           <div className="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-600 flex items-center justify-center text-slate-500 dark:text-slate-400">
             {entry.user.avatarUrl ? (
-              <img src={entry.user.avatarUrl} alt="" className="w-6 h-6 rounded-full" />
+              <Image src={entry.user.avatarUrl} alt="" width={24} height={24} className="w-6 h-6 rounded-full" />
             ) : (
               <UserIcon />
             )}

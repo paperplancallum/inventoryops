@@ -81,7 +81,16 @@ export default function TransfersPage() {
   // Request Quotes dialog state
   const [isRequestQuotesOpen, setIsRequestQuotesOpen] = useState(false)
 
-  // Check for create action from URL params (e.g., from PO page)
+  // State for suggestion prefill data
+  const [prefillData, setPrefillData] = useState<{
+    sourceLocationId?: string
+    destinationLocationId?: string
+    lineItems?: { productId: string; sku: string; quantity: number }[]
+    routeId?: string
+    suggestionId?: string
+  } | null>(null)
+
+  // Check for create action from URL params (e.g., from PO page or inventory intelligence)
   useEffect(() => {
     const action = searchParams.get('action')
     if (action === 'create') {
@@ -96,6 +105,19 @@ export default function TransfersPage() {
           console.error('Failed to parse preselected batch IDs')
         }
       }
+
+      // Check for transfer prefill data from inventory intelligence
+      const storedPrefill = sessionStorage.getItem('transferPrefill')
+      if (storedPrefill) {
+        try {
+          const prefill = JSON.parse(storedPrefill)
+          setPrefillData(prefill)
+          sessionStorage.removeItem('transferPrefill')
+        } catch {
+          console.error('Failed to parse transfer prefill data')
+        }
+      }
+
       // Open the form
       setIsFormOpen(true)
       // Clear the URL param
@@ -160,6 +182,7 @@ export default function TransfersPage() {
     setIsFormOpen(false)
     setEditingTransfer(undefined)
     setPreselectedBatchIds([])
+    setPrefillData(null)
   }, [])
 
   const handleCloseTransferDetail = useCallback(() => {
@@ -323,10 +346,12 @@ export default function TransfersPage() {
             : undefined
         }
         initialSourceLocationId={
-          preselectedBatchIds.length > 0
+          prefillData?.sourceLocationId ||
+          (preselectedBatchIds.length > 0
             ? availableStock.find(s => preselectedBatchIds.includes(s.batchId))?.locationId
-            : undefined
+            : undefined)
         }
+        initialDestinationLocationId={prefillData?.destinationLocationId}
         onSubmit={handleSubmitTransfer}
         onCancel={handleCloseTransferForm}
         onClose={handleCloseTransferForm}

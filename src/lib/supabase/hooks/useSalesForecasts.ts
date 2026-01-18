@@ -2,6 +2,13 @@
 
 import { useCallback, useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import {
+  calculateDailyRate,
+  detectSeasonality,
+  calculateTrendRate,
+  backtestForecast,
+  type SalesDataPoint
+} from '@/lib/forecasting'
 
 export type ConfidenceLevel = 'high' | 'medium' | 'low'
 
@@ -166,6 +173,89 @@ export function useSalesForecasts() {
     await updateForecast(id, { isEnabled: enabled })
   }, [updateForecast])
 
+  /**
+   * Recalculate forecast for a product using historical sales data
+   * Updates daily rate, seasonality, trend, and MAPE accuracy
+   */
+  const recalculateForecast = useCallback(async (forecastId: string): Promise<void> => {
+    try {
+      // Find the forecast
+      const forecast = forecasts.find(f => f.id === forecastId)
+      if (!forecast) {
+        throw new Error('Forecast not found')
+      }
+
+      // Fetch sales history for this product/location
+      const { data: historyData, error: historyError } = await supabase
+        .from('sales_history')
+        .select('date, units_sold')
+        .eq('product_id', forecast.productId)
+        .eq('location_id', forecast.locationId)
+        .order('date', { ascending: true })
+
+      if (historyError) throw historyError
+
+      if (!historyData || historyData.length === 0) {
+        console.warn('No sales history found for forecast recalculation')
+        return
+      }
+
+      // Convert to SalesDataPoint format
+      const salesHistory: SalesDataPoint[] = historyData.map(row => ({
+        date: row.date,
+        unitsSold: row.units_sold
+      }))
+
+      // Calculate new values
+      const dailyRate = calculateDailyRate(salesHistory, 30)
+      const seasonalMultipliers = detectSeasonality(salesHistory)
+      const trendRate = calculateTrendRate(salesHistory)
+
+      // Backtest to get accuracy
+      const accuracy = backtestForecast(
+        salesHistory,
+        dailyRate,
+        seasonalMultipliers,
+        trendRate,
+        30
+      )
+
+      // Update the forecast with new values
+      const { error: updateError } = await supabase
+        .from('sales_forecasts')
+        .update({
+          daily_rate: dailyRate,
+          seasonal_multipliers: seasonalMultipliers,
+          trend_rate: trendRate,
+          accuracy_mape: accuracy.mape,
+          confidence: accuracy.confidence,
+          last_calculated_at: new Date().toISOString(),
+        })
+        .eq('id', forecastId)
+
+      if (updateError) throw updateError
+
+      // Refresh forecasts
+      await fetchForecasts()
+    } catch (err) {
+      console.error('Error recalculating forecast:', err)
+      throw err
+    }
+  }, [supabase, forecasts, fetchForecasts])
+
+  /**
+   * Recalculate all forecasts
+   */
+  const recalculateAllForecasts = useCallback(async (): Promise<void> => {
+    for (const forecast of forecasts) {
+      try {
+        await recalculateForecast(forecast.id)
+      } catch (err) {
+        console.error(`Failed to recalculate forecast ${forecast.id}:`, err)
+      }
+    }
+  }, [forecasts, recalculateForecast])
+
   return {
     forecasts,
     loading,
@@ -175,5 +265,7 @@ export function useSalesForecasts() {
     updateForecast,
     deleteForecast,
     toggleEnabled,
+    recalculateForecast,
+    recalculateAllForecasts,
   }
 }

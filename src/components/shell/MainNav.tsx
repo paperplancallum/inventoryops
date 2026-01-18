@@ -20,7 +20,7 @@ export function MainNav({ items }: MainNavProps) {
     <nav className="px-3 space-y-1">
       {items.map((item) => {
         const isActive = pathname === item.href ||
-          (item.href !== '/' && pathname.startsWith(item.href))
+          (item.href !== '/' && pathname.startsWith(item.href + '/'))
 
         return (
           <Link

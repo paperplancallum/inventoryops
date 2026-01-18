@@ -182,6 +182,64 @@ export function useSalesHistory(filters?: SalesHistoryFilters) {
     return total / relevantEntries.length
   }, [history])
 
+  // Sync sales history from Amazon
+  const syncFromAmazon = useCallback(async (options?: {
+    startDate?: string
+    endDate?: string
+    locationId?: string
+  }): Promise<{ success: boolean; message: string; syncedCount?: number }> => {
+    try {
+      setLoading(true)
+      const response = await fetch('/api/amazon/sales-history', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(options || {}),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        return {
+          success: false,
+          message: data.message || data.error || 'Failed to sync from Amazon',
+        }
+      }
+
+      await fetchHistory()
+      return {
+        success: true,
+        message: `Successfully synced ${data.syncedCount || 0} sales records`,
+        syncedCount: data.syncedCount,
+      }
+    } catch (err) {
+      console.error('Error syncing from Amazon:', err)
+      return {
+        success: false,
+        message: err instanceof Error ? err.message : 'Failed to sync from Amazon',
+      }
+    } finally {
+      setLoading(false)
+    }
+  }, [fetchHistory])
+
+  // Check Amazon sync status
+  const checkAmazonSyncStatus = useCallback(async (): Promise<{
+    connected: boolean
+    lastConnectionSync?: string
+    latestSalesDate?: string
+  }> => {
+    try {
+      const response = await fetch('/api/amazon/sales-history')
+      if (!response.ok) {
+        return { connected: false }
+      }
+      return await response.json()
+    } catch (err) {
+      console.error('Error checking Amazon sync status:', err)
+      return { connected: false }
+    }
+  }, [])
+
   return {
     history,
     loading,
@@ -191,5 +249,7 @@ export function useSalesHistory(filters?: SalesHistoryFilters) {
     bulkImport,
     deleteEntry,
     calculateDailyAverage,
+    syncFromAmazon,
+    checkAmazonSyncStatus,
   }
 }

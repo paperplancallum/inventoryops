@@ -117,14 +117,42 @@ export default function PurchaseOrdersPage() {
     window.history.replaceState(null, '', newUrl)
   }, [searchParams])
 
+  // State for suggestion prefill data
+  const [prefillData, setPrefillData] = useState<{
+    supplierId?: string
+    lineItems?: { productId: string; sku: string; quantity: number }[]
+    suggestionId?: string
+  } | null>(null)
+
   // Handle URL params for deep linking
   useEffect(() => {
     const viewId = searchParams.get('view')
     const editId = searchParams.get('edit')
+    const action = searchParams.get('action')
 
     // Redirect ?view= URLs to full page view
     if (viewId) {
       router.replace(`/purchase-orders/${viewId}`)
+      return
+    }
+
+    // Handle create action from inventory intelligence
+    if (action === 'create') {
+      // Check for PO prefill data from inventory intelligence
+      const storedPrefill = sessionStorage.getItem('poPrefill')
+      if (storedPrefill) {
+        try {
+          const prefill = JSON.parse(storedPrefill)
+          setPrefillData(prefill)
+          sessionStorage.removeItem('poPrefill')
+        } catch {
+          console.error('Failed to parse PO prefill data')
+        }
+      }
+      // Open the form
+      setIsFormModalOpen(true)
+      // Clear the URL param
+      router.replace('/purchase-orders')
       return
     }
 
@@ -387,6 +415,7 @@ export default function PurchaseOrdersPage() {
         onClose={() => {
           setIsFormModalOpen(false)
           setEditingPO(null)
+          setPrefillData(null)
           updateUrlParam('edit', null)
         }}
         onSubmit={handlePOSubmit}
@@ -394,6 +423,8 @@ export default function PurchaseOrdersPage() {
         suppliers={supplierOptions}
         products={productOptions}
         paymentTermsOptions={paymentTermsOptions}
+        initialSupplierId={prefillData?.supplierId}
+        initialLineItems={prefillData?.lineItems}
       />
 
       {/* PO Detail Modal */}
