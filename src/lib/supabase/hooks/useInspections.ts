@@ -685,6 +685,30 @@ export function useInspections() {
           )
         )
 
+        // Auto-generate Inspection Brief when status changes to pending-confirmation
+        if (newStatus === 'pending-confirmation') {
+          try {
+            const docResponse = await fetch('/api/documents/generate', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                sourceEntityType: 'inspection',
+                sourceEntityId: id,
+                documentType: 'inspection-brief',
+                trigger: 'auto',
+                notes: 'Auto-generated when sent to inspection agent',
+              }),
+            })
+            if (!docResponse.ok) {
+              const errorData = await docResponse.json().catch(() => ({}))
+              console.warn('[Document Generation] Failed to auto-generate inspection brief:', errorData.error || docResponse.statusText)
+            }
+          } catch (docError) {
+            // Non-fatal - log but don't fail the main operation
+            console.warn('[Document Generation] Failed to auto-generate inspection brief:', docError)
+          }
+        }
+
         return true
       } catch (err) {
         setError(err instanceof Error ? err : new Error('Failed to update status'))

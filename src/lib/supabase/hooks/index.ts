@@ -75,3 +75,5 @@ export type {
   WorkOrderCostType,
   AvailableComponentStock,
 } from './useWorkOrders'
+
+export { useDocuments } from './useDocuments'

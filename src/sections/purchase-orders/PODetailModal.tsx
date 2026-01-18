@@ -18,8 +18,10 @@ interface PODetailModalProps {
   onSendToSupplier?: (id: string, customMessage?: string) => Promise<void>
   onResendToSupplier?: (id: string) => Promise<void>
   onReviewInvoice?: (poId: string) => void
+  onGeneratePDF?: (poId: string) => Promise<void>
   updating?: boolean
   sendingToSupplier?: boolean
+  generatingPDF?: boolean
 }
 
 // Status transitions: what statuses can transition to what
@@ -158,8 +160,10 @@ export function PODetailModal({
   onSendToSupplier,
   onResendToSupplier,
   onReviewInvoice,
+  onGeneratePDF,
   updating = false,
   sendingToSupplier = false,
+  generatingPDF = false,
 }: PODetailModalProps) {
   const [showCancelConfirm, setShowCancelConfirm] = useState(false)
   const [selectedBatchIds, setSelectedBatchIds] = useState<string[]>([])
@@ -614,6 +618,21 @@ export function PODetailModal({
                   >
                     <FileCheck className="w-4 h-4" />
                     Review Invoice
+                  </button>
+                )}
+                {/* Generate PDF - available for any status except draft */}
+                {onGeneratePDF && purchaseOrder.status !== 'draft' && (
+                  <button
+                    onClick={() => onGeneratePDF(purchaseOrder.id)}
+                    disabled={generatingPDF}
+                    className="px-4 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {generatingPDF ? (
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                    ) : (
+                      <FileText className="w-4 h-4" />
+                    )}
+                    {generatingPDF ? 'Generating...' : 'Generate PDF'}
                   </button>
                 )}
                 <button

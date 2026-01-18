@@ -50,6 +50,7 @@ interface TransferDetailProps {
   onViewInvoice?: (invoiceId: string) => void
   onViewShippingInvoice?: (invoiceId: string) => void
   onGenerateManifest?: () => void
+  onGeneratePackingList?: () => void
   onGenerateMagicLink?: () => void
   onUpdateAmazonShipmentId?: (shipmentId: string | null) => void
   onNavigateToAmazonShipment?: () => void
@@ -111,6 +112,7 @@ export function TransferDetail({
   onViewInvoice,
   onViewShippingInvoice,
   onGenerateManifest,
+  onGeneratePackingList,
   onGenerateMagicLink,
   onUpdateAmazonShipmentId,
   onNavigateToAmazonShipment,
@@ -725,21 +727,44 @@ export function TransferDetail({
             </section>
           )}
 
-          {/* Generate Manifest */}
-          {onGenerateManifest && (
+          {/* Generate Documents */}
+          {(onGenerateManifest || onGeneratePackingList) && (
             <section>
-              <div className="flex items-center justify-between bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4">
-                <div>
-                  <p className="text-sm font-medium text-stone-900 dark:text-white">Shipping Manifest</p>
-                  <p className="text-xs text-stone-500 dark:text-stone-400">Generate PDF manifest for this transfer</p>
-                </div>
-                <button
-                  onClick={onGenerateManifest}
-                  className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-lime-600 hover:bg-lime-700 text-white rounded-lg transition-colors"
-                >
-                  <FileText className="w-4 h-4" />
-                  Generate PDF
-                </button>
+              <h3 className="text-sm font-semibold text-stone-900 dark:text-white mb-3 flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                Documents
+              </h3>
+              <div className="space-y-3">
+                {onGenerateManifest && (
+                  <div className="flex items-center justify-between bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4">
+                    <div>
+                      <p className="text-sm font-medium text-stone-900 dark:text-white">Shipping Manifest</p>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">Generate PDF manifest for this transfer</p>
+                    </div>
+                    <button
+                      onClick={onGenerateManifest}
+                      className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-lime-600 hover:bg-lime-700 text-white rounded-lg transition-colors"
+                    >
+                      <FileText className="w-4 h-4" />
+                      Generate PDF
+                    </button>
+                  </div>
+                )}
+                {onGeneratePackingList && (
+                  <div className="flex items-center justify-between bg-stone-50 dark:bg-stone-700/50 rounded-lg p-4">
+                    <div>
+                      <p className="text-sm font-medium text-stone-900 dark:text-white">Packing List</p>
+                      <p className="text-xs text-stone-500 dark:text-stone-400">Generate PDF packing list for receiving</p>
+                    </div>
+                    <button
+                      onClick={onGeneratePackingList}
+                      className="flex items-center gap-1 px-3 py-1.5 text-sm font-medium bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg transition-colors"
+                    >
+                      <FileText className="w-4 h-4" />
+                      Generate PDF
+                    </button>
+                  </div>
+                )}
               </div>
             </section>
           )}

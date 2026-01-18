@@ -692,6 +692,51 @@ export function useTransfers() {
         setTransfers(prev => prev.map(t => t.id === id ? freshTransfer : t))
       }
 
+      // Auto-generate documents based on status change
+      if (newStatus === 'booked') {
+        // Auto-generate Shipping Manifest when transfer is booked
+        try {
+          const docResponse = await fetch('/api/documents/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sourceEntityType: 'transfer',
+              sourceEntityId: id,
+              documentType: 'shipping-manifest',
+              trigger: 'auto',
+              notes: 'Auto-generated when transfer was booked',
+            }),
+          })
+          if (!docResponse.ok) {
+            const errorData = await docResponse.json().catch(() => ({}))
+            console.warn('[Document Generation] Failed to auto-generate shipping manifest:', errorData.error || docResponse.statusText)
+          }
+        } catch (docError) {
+          console.warn('[Document Generation] Failed to auto-generate shipping manifest:', docError)
+        }
+      } else if (newStatus === 'in-transit') {
+        // Auto-generate Packing List when transfer goes in-transit
+        try {
+          const docResponse = await fetch('/api/documents/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              sourceEntityType: 'transfer',
+              sourceEntityId: id,
+              documentType: 'packing-list',
+              trigger: 'auto',
+              notes: 'Auto-generated when transfer departed',
+            }),
+          })
+          if (!docResponse.ok) {
+            const errorData = await docResponse.json().catch(() => ({}))
+            console.warn('[Document Generation] Failed to auto-generate packing list:', errorData.error || docResponse.statusText)
+          }
+        } catch (docError) {
+          console.warn('[Document Generation] Failed to auto-generate packing list:', docError)
+        }
+      }
+
       return { success: true }
     } catch (err) {
       // Rollback optimistic update

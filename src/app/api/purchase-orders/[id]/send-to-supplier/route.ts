@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { sendPOToSupplier } from '@/lib/email/resend'
+import { generateAndSaveDocument } from '@/lib/documents/generateDocument'
 
 // Token generation utilities (same as magic-links route)
 function generateSecureToken(): string {
@@ -221,6 +222,20 @@ export async function POST(
       changed_by_id: user.id,
       changed_by_name: userName,
     })
+
+    // Auto-generate PO PDF document (direct call, no HTTP roundtrip)
+    try {
+      await generateAndSaveDocument(supabase, user.id, userName, {
+        sourceEntityType: 'purchase-order',
+        sourceEntityId: poId,
+        documentType: 'purchase-order-pdf',
+        trigger: 'auto',
+        notes: `Auto-generated when sent to supplier ${supplier.name}`,
+      })
+    } catch (docError) {
+      // Non-fatal - log but don't fail the request
+      console.error('Failed to auto-generate PO PDF:', docError)
+    }
 
     return NextResponse.json({
       success: true,
