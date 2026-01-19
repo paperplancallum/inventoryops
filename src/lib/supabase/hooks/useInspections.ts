@@ -883,6 +883,273 @@ export function useInspections() {
     [supabase]
   )
 
+  // Get POs available for adding to an inspection (same supplier, not in another inspection)
+  const getAvailablePOsForInspection = useCallback(
+    async (inspectionId: string): Promise<{ id: string; poNumber: string; supplierName: string; lineItemCount: number; expectedDate: string }[]> => {
+      try {
+        // Get the current inspection to find its supplier
+        const inspection = inspections.find(i => i.id === inspectionId)
+        if (!inspection) return []
+
+        // Get supplier name from inspection (handles both single and multi-PO)
+        const supplierName = inspection.supplierName || inspection.purchaseOrders?.[0]?.supplierName
+
+        if (!supplierName) return []
+
+        // Get all PO IDs that are already in any inspection
+        const { data: usedPOs } = await supabase
+          .from('inspection_purchase_orders')
+          .select('purchase_order_id')
+
+        const usedPOIds = new Set((usedPOs || []).map(p => p.purchase_order_id))
+
+        // Also include legacy single-PO inspections
+        const { data: legacyInspections } = await supabase
+          .from('inspections')
+          .select('purchase_order_id')
+          .not('purchase_order_id', 'is', null)
+
+        for (const insp of legacyInspections || []) {
+          if (insp.purchase_order_id) usedPOIds.add(insp.purchase_order_id)
+        }
+
+        // Get POs with the same supplier that are not already in an inspection
+        const { data: availablePOs, error } = await supabase
+          .from('purchase_orders')
+          .select(`
+            id,
+            po_number,
+            expected_date,
+            supplier:suppliers(name),
+            po_line_items(id)
+          `)
+          .eq('suppliers.name', supplierName)
+
+        if (error) throw error
+
+        // Filter out already-used POs and format response
+        return (availablePOs || [])
+          .filter(po => !usedPOIds.has(po.id))
+          .map(po => {
+            const supplierData = po.supplier as { name: string } | { name: string }[] | null
+            const name = supplierData
+              ? (Array.isArray(supplierData) ? supplierData[0]?.name : supplierData.name)
+              : 'Unknown'
+            return {
+              id: po.id,
+              poNumber: po.po_number,
+              supplierName: name || 'Unknown',
+              lineItemCount: (po.po_line_items || []).length,
+              expectedDate: po.expected_date || '',
+            }
+          })
+      } catch (err) {
+        console.error('Error fetching available POs:', err)
+        return []
+      }
+    },
+    [supabase, inspections]
+  )
+
+  // Add purchase orders to an existing inspection
+  const addPurchaseOrdersToInspection = useCallback(
+    async (inspectionId: string, poIds: string[]): Promise<boolean> => {
+      try {
+        if (poIds.length === 0) return true
+
+        // Fetch PO details with line items
+        const { data: posData, error: posError } = await supabase
+          .from('purchase_orders')
+          .select(`
+            id,
+            po_number,
+            supplier:suppliers(name),
+            po_line_items(*)
+          `)
+          .in('id', poIds)
+
+        if (posError) throw posError
+
+        // Insert into junction table
+        const junctionRecords = poIds.map(poId => ({
+          inspection_id: inspectionId,
+          purchase_order_id: poId,
+        }))
+
+        const { error: junctionError } = await supabase
+          .from('inspection_purchase_orders')
+          .insert(junctionRecords)
+
+        if (junctionError) throw junctionError
+
+        // Get current max sort_order for line items
+        const { data: existingLineItems } = await supabase
+          .from('inspection_line_items')
+          .select('sort_order')
+          .eq('inspection_id', inspectionId)
+          .order('sort_order', { ascending: false })
+          .limit(1)
+
+        let sortOrder = (existingLineItems?.[0]?.sort_order ?? -1) + 1
+
+        // Create line items for each PO
+        const allLineItems: {
+          inspection_id: string
+          po_line_item_id: string
+          product_id: string | null
+          product_name: string
+          product_sku: string
+          ordered_quantity: number
+          sort_order: number
+        }[] = []
+
+        for (const po of posData || []) {
+          for (const li of (po.po_line_items || [])) {
+            allLineItems.push({
+              inspection_id: inspectionId,
+              po_line_item_id: li.id,
+              product_id: li.product_id || null,
+              product_name: li.product_name,
+              product_sku: li.sku,
+              ordered_quantity: li.quantity,
+              sort_order: sortOrder++,
+            })
+          }
+        }
+
+        if (allLineItems.length > 0) {
+          const { error: lineItemsError } = await supabase
+            .from('inspection_line_items')
+            .insert(allLineItems)
+
+          if (lineItemsError) throw lineItemsError
+        }
+
+        // Refetch inspection to get updated data
+        const freshInspection = await fetchInspection(inspectionId)
+        if (freshInspection) {
+          setInspections(prev => prev.map(insp => (insp.id === inspectionId ? freshInspection : insp)))
+        }
+
+        return true
+      } catch (err) {
+        console.error('Error adding POs to inspection:', err)
+        setError(err instanceof Error ? err : new Error('Failed to add purchase orders'))
+        return false
+      }
+    },
+    [supabase, fetchInspection]
+  )
+
+  // Remove a purchase order from an inspection
+  const removePurchaseOrderFromInspection = useCallback(
+    async (inspectionId: string, poId: string): Promise<boolean> => {
+      try {
+        // First, get the PO line item IDs for this PO
+        const { data: poLineItems } = await supabase
+          .from('po_line_items')
+          .select('id')
+          .eq('purchase_order_id', poId)
+
+        const poLineItemIds = (poLineItems || []).map(li => li.id)
+
+        // Delete inspection line items that reference these PO line items
+        if (poLineItemIds.length > 0) {
+          const { error: lineItemsError } = await supabase
+            .from('inspection_line_items')
+            .delete()
+            .eq('inspection_id', inspectionId)
+            .in('po_line_item_id', poLineItemIds)
+
+          if (lineItemsError) throw lineItemsError
+        }
+
+        // Delete from junction table
+        const { error: junctionError } = await supabase
+          .from('inspection_purchase_orders')
+          .delete()
+          .eq('inspection_id', inspectionId)
+          .eq('purchase_order_id', poId)
+
+        if (junctionError) throw junctionError
+
+        // Refetch inspection to get updated data
+        const freshInspection = await fetchInspection(inspectionId)
+        if (freshInspection) {
+          setInspections(prev => prev.map(insp => (insp.id === inspectionId ? freshInspection : insp)))
+        }
+
+        return true
+      } catch (err) {
+        console.error('Error removing PO from inspection:', err)
+        setError(err instanceof Error ? err : new Error('Failed to remove purchase order'))
+        return false
+      }
+    },
+    [supabase, fetchInspection]
+  )
+
+  // Update inspection (for editing scheduled date, agent, notes)
+  const updateInspection = useCallback(
+    async (id: string, data: { scheduledDate?: string; agentId?: string | null; notes?: string }): Promise<boolean> => {
+      try {
+        const updateData: Record<string, unknown> = {}
+
+        if (data.scheduledDate !== undefined) {
+          updateData.scheduled_date = data.scheduledDate
+        }
+
+        if (data.notes !== undefined) {
+          updateData.notes = data.notes || null
+        }
+
+        if (data.agentId !== undefined) {
+          updateData.agent_id = data.agentId || null
+
+          // Get agent name
+          if (data.agentId) {
+            const { data: agentData } = await supabase
+              .from('inspection_agents')
+              .select('name')
+              .eq('id', data.agentId)
+              .single()
+            updateData.agent_name = agentData?.name || 'Unassigned'
+          } else {
+            updateData.agent_name = 'Unassigned'
+          }
+        }
+
+        const { error: updateError } = await supabase
+          .from('inspections')
+          .update(updateData)
+          .eq('id', id)
+
+        if (updateError) throw updateError
+
+        // Update local state
+        setInspections(prev =>
+          prev.map(insp =>
+            insp.id === id
+              ? {
+                  ...insp,
+                  scheduledDate: data.scheduledDate ?? insp.scheduledDate,
+                  agentId: data.agentId !== undefined ? data.agentId : insp.agentId,
+                  agentName: updateData.agent_name as string ?? insp.agentName,
+                  notes: data.notes ?? insp.notes,
+                }
+              : insp
+          )
+        )
+
+        return true
+      } catch (err) {
+        setError(err instanceof Error ? err : new Error('Failed to update inspection'))
+        return false
+      }
+    },
+    [supabase]
+  )
+
   // Send message
   const sendMessage = useCallback(
     async (inspectionId: string, content: string, direction: 'outbound' | 'note' = 'outbound'): Promise<boolean> => {
@@ -950,6 +1217,10 @@ export function useInspections() {
     scheduleInspection,
     scheduleInspectionBatch,
     updateStatus,
+    updateInspection,
+    getAvailablePOsForInspection,
+    addPurchaseOrdersToInspection,
+    removePurchaseOrderFromInspection,
     markResult,
     sendToAgent,
     confirmInspection,
