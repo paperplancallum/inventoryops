@@ -21,6 +21,7 @@ import {
   FileSpreadsheet,
   Factory,
   Tag,
+  Calculator,
 } from 'lucide-react'
 import { AppShell } from './AppShell'
 import { useTheme } from '@/providers/ThemeProvider'
@@ -36,6 +37,7 @@ const navigationItems: NavigationItem[] = [
   { label: 'Inventory', href: '/inventory', icon: <Boxes className="w-5 h-5" /> },
   { label: 'Assembly', href: '/assembly', icon: <Factory className="w-5 h-5" /> },
   { label: 'Invoices & Payments', href: '/invoices-and-payments', icon: <Receipt className="w-5 h-5" /> },
+  { label: 'COGS', href: '/cogs', icon: <Calculator className="w-5 h-5" /> },
   { label: 'Inspections', href: '/inspections', icon: <ClipboardCheck className="w-5 h-5" /> },
   { label: 'Transfers', href: '/transfers', icon: <Truck className="w-5 h-5" /> },
   { label: 'Locations', href: '/locations', icon: <MapPin className="w-5 h-5" /> },

@@ -75,3 +75,51 @@ export type {
   WorkOrderCostType,
   AvailableComponentStock,
 } from './useWorkOrders'
+
+// COGS Module
+export { useCOGSSettings } from './useCOGSSettings'
+export type {
+  COGSSettings,
+  COGSSettingsFormData,
+} from './useCOGSSettings'
+
+export { useInventoryLosses } from './useInventoryLosses'
+export type {
+  InventoryLoss,
+  InventoryLossFormData,
+  InventoryLossSummary,
+  InventoryLossFilters,
+  InventoryLossType,
+  ReimbursementStatus,
+  ReimbursementData,
+} from './useInventoryLosses'
+
+export { useAmazonFees } from './useAmazonFees'
+export type {
+  AmazonFee,
+  AmazonFeeFormData,
+  AmazonFeeSummary,
+  AmazonFeeFilters,
+  AmazonFeeType,
+  FeeAttributionLevel,
+} from './useAmazonFees'
+
+export { useAmazonSales } from './useAmazonSales'
+export type {
+  AmazonOrder,
+  AmazonOrderItem,
+  SalesBatchAttribution,
+  AmazonSalesSummary,
+  AmazonSalesFilters,
+  AmazonSalesChannel,
+  AmazonOrderStatus,
+} from './useAmazonSales'
+
+export { useCOGS } from './useCOGS'
+export type {
+  BatchCOGS,
+  MonthlyProductCOGS,
+  BatchFIFOReport,
+  ProductCOGSCalculation,
+  COGSMonthlySummary,
+} from './useCOGS'

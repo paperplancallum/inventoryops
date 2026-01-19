@@ -144,6 +144,296 @@ export type Database = {
         }
         Relationships: []
       }
+      amazon_fee_allocations: {
+        Row: {
+          allocated_amount: number
+          allocation_basis_quantity: number | null
+          allocation_basis_value: number | null
+          allocation_method: Database["public"]["Enums"]["fee_allocation_method"]
+          allocation_month: string
+          allocation_percentage: number | null
+          batch_id: string | null
+          created_at: string
+          fee_id: string
+          id: string
+          order_item_id: string | null
+          product_id: string | null
+        }
+        Insert: {
+          allocated_amount: number
+          allocation_basis_quantity?: number | null
+          allocation_basis_value?: number | null
+          allocation_method: Database["public"]["Enums"]["fee_allocation_method"]
+          allocation_month: string
+          allocation_percentage?: number | null
+          batch_id?: string | null
+          created_at?: string
+          fee_id: string
+          id?: string
+          order_item_id?: string | null
+          product_id?: string | null
+        }
+        Update: {
+          allocated_amount?: number
+          allocation_basis_quantity?: number | null
+          allocation_basis_value?: number | null
+          allocation_method?: Database["public"]["Enums"]["fee_allocation_method"]
+          allocation_month?: string
+          allocation_percentage?: number | null
+          batch_id?: string | null
+          created_at?: string
+          fee_id?: string
+          id?: string
+          order_item_id?: string | null
+          product_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_fee_allocations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "finished_goods_landed_cost"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_fee_id_fkey"
+            columns: ["fee_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_fees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_fee_id_fkey"
+            columns: ["fee_id"]
+            isOneToOne: false
+            referencedRelation: "unallocated_amazon_fees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "pending_cogs_attribution"
+            referencedColumns: ["order_item_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "unattributed_sales"
+            referencedColumns: ["order_item_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      amazon_fees: {
+        Row: {
+          amazon_shipment_id: string | null
+          amount: number
+          attribution_level: Database["public"]["Enums"]["fee_attribution_level"]
+          batch_id: string | null
+          created_at: string
+          description: string | null
+          exchange_rate_to_usd: number
+          fee_date: string
+          fee_type: Database["public"]["Enums"]["amazon_fee_type"]
+          id: string
+          include_in_cogs: boolean
+          internal_product_id: string | null
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          order_id: string | null
+          order_item_id: string | null
+          original_amount: number | null
+          original_currency: string
+          period_end: string | null
+          period_start: string | null
+          source: string
+          source_reference: string | null
+          updated_at: string
+        }
+        Insert: {
+          amazon_shipment_id?: string | null
+          amount: number
+          attribution_level: Database["public"]["Enums"]["fee_attribution_level"]
+          batch_id?: string | null
+          created_at?: string
+          description?: string | null
+          exchange_rate_to_usd?: number
+          fee_date: string
+          fee_type: Database["public"]["Enums"]["amazon_fee_type"]
+          id?: string
+          include_in_cogs?: boolean
+          internal_product_id?: string | null
+          marketplace?: Database["public"]["Enums"]["amazon_marketplace"] | null
+          order_id?: string | null
+          order_item_id?: string | null
+          original_amount?: number | null
+          original_currency?: string
+          period_end?: string | null
+          period_start?: string | null
+          source?: string
+          source_reference?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amazon_shipment_id?: string | null
+          amount?: number
+          attribution_level?: Database["public"]["Enums"]["fee_attribution_level"]
+          batch_id?: string | null
+          created_at?: string
+          description?: string | null
+          exchange_rate_to_usd?: number
+          fee_date?: string
+          fee_type?: Database["public"]["Enums"]["amazon_fee_type"]
+          id?: string
+          include_in_cogs?: boolean
+          internal_product_id?: string | null
+          marketplace?: Database["public"]["Enums"]["amazon_marketplace"] | null
+          order_id?: string | null
+          order_item_id?: string | null
+          original_amount?: number | null
+          original_currency?: string
+          period_end?: string | null
+          period_start?: string | null
+          source?: string
+          source_reference?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_fees_amazon_shipment_id_fkey"
+            columns: ["amazon_shipment_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_shipments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "finished_goods_landed_cost"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "pending_cogs_attribution"
+            referencedColumns: ["order_item_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "unattributed_sales"
+            referencedColumns: ["order_item_id"]
+          },
+        ]
+      }
       amazon_inventory: {
         Row: {
           asin: string
@@ -201,6 +491,162 @@ export type Database = {
         }
         Relationships: []
       }
+      amazon_order_items: {
+        Row: {
+          asin: string
+          cogs_attributed_at: string | null
+          cogs_calculated: boolean
+          created_at: string
+          id: string
+          internal_product_id: string | null
+          internal_sku_id: string | null
+          item_price: number
+          item_price_usd: number | null
+          item_tax: number
+          order_id: string
+          order_item_id: string
+          quantity_ordered: number
+          quantity_shipped: number
+          seller_sku: string
+          shipping_price: number
+          shipping_tax: number
+          total_revenue_usd: number | null
+        }
+        Insert: {
+          asin: string
+          cogs_attributed_at?: string | null
+          cogs_calculated?: boolean
+          created_at?: string
+          id?: string
+          internal_product_id?: string | null
+          internal_sku_id?: string | null
+          item_price?: number
+          item_price_usd?: number | null
+          item_tax?: number
+          order_id: string
+          order_item_id: string
+          quantity_ordered: number
+          quantity_shipped?: number
+          seller_sku: string
+          shipping_price?: number
+          shipping_tax?: number
+          total_revenue_usd?: number | null
+        }
+        Update: {
+          asin?: string
+          cogs_attributed_at?: string | null
+          cogs_calculated?: boolean
+          created_at?: string
+          id?: string
+          internal_product_id?: string | null
+          internal_sku_id?: string | null
+          item_price?: number
+          item_price_usd?: number | null
+          item_tax?: number
+          order_id?: string
+          order_item_id?: string
+          quantity_ordered?: number
+          quantity_shipped?: number
+          seller_sku?: string
+          shipping_price?: number
+          shipping_tax?: number
+          total_revenue_usd?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_sku_id_fkey"
+            columns: ["internal_sku_id"]
+            isOneToOne: false
+            referencedRelation: "product_skus"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      amazon_orders: {
+        Row: {
+          amazon_order_id: string
+          created_at: string
+          currency: string
+          delivery_date: string | null
+          exchange_rate_to_usd: number
+          id: string
+          last_synced_at: string
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"]
+          order_total: number | null
+          order_total_usd: number | null
+          purchase_date: string
+          sales_channel: Database["public"]["Enums"]["amazon_sales_channel"]
+          ship_date: string | null
+          status: Database["public"]["Enums"]["amazon_order_status"]
+          sync_source: string
+          updated_at: string
+        }
+        Insert: {
+          amazon_order_id: string
+          created_at?: string
+          currency?: string
+          delivery_date?: string | null
+          exchange_rate_to_usd?: number
+          id?: string
+          last_synced_at?: string
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"]
+          order_total?: number | null
+          order_total_usd?: number | null
+          purchase_date: string
+          sales_channel?: Database["public"]["Enums"]["amazon_sales_channel"]
+          ship_date?: string | null
+          status?: Database["public"]["Enums"]["amazon_order_status"]
+          sync_source?: string
+          updated_at?: string
+        }
+        Update: {
+          amazon_order_id?: string
+          created_at?: string
+          currency?: string
+          delivery_date?: string | null
+          exchange_rate_to_usd?: number
+          id?: string
+          last_synced_at?: string
+          marketplace?: Database["public"]["Enums"]["amazon_marketplace"]
+          order_total?: number | null
+          order_total_usd?: number | null
+          purchase_date?: string
+          sales_channel?: Database["public"]["Enums"]["amazon_sales_channel"]
+          ship_date?: string | null
+          status?: Database["public"]["Enums"]["amazon_order_status"]
+          sync_source?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       amazon_reconciliations: {
         Row: {
           adjustment_ledger_entry_id: string | null
@@ -251,6 +697,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "stock_ledger_entries"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_reconciliations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_reconciliations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
           },
           {
             foreignKeyName: "amazon_reconciliations_batch_id_fkey"
@@ -494,6 +954,13 @@ export type Database = {
             foreignKeyName: "amazon_sku_mappings_internal_product_id_fkey"
             columns: ["internal_product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_sku_mappings_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -548,6 +1015,20 @@ export type Database = {
             foreignKeyName: "batch_attachments_batch_id_fkey"
             columns: ["batch_id"]
             isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "batch_attachments_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "batch_attachments_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
             referencedRelation: "batches"
             referencedColumns: ["id"]
           },
@@ -589,6 +1070,20 @@ export type Database = {
           stage?: Database["public"]["Enums"]["batch_stage"]
         }
         Relationships: [
+          {
+            foreignKeyName: "batch_stage_history_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "batch_stage_history_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
           {
             foreignKeyName: "batch_stage_history_batch_id_fkey"
             columns: ["batch_id"]
@@ -701,6 +1196,13 @@ export type Database = {
             foreignKeyName: "batches_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -709,6 +1211,57 @@ export type Database = {
             columns: ["supplier_id"]
             isOneToOne: false
             referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bom_expense_items: {
+        Row: {
+          amount: number
+          bom_id: string
+          created_at: string
+          description: string | null
+          id: string
+          is_per_unit: boolean
+          name: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          amount?: number
+          bom_id: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_per_unit?: boolean
+          name: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          bom_id?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_per_unit?: boolean
+          name?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bom_expense_items_bom_id_fkey"
+            columns: ["bom_id"]
+            isOneToOne: false
+            referencedRelation: "active_boms_summary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_expense_items_bom_id_fkey"
+            columns: ["bom_id"]
+            isOneToOne: false
+            referencedRelation: "boms"
             referencedColumns: ["id"]
           },
         ]
@@ -821,6 +1374,13 @@ export type Database = {
             foreignKeyName: "bom_line_items_component_product_id_fkey"
             columns: ["component_product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bom_line_items_component_product_id_fkey"
+            columns: ["component_product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -881,6 +1441,13 @@ export type Database = {
             foreignKeyName: "boms_finished_product_id_fkey"
             columns: ["finished_product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boms_finished_product_id_fkey"
+            columns: ["finished_product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -915,6 +1482,161 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      cogs_settings: {
+        Row: {
+          created_at: string
+          custom_inclusions: Json | null
+          description: string | null
+          export_decimal_places: number | null
+          export_format: string | null
+          export_include_headers: boolean | null
+          id: string
+          include_advertising: boolean
+          include_assembly_costs: boolean
+          include_awd_processing: boolean
+          include_awd_storage: boolean
+          include_awd_transportation: boolean
+          include_damaged_lost: boolean
+          include_disposed: boolean
+          include_duties_taxes: boolean
+          include_fba_fulfillment: boolean
+          include_fba_labeling: boolean
+          include_fba_prep: boolean
+          include_fba_storage: boolean
+          include_inbound_placement: boolean
+          include_inbound_transportation: boolean
+          include_product_cost: boolean
+          include_referral_fees: boolean
+          include_shipping_to_amazon: boolean
+          is_default: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          custom_inclusions?: Json | null
+          description?: string | null
+          export_decimal_places?: number | null
+          export_format?: string | null
+          export_include_headers?: boolean | null
+          id?: string
+          include_advertising?: boolean
+          include_assembly_costs?: boolean
+          include_awd_processing?: boolean
+          include_awd_storage?: boolean
+          include_awd_transportation?: boolean
+          include_damaged_lost?: boolean
+          include_disposed?: boolean
+          include_duties_taxes?: boolean
+          include_fba_fulfillment?: boolean
+          include_fba_labeling?: boolean
+          include_fba_prep?: boolean
+          include_fba_storage?: boolean
+          include_inbound_placement?: boolean
+          include_inbound_transportation?: boolean
+          include_product_cost?: boolean
+          include_referral_fees?: boolean
+          include_shipping_to_amazon?: boolean
+          is_default?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          custom_inclusions?: Json | null
+          description?: string | null
+          export_decimal_places?: number | null
+          export_format?: string | null
+          export_include_headers?: boolean | null
+          id?: string
+          include_advertising?: boolean
+          include_assembly_costs?: boolean
+          include_awd_processing?: boolean
+          include_awd_storage?: boolean
+          include_awd_transportation?: boolean
+          include_damaged_lost?: boolean
+          include_disposed?: boolean
+          include_duties_taxes?: boolean
+          include_fba_fulfillment?: boolean
+          include_fba_labeling?: boolean
+          include_fba_prep?: boolean
+          include_fba_storage?: boolean
+          include_inbound_placement?: boolean
+          include_inbound_transportation?: boolean
+          include_product_cost?: boolean
+          include_referral_fees?: boolean
+          include_shipping_to_amazon?: boolean
+          is_default?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      generated_documents: {
+        Row: {
+          brand_id: string | null
+          created_at: string
+          data_snapshot: Json
+          document_name: string
+          document_type: Database["public"]["Enums"]["generated_document_type"]
+          file_size: number
+          file_url: string
+          generated_by_id: string | null
+          generated_by_name: string | null
+          generation_trigger: string | null
+          id: string
+          notes: string | null
+          source_entity_id: string
+          source_entity_ref: string
+          source_entity_type: Database["public"]["Enums"]["document_source_type"]
+          storage_path: string
+        }
+        Insert: {
+          brand_id?: string | null
+          created_at?: string
+          data_snapshot?: Json
+          document_name: string
+          document_type: Database["public"]["Enums"]["generated_document_type"]
+          file_size?: number
+          file_url: string
+          generated_by_id?: string | null
+          generated_by_name?: string | null
+          generation_trigger?: string | null
+          id?: string
+          notes?: string | null
+          source_entity_id: string
+          source_entity_ref: string
+          source_entity_type: Database["public"]["Enums"]["document_source_type"]
+          storage_path: string
+        }
+        Update: {
+          brand_id?: string | null
+          created_at?: string
+          data_snapshot?: Json
+          document_name?: string
+          document_type?: Database["public"]["Enums"]["generated_document_type"]
+          file_size?: number
+          file_url?: string
+          generated_by_id?: string | null
+          generated_by_name?: string | null
+          generation_trigger?: string | null
+          id?: string
+          notes?: string | null
+          source_entity_id?: string
+          source_entity_ref?: string
+          source_entity_type?: Database["public"]["Enums"]["document_source_type"]
+          storage_path?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "generated_documents_brand_id_fkey"
+            columns: ["brand_id"]
+            isOneToOne: false
+            referencedRelation: "brands"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       inspection_agents: {
         Row: {
@@ -1098,6 +1820,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "component_usage"
             referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "inspection_line_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "inspection_line_items_product_id_fkey"
@@ -1419,6 +2148,137 @@ export type Database = {
             columns: ["purchase_order_id"]
             isOneToOne: false
             referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      inventory_losses: {
+        Row: {
+          amazon_case_id: string | null
+          batch_id: string | null
+          created_at: string
+          description: string | null
+          fnsku: string | null
+          id: string
+          include_in_cogs: boolean
+          loss_date: string
+          loss_type: Database["public"]["Enums"]["inventory_loss_type"]
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          net_loss: number | null
+          notes: string | null
+          product_id: string | null
+          quantity: number
+          reimbursement_amount: number | null
+          reimbursement_date: string | null
+          reimbursement_reference: string | null
+          reimbursement_status: Database["public"]["Enums"]["reimbursement_status"]
+          seller_sku: string
+          source: string
+          source_reference: string | null
+          total_cost: number | null
+          unit_cost: number
+          updated_at: string
+        }
+        Insert: {
+          amazon_case_id?: string | null
+          batch_id?: string | null
+          created_at?: string
+          description?: string | null
+          fnsku?: string | null
+          id?: string
+          include_in_cogs?: boolean
+          loss_date: string
+          loss_type: Database["public"]["Enums"]["inventory_loss_type"]
+          marketplace?: Database["public"]["Enums"]["amazon_marketplace"] | null
+          net_loss?: number | null
+          notes?: string | null
+          product_id?: string | null
+          quantity: number
+          reimbursement_amount?: number | null
+          reimbursement_date?: string | null
+          reimbursement_reference?: string | null
+          reimbursement_status?: Database["public"]["Enums"]["reimbursement_status"]
+          seller_sku: string
+          source?: string
+          source_reference?: string | null
+          total_cost?: number | null
+          unit_cost: number
+          updated_at?: string
+        }
+        Update: {
+          amazon_case_id?: string | null
+          batch_id?: string | null
+          created_at?: string
+          description?: string | null
+          fnsku?: string | null
+          id?: string
+          include_in_cogs?: boolean
+          loss_date?: string
+          loss_type?: Database["public"]["Enums"]["inventory_loss_type"]
+          marketplace?: Database["public"]["Enums"]["amazon_marketplace"] | null
+          net_loss?: number | null
+          notes?: string | null
+          product_id?: string | null
+          quantity?: number
+          reimbursement_amount?: number | null
+          reimbursement_date?: string | null
+          reimbursement_reference?: string | null
+          reimbursement_status?: Database["public"]["Enums"]["reimbursement_status"]
+          seller_sku?: string
+          source?: string
+          source_reference?: string | null
+          total_cost?: number | null
+          unit_cost?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "finished_goods_landed_cost"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
@@ -2062,6 +2922,13 @@ export type Database = {
             foreignKeyName: "po_line_items_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "po_line_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -2205,6 +3072,13 @@ export type Database = {
             foreignKeyName: "product_skus_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_skus_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -2262,6 +3136,13 @@ export type Database = {
             foreignKeyName: "product_spec_sheets_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_spec_sheets_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -2274,8 +3155,13 @@ export type Database = {
           category: string | null
           created_at: string
           description: string | null
+          dim_factor: number
           fnsku: string | null
+          height_cm: number | null
           id: string
+          image_storage_path: string | null
+          image_url: string | null
+          length_cm: number | null
           name: string
           product_type: Database["public"]["Enums"]["product_type"]
           sku: string
@@ -2283,6 +3169,8 @@ export type Database = {
           supplier_id: string | null
           unit_cost: number
           updated_at: string
+          weight_kg: number | null
+          width_cm: number | null
         }
         Insert: {
           asin?: string | null
@@ -2290,8 +3178,13 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          dim_factor?: number
           fnsku?: string | null
+          height_cm?: number | null
           id?: string
+          image_storage_path?: string | null
+          image_url?: string | null
+          length_cm?: number | null
           name: string
           product_type?: Database["public"]["Enums"]["product_type"]
           sku: string
@@ -2299,6 +3192,8 @@ export type Database = {
           supplier_id?: string | null
           unit_cost?: number
           updated_at?: string
+          weight_kg?: number | null
+          width_cm?: number | null
         }
         Update: {
           asin?: string | null
@@ -2306,8 +3201,13 @@ export type Database = {
           category?: string | null
           created_at?: string
           description?: string | null
+          dim_factor?: number
           fnsku?: string | null
+          height_cm?: number | null
           id?: string
+          image_storage_path?: string | null
+          image_url?: string | null
+          length_cm?: number | null
           name?: string
           product_type?: Database["public"]["Enums"]["product_type"]
           sku?: string
@@ -2315,6 +3215,8 @@ export type Database = {
           supplier_id?: string | null
           unit_cost?: number
           updated_at?: string
+          weight_kg?: number | null
+          width_cm?: number | null
         }
         Relationships: [
           {
@@ -2345,6 +3247,7 @@ export type Database = {
             | Database["public"]["Enums"]["inspection_decision_status"]
             | null
           invoice_link_sent_at: string | null
+          invoice_received_at: string | null
           invoice_reviewed_at: string | null
           invoice_submitted_at: string | null
           invoice_variance: number | null
@@ -2356,6 +3259,7 @@ export type Database = {
           po_number: string
           received_date: string | null
           requires_inspection: boolean | null
+          sent_to_supplier_at: string | null
           status: Database["public"]["Enums"]["po_status"]
           subtotal: number
           supplier_id: string
@@ -2378,6 +3282,7 @@ export type Database = {
             | Database["public"]["Enums"]["inspection_decision_status"]
             | null
           invoice_link_sent_at?: string | null
+          invoice_received_at?: string | null
           invoice_reviewed_at?: string | null
           invoice_submitted_at?: string | null
           invoice_variance?: number | null
@@ -2389,6 +3294,7 @@ export type Database = {
           po_number?: string
           received_date?: string | null
           requires_inspection?: boolean | null
+          sent_to_supplier_at?: string | null
           status?: Database["public"]["Enums"]["po_status"]
           subtotal?: number
           supplier_id: string
@@ -2411,6 +3317,7 @@ export type Database = {
             | Database["public"]["Enums"]["inspection_decision_status"]
             | null
           invoice_link_sent_at?: string | null
+          invoice_received_at?: string | null
           invoice_reviewed_at?: string | null
           invoice_submitted_at?: string | null
           invoice_variance?: number | null
@@ -2422,6 +3329,7 @@ export type Database = {
           po_number?: string
           received_date?: string | null
           requires_inspection?: boolean | null
+          sent_to_supplier_at?: string | null
           status?: Database["public"]["Enums"]["po_status"]
           subtotal?: number
           supplier_id?: string
@@ -2491,6 +3399,89 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "inspections"
             referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_batch_attributions: {
+        Row: {
+          attributed_date: string
+          batch_id: string
+          created_at: string
+          id: string
+          order_item_id: string
+          quantity: number
+          total_cost: number | null
+          unit_cost: number
+        }
+        Insert: {
+          attributed_date: string
+          batch_id: string
+          created_at?: string
+          id?: string
+          order_item_id: string
+          quantity: number
+          total_cost?: number | null
+          unit_cost: number
+        }
+        Update: {
+          attributed_date?: string
+          batch_id?: string
+          created_at?: string
+          id?: string
+          order_item_id?: string
+          quantity?: number
+          total_cost?: number | null
+          unit_cost?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_batch_attributions_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "sales_batch_attributions_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "sales_batch_attributions_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_batch_attributions_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "finished_goods_landed_cost"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "sales_batch_attributions_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_batch_attributions_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "pending_cogs_attribution"
+            referencedColumns: ["order_item_id"]
+          },
+          {
+            foreignKeyName: "sales_batch_attributions_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "unattributed_sales"
+            referencedColumns: ["order_item_id"]
           },
         ]
       }
@@ -2971,6 +3962,20 @@ export type Database = {
             foreignKeyName: "stock_ledger_entries_batch_id_fkey"
             columns: ["batch_id"]
             isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "stock_ledger_entries_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "stock_ledger_entries_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
             referencedRelation: "batches"
             referencedColumns: ["id"]
           },
@@ -2986,6 +3991,44 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      supplier_invoice_submission_attachments: {
+        Row: {
+          file_name: string
+          file_path: string
+          file_size: number
+          id: string
+          mime_type: string
+          submission_id: string
+          uploaded_at: string
+        }
+        Insert: {
+          file_name: string
+          file_path: string
+          file_size: number
+          id?: string
+          mime_type: string
+          submission_id: string
+          uploaded_at?: string
+        }
+        Update: {
+          file_name?: string
+          file_path?: string
+          file_size?: number
+          id?: string
+          mime_type?: string
+          submission_id?: string
+          uploaded_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "supplier_invoice_submission_attachments_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoice_submissions"
             referencedColumns: ["id"]
           },
         ]
@@ -3111,6 +4154,13 @@ export type Database = {
             foreignKeyName: "supplier_invoice_submission_line_items_product_id_fkey"
             columns: ["product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "supplier_invoice_submission_line_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -3130,12 +4180,14 @@ export type Database = {
           id: string
           magic_link_id: string
           po_number: string
+          previous_submission_id: string | null
           purchase_order_id: string
           review_notes: string | null
           review_status: Database["public"]["Enums"]["supplier_submission_review_status"]
           reviewed_at: string | null
           reviewed_by_user_id: string | null
           reviewed_by_user_name: string | null
+          revision_number: number
           submitted_at: string
           submitted_by_email: string
           submitted_by_name: string
@@ -3153,12 +4205,14 @@ export type Database = {
           id?: string
           magic_link_id: string
           po_number: string
+          previous_submission_id?: string | null
           purchase_order_id: string
           review_notes?: string | null
           review_status?: Database["public"]["Enums"]["supplier_submission_review_status"]
           reviewed_at?: string | null
           reviewed_by_user_id?: string | null
           reviewed_by_user_name?: string | null
+          revision_number?: number
           submitted_at?: string
           submitted_by_email: string
           submitted_by_name: string
@@ -3176,12 +4230,14 @@ export type Database = {
           id?: string
           magic_link_id?: string
           po_number?: string
+          previous_submission_id?: string | null
           purchase_order_id?: string
           review_notes?: string | null
           review_status?: Database["public"]["Enums"]["supplier_submission_review_status"]
           reviewed_at?: string | null
           reviewed_by_user_id?: string | null
           reviewed_by_user_name?: string | null
+          revision_number?: number
           submitted_at?: string
           submitted_by_email?: string
           submitted_by_name?: string
@@ -3202,6 +4258,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "supplier_invoice_submissions_previous_submission_id_fkey"
+            columns: ["previous_submission_id"]
+            isOneToOne: false
+            referencedRelation: "supplier_invoice_submissions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "supplier_invoice_submissions_purchase_order_id_fkey"
             columns: ["purchase_order_id"]
             isOneToOne: false
@@ -3219,7 +4282,7 @@ export type Database = {
       }
       suppliers: {
         Row: {
-          contact_email: string | null
+          contact_email: string
           contact_name: string | null
           contact_phone: string | null
           country: string
@@ -3237,7 +4300,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
-          contact_email?: string | null
+          contact_email: string
           contact_name?: string | null
           contact_phone?: string | null
           country: string
@@ -3255,7 +4318,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
-          contact_email?: string | null
+          contact_email?: string
           contact_name?: string | null
           contact_phone?: string | null
           country?: string
@@ -3412,6 +4475,20 @@ export type Database = {
           updated_at?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "transfer_line_items_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "transfer_line_items_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
           {
             foreignKeyName: "transfer_line_items_batch_id_fkey"
             columns: ["batch_id"]
@@ -3775,6 +4852,20 @@ export type Database = {
             foreignKeyName: "work_order_components_component_batch_id_fkey"
             columns: ["component_batch_id"]
             isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "work_order_components_component_batch_id_fkey"
+            columns: ["component_batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "work_order_components_component_batch_id_fkey"
+            columns: ["component_batch_id"]
+            isOneToOne: false
             referencedRelation: "batches"
             referencedColumns: ["id"]
           },
@@ -4015,6 +5106,20 @@ export type Database = {
             foreignKeyName: "work_orders_output_batch_id_fkey"
             columns: ["output_batch_id"]
             isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "work_orders_output_batch_id_fkey"
+            columns: ["output_batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "work_orders_output_batch_id_fkey"
+            columns: ["output_batch_id"]
+            isOneToOne: false
             referencedRelation: "batches"
             referencedColumns: ["id"]
           },
@@ -4056,10 +5161,139 @@ export type Database = {
             foreignKeyName: "boms_finished_product_id_fkey"
             columns: ["finished_product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boms_finished_product_id_fkey"
+            columns: ["finished_product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
         ]
+      }
+      active_cogs_settings: {
+        Row: {
+          created_at: string | null
+          custom_inclusions: Json | null
+          description: string | null
+          export_decimal_places: number | null
+          export_format: string | null
+          export_include_headers: boolean | null
+          id: string | null
+          include_advertising: boolean | null
+          include_assembly_costs: boolean | null
+          include_awd_processing: boolean | null
+          include_awd_storage: boolean | null
+          include_awd_transportation: boolean | null
+          include_damaged_lost: boolean | null
+          include_disposed: boolean | null
+          include_duties_taxes: boolean | null
+          include_fba_fulfillment: boolean | null
+          include_fba_labeling: boolean | null
+          include_fba_prep: boolean | null
+          include_fba_storage: boolean | null
+          include_inbound_placement: boolean | null
+          include_inbound_transportation: boolean | null
+          include_product_cost: boolean | null
+          include_referral_fees: boolean | null
+          include_shipping_to_amazon: boolean | null
+          is_default: boolean | null
+          name: string | null
+          updated_at: string | null
+        }
+        Relationships: []
+      }
+      amazon_fees_by_batch: {
+        Row: {
+          batch_id: string | null
+          batch_number: string | null
+          fee_type: Database["public"]["Enums"]["amazon_fee_type"] | null
+          first_fee_date: string | null
+          last_fee_date: string | null
+          sku: string | null
+          total_allocated: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_fee_allocations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "finished_goods_landed_cost"
+            referencedColumns: ["batch_id"]
+          },
+        ]
+      }
+      amazon_fees_by_product: {
+        Row: {
+          fee_type: Database["public"]["Enums"]["amazon_fee_type"] | null
+          month: string | null
+          product_id: string | null
+          product_name: string | null
+          sku: string | null
+          total_allocated: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_fee_allocations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      amazon_fees_summary: {
+        Row: {
+          attribution_level:
+            | Database["public"]["Enums"]["fee_attribution_level"]
+            | null
+          cogs_amount: number | null
+          fee_count: number | null
+          fee_type: Database["public"]["Enums"]["amazon_fee_type"] | null
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          month: string | null
+          total_amount: number | null
+          total_charges: number | null
+          total_reimbursements: number | null
+        }
+        Relationships: []
       }
       amazon_inventory_summary: {
         Row: {
@@ -4112,6 +5346,13 @@ export type Database = {
             foreignKeyName: "amazon_sku_mappings_internal_product_id_fkey"
             columns: ["internal_product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_sku_mappings_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -4143,6 +5384,20 @@ export type Database = {
             foreignKeyName: "stock_ledger_entries_batch_id_fkey"
             columns: ["batch_id"]
             isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "stock_ledger_entries_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "stock_ledger_entries_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
             referencedRelation: "batches"
             referencedColumns: ["id"]
           },
@@ -4161,6 +5416,136 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      batch_cogs: {
+        Row: {
+          amazon_fees_allocated: number | null
+          amazon_fees_direct: number | null
+          assembly_costs: number | null
+          batch_id: string | null
+          batch_number: string | null
+          created_at: string | null
+          inventory_losses: number | null
+          ordered_date: string | null
+          original_quantity: number | null
+          po_id: string | null
+          product_id: string | null
+          product_name: string | null
+          product_total_cost: number | null
+          product_unit_cost: number | null
+          sku: string | null
+          stage: Database["public"]["Enums"]["batch_stage"] | null
+          supplier_id: string | null
+          supplier_name: string | null
+          transfer_costs: number | null
+          units_lost: number | null
+          units_remaining: number | null
+          units_sold: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batches_po_id_fkey"
+            columns: ["po_id"]
+            isOneToOne: false
+            referencedRelation: "purchase_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batches_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      batch_fifo_report: {
+        Row: {
+          batch_id: string | null
+          batch_number: string | null
+          cogs_recognized: number | null
+          days_to_deplete: number | null
+          first_sale_date: string | null
+          last_sale_date: string | null
+          ordered_date: string | null
+          original_quantity: number | null
+          product_id: string | null
+          product_name: string | null
+          quantity_lost: number | null
+          quantity_remaining: number | null
+          quantity_sold: number | null
+          received_date: string | null
+          sku: string | null
+          stage: Database["public"]["Enums"]["batch_stage"] | null
+          supplier_id: string | null
+          supplier_name: string | null
+          unit_cost: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batches_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "batches_supplier_id_fkey"
+            columns: ["supplier_id"]
+            isOneToOne: false
+            referencedRelation: "suppliers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cogs_monthly_summary: {
+        Row: {
+          avg_unit_cost: number | null
+          gross_margin_pct: number | null
+          gross_profit: number | null
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          month: string | null
+          order_count: number | null
+          product_cost: number | null
+          total_revenue: number | null
+          units_sold: number | null
+        }
+        Relationships: []
       }
       component_usage: {
         Row: {
@@ -4201,6 +5586,16 @@ export type Database = {
         }
         Relationships: []
       }
+      generated_documents_summary: {
+        Row: {
+          inspections: number | null
+          purchase_orders: number | null
+          this_month: number | null
+          total: number | null
+          transfers: number | null
+        }
+        Relationships: []
+      }
       inspection_summary: {
         Row: {
           avg_defect_rate: number | null
@@ -4218,12 +5613,399 @@ export type Database = {
         }
         Relationships: []
       }
+      inventory_loss_summary: {
+        Row: {
+          loss_count: number | null
+          loss_type: Database["public"]["Enums"]["inventory_loss_type"] | null
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          month: string | null
+          pending_reimbursements: number | null
+          total_cost: number | null
+          total_net_loss: number | null
+          total_reimbursed: number | null
+          total_units: number | null
+        }
+        Relationships: []
+      }
+      inventory_losses_by_batch: {
+        Row: {
+          batch_id: string | null
+          batch_number: string | null
+          first_loss_date: string | null
+          last_loss_date: string | null
+          sku: string | null
+          total_cost: number | null
+          total_net_loss: number | null
+          total_reimbursed: number | null
+          total_units_lost: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "finished_goods_landed_cost"
+            referencedColumns: ["batch_id"]
+          },
+        ]
+      }
+      inventory_losses_by_product: {
+        Row: {
+          month: string | null
+          product_id: string | null
+          product_name: string | null
+          seller_sku: string | null
+          total_cost: number | null
+          total_net_loss: number | null
+          total_reimbursed: number | null
+          total_units_lost: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       magic_links_summary: {
         Row: {
           expiring_within_24_hours: number | null
           pending_submission: number | null
           submitted_this_week: number | null
           total_active: number | null
+        }
+        Relationships: []
+      }
+      monthly_product_cogs: {
+        Row: {
+          avg_unit_cost: number | null
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          month: string | null
+          product_cost: number | null
+          product_id: string | null
+          product_name: string | null
+          revenue_usd: number | null
+          sku: string | null
+          units_sold: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monthly_product_fees: {
+        Row: {
+          awd_fees: number | null
+          fba_fulfillment_fees: number | null
+          inbound_placement_fees: number | null
+          inbound_transportation_fees: number | null
+          month: string | null
+          product_id: string | null
+          product_name: string | null
+          storage_fees: number | null
+          total_fees: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_fee_allocations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fee_allocations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monthly_product_losses: {
+        Row: {
+          month: string | null
+          product_id: string | null
+          product_name: string | null
+          total_loss: number | null
+          units_lost: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monthly_sales_summary: {
+        Row: {
+          internal_product_id: string | null
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          month: string | null
+          order_count: number | null
+          pending_cogs_count: number | null
+          product_name: string | null
+          revenue_usd: number | null
+          seller_sku: string | null
+          units_sold: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pending_cogs_attribution: {
+        Row: {
+          internal_product_id: string | null
+          order_item_id: string | null
+          product_name: string | null
+          quantity_shipped: number | null
+          seller_sku: string | null
+          ship_date: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      pending_reimbursements: {
+        Row: {
+          amazon_case_id: string | null
+          batch_id: string | null
+          batch_number: string | null
+          created_at: string | null
+          description: string | null
+          fnsku: string | null
+          id: string | null
+          include_in_cogs: boolean | null
+          loss_date: string | null
+          loss_type: Database["public"]["Enums"]["inventory_loss_type"] | null
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          net_loss: number | null
+          notes: string | null
+          product_id: string | null
+          product_name: string | null
+          quantity: number | null
+          reimbursement_amount: number | null
+          reimbursement_date: string | null
+          reimbursement_reference: string | null
+          reimbursement_status:
+            | Database["public"]["Enums"]["reimbursement_status"]
+            | null
+          seller_sku: string | null
+          source: string | null
+          source_reference: string | null
+          total_cost: number | null
+          unit_cost: number | null
+          updated_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "finished_goods_landed_cost"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_losses_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_dimensions: {
+        Row: {
+          billable_weight_kg: number | null
+          dim_factor: number | null
+          has_dimensions: boolean | null
+          height_cm: number | null
+          id: string | null
+          length_cm: number | null
+          name: string | null
+          sku: string | null
+          weight_kg: number | null
+          width_cm: number | null
+        }
+        Insert: {
+          billable_weight_kg?: never
+          dim_factor?: number | null
+          has_dimensions?: never
+          height_cm?: number | null
+          id?: string | null
+          length_cm?: number | null
+          name?: string | null
+          sku?: string | null
+          weight_kg?: number | null
+          width_cm?: number | null
+        }
+        Update: {
+          billable_weight_kg?: never
+          dim_factor?: number | null
+          has_dimensions?: never
+          height_cm?: number | null
+          id?: string | null
+          length_cm?: number | null
+          name?: string | null
+          sku?: string | null
+          weight_kg?: number | null
+          width_cm?: number | null
         }
         Relationships: []
       }
@@ -4296,6 +6078,20 @@ export type Database = {
             foreignKeyName: "stock_ledger_entries_batch_id_fkey"
             columns: ["batch_id"]
             isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "stock_ledger_entries_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "stock_ledger_entries_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
             referencedRelation: "batches"
             referencedColumns: ["id"]
           },
@@ -4343,6 +6139,20 @@ export type Database = {
           unit_cost: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "stock_ledger_entries_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "stock_ledger_entries_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
           {
             foreignKeyName: "stock_ledger_entries_batch_id_fkey"
             columns: ["batch_id"]
@@ -4465,6 +6275,209 @@ export type Database = {
           },
         ]
       }
+      unallocated_amazon_fees: {
+        Row: {
+          amazon_shipment_id: string | null
+          amount: number | null
+          attribution_level:
+            | Database["public"]["Enums"]["fee_attribution_level"]
+            | null
+          batch_id: string | null
+          created_at: string | null
+          description: string | null
+          exchange_rate_to_usd: number | null
+          fee_date: string | null
+          fee_type: Database["public"]["Enums"]["amazon_fee_type"] | null
+          id: string | null
+          include_in_cogs: boolean | null
+          internal_product_id: string | null
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          order_id: string | null
+          order_item_id: string | null
+          original_amount: number | null
+          original_currency: string | null
+          period_end: string | null
+          period_start: string | null
+          source: string | null
+          source_reference: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          amazon_shipment_id?: string | null
+          amount?: number | null
+          attribution_level?:
+            | Database["public"]["Enums"]["fee_attribution_level"]
+            | null
+          batch_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          exchange_rate_to_usd?: number | null
+          fee_date?: string | null
+          fee_type?: Database["public"]["Enums"]["amazon_fee_type"] | null
+          id?: string | null
+          include_in_cogs?: boolean | null
+          internal_product_id?: string | null
+          marketplace?: Database["public"]["Enums"]["amazon_marketplace"] | null
+          order_id?: string | null
+          order_item_id?: string | null
+          original_amount?: number | null
+          original_currency?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          source?: string | null
+          source_reference?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          amazon_shipment_id?: string | null
+          amount?: number | null
+          attribution_level?:
+            | Database["public"]["Enums"]["fee_attribution_level"]
+            | null
+          batch_id?: string | null
+          created_at?: string | null
+          description?: string | null
+          exchange_rate_to_usd?: number | null
+          fee_date?: string | null
+          fee_type?: Database["public"]["Enums"]["amazon_fee_type"] | null
+          id?: string | null
+          include_in_cogs?: boolean | null
+          internal_product_id?: string | null
+          marketplace?: Database["public"]["Enums"]["amazon_marketplace"] | null
+          order_id?: string | null
+          order_item_id?: string | null
+          original_amount?: number | null
+          original_currency?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          source?: string | null
+          source_reference?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_fees_amazon_shipment_id_fkey"
+            columns: ["amazon_shipment_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_shipments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "finished_goods_landed_cost"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "amazon_order_items"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "pending_cogs_attribution"
+            referencedColumns: ["order_item_id"]
+          },
+          {
+            foreignKeyName: "amazon_fees_order_item_id_fkey"
+            columns: ["order_item_id"]
+            isOneToOne: false
+            referencedRelation: "unattributed_sales"
+            referencedColumns: ["order_item_id"]
+          },
+        ]
+      }
+      unattributed_sales: {
+        Row: {
+          amazon_order_id: string | null
+          attributed_quantity: number | null
+          internal_product_id: string | null
+          marketplace: Database["public"]["Enums"]["amazon_marketplace"] | null
+          order_item_id: string | null
+          product_name: string | null
+          requested_quantity: number | null
+          seller_sku: string | null
+          ship_date: string | null
+          unattributed_quantity: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "component_usage"
+            referencedColumns: ["component_id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "amazon_order_items_internal_product_id_fkey"
+            columns: ["internal_product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       work_orders_with_details: {
         Row: {
           actual_end_date: string | null
@@ -4507,6 +6520,13 @@ export type Database = {
             foreignKeyName: "boms_finished_product_id_fkey"
             columns: ["finished_product_id"]
             isOneToOne: false
+            referencedRelation: "product_dimensions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "boms_finished_product_id_fkey"
+            columns: ["finished_product_id"]
+            isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
           },
@@ -4535,6 +6555,20 @@ export type Database = {
             foreignKeyName: "work_orders_output_batch_id_fkey"
             columns: ["output_batch_id"]
             isOneToOne: false
+            referencedRelation: "batch_cogs"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "work_orders_output_batch_id_fkey"
+            columns: ["output_batch_id"]
+            isOneToOne: false
+            referencedRelation: "batch_fifo_report"
+            referencedColumns: ["batch_id"]
+          },
+          {
+            foreignKeyName: "work_orders_output_batch_id_fkey"
+            columns: ["output_batch_id"]
+            isOneToOne: false
             referencedRelation: "batches"
             referencedColumns: ["id"]
           },
@@ -4549,13 +6583,65 @@ export type Database = {
       }
     }
     Functions: {
+      allocate_fee_by_inventory: {
+        Args: { p_fee_id: string; p_period_end: string; p_period_start: string }
+        Returns: number
+      }
+      allocate_fee_by_sales: {
+        Args: { p_end_date: string; p_fee_id: string; p_start_date: string }
+        Returns: number
+      }
       apply_submission_to_po: {
         Args: { submission_id: string }
         Returns: boolean
       }
+      attribute_sale_to_batches: {
+        Args: {
+          p_order_item_id: string
+          p_quantity: number
+          p_seller_sku: string
+          p_ship_date: string
+        }
+        Returns: number
+      }
+      calculate_billable_weight: {
+        Args: {
+          p_dim_factor?: number
+          p_height_cm: number
+          p_length_cm: number
+          p_weight_kg: number
+          p_width_cm: number
+        }
+        Returns: number
+      }
       calculate_bom_estimated_cost: {
         Args: { p_bom_id: string }
         Returns: number
+      }
+      calculate_product_cogs: {
+        Args: {
+          p_end_date: string
+          p_product_id: string
+          p_settings_name?: string
+          p_start_date: string
+        }
+        Returns: {
+          avg_cogs_per_unit: number
+          awd_fees: number
+          fba_fees: number
+          inbound_fees: number
+          inventory_losses: number
+          period_end: string
+          period_start: string
+          product_cost: number
+          product_id: string
+          product_name: string
+          sku: string
+          storage_fees: number
+          total_cogs: number
+          transfer_cost: number
+          units_sold: number
+        }[]
       }
       check_overdue_invoices: { Args: never; Returns: undefined }
       complete_work_order: {
@@ -4584,6 +6670,14 @@ export type Database = {
           p_user_name?: string
         }
         Returns: string
+      }
+      create_revision_magic_link: {
+        Args: { p_rejection_notes?: string; p_submission_id: string }
+        Returns: {
+          new_magic_link_id: string
+          new_revision_number: number
+          new_token: string
+        }[]
       }
       detect_field_changes: {
         Args: { p_field_config: Json; p_new: Json; p_old: Json }
@@ -4619,12 +6713,60 @@ export type Database = {
           uom: string
         }[]
       }
+      get_cogs_settings: {
+        Args: { p_name?: string }
+        Returns: {
+          created_at: string
+          custom_inclusions: Json | null
+          description: string | null
+          export_decimal_places: number | null
+          export_format: string | null
+          export_include_headers: boolean | null
+          id: string
+          include_advertising: boolean
+          include_assembly_costs: boolean
+          include_awd_processing: boolean
+          include_awd_storage: boolean
+          include_awd_transportation: boolean
+          include_damaged_lost: boolean
+          include_disposed: boolean
+          include_duties_taxes: boolean
+          include_fba_fulfillment: boolean
+          include_fba_labeling: boolean
+          include_fba_prep: boolean
+          include_fba_storage: boolean
+          include_inbound_placement: boolean
+          include_inbound_transportation: boolean
+          include_product_cost: boolean
+          include_referral_fees: boolean
+          include_shipping_to_amazon: boolean
+          is_default: boolean
+          name: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "cogs_settings"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_current_user_info: {
         Args: never
         Returns: {
           user_email: string
           user_id: string
           user_name: string
+        }[]
+      }
+      get_documents_summary: {
+        Args: never
+        Returns: {
+          inspections: number
+          purchase_orders: number
+          this_month: number
+          total: number
+          transfers: number
         }[]
       }
       get_magic_links_needing_reminder: {
@@ -4677,6 +6819,16 @@ export type Database = {
         Args: { p_batch_ids: string[]; p_note?: string }
         Returns: string
       }
+      process_pending_sales_attribution: {
+        Args: never
+        Returns: {
+          attributed_quantity: number
+          order_item_id: string
+          requested_quantity: number
+          seller_sku: string
+          unattributed_quantity: number
+        }[]
+      }
       split_batch:
         | {
             Args: {
@@ -4721,14 +6873,44 @@ export type Database = {
         | "UsedGood"
         | "UsedAcceptable"
       amazon_connection_status: "pending" | "active" | "expired" | "revoked"
+      amazon_fee_type:
+        | "fba_fulfillment"
+        | "fba_storage_monthly"
+        | "fba_storage_long_term"
+        | "fba_removal"
+        | "fba_disposal"
+        | "fba_prep"
+        | "fba_labeling"
+        | "inbound_placement"
+        | "inbound_defect"
+        | "inbound_transportation"
+        | "awd_storage"
+        | "awd_processing"
+        | "awd_transportation"
+        | "referral_fee"
+        | "sponsored_products"
+        | "sponsored_brands"
+        | "sponsored_display"
+        | "reimbursement"
+        | "refund_admin"
+        | "other"
       amazon_inbound_type: "FBA" | "AWD"
       amazon_mapping_status: "mapped" | "unmapped" | "pending"
       amazon_marketplace: "US" | "CA" | "MX"
+      amazon_order_status:
+        | "pending"
+        | "unshipped"
+        | "partially_shipped"
+        | "shipped"
+        | "delivered"
+        | "cancelled"
+        | "unfulfillable"
       amazon_receiving_status:
         | "checked-in"
         | "receiving"
         | "received"
         | "closed"
+      amazon_sales_channel: "FBA" | "FBM" | "AWD_TRANSFER"
       amazon_shipment_status:
         | "WORKING"
         | "READY_TO_SHIP"
@@ -4760,6 +6942,14 @@ export type Database = {
         | "dimensional"
         | "packaging"
         | "labeling"
+      document_source_type: "purchase-order" | "inspection" | "transfer"
+      fee_allocation_method: "direct" | "prorate_quantity" | "prorate_value"
+      fee_attribution_level: "order_item" | "shipment" | "product" | "account"
+      generated_document_type:
+        | "purchase-order-pdf"
+        | "inspection-brief"
+        | "shipping-manifest"
+        | "packing-list"
       inspection_decision_status: "pending" | "scheduled" | "not-needed"
       inspection_message_direction: "outbound" | "inbound" | "note"
       inspection_photo_type: "defect" | "product" | "packaging"
@@ -4774,7 +6964,17 @@ export type Database = {
         | "failed"
         | "pending-rework"
         | "re-inspection"
-      invoice_creation_method: "manual" | "automatic"
+      inventory_loss_type:
+        | "damaged_inbound"
+        | "damaged_warehouse"
+        | "damaged_customer"
+        | "lost_inbound"
+        | "lost_warehouse"
+        | "disposed"
+        | "expired"
+        | "recalled"
+        | "write_off"
+      invoice_creation_method: "manual" | "automatic" | "from-pi-approval"
       invoice_type:
         | "product"
         | "shipping"
@@ -4843,6 +7043,12 @@ export type Database = {
       product_status: "active" | "inactive" | "archived"
       product_type: "simple" | "component" | "finished_good"
       reconciliation_status: "matched" | "discrepancy"
+      reimbursement_status:
+        | "none"
+        | "pending"
+        | "partial"
+        | "complete"
+        | "denied"
       rework_status: "pending" | "in-progress" | "completed"
       shipping_invoice_status: "received" | "approved" | "paid"
       shipping_method:
@@ -5092,15 +7298,47 @@ export const Constants = {
         "UsedAcceptable",
       ],
       amazon_connection_status: ["pending", "active", "expired", "revoked"],
+      amazon_fee_type: [
+        "fba_fulfillment",
+        "fba_storage_monthly",
+        "fba_storage_long_term",
+        "fba_removal",
+        "fba_disposal",
+        "fba_prep",
+        "fba_labeling",
+        "inbound_placement",
+        "inbound_defect",
+        "inbound_transportation",
+        "awd_storage",
+        "awd_processing",
+        "awd_transportation",
+        "referral_fee",
+        "sponsored_products",
+        "sponsored_brands",
+        "sponsored_display",
+        "reimbursement",
+        "refund_admin",
+        "other",
+      ],
       amazon_inbound_type: ["FBA", "AWD"],
       amazon_mapping_status: ["mapped", "unmapped", "pending"],
       amazon_marketplace: ["US", "CA", "MX"],
+      amazon_order_status: [
+        "pending",
+        "unshipped",
+        "partially_shipped",
+        "shipped",
+        "delivered",
+        "cancelled",
+        "unfulfillable",
+      ],
       amazon_receiving_status: [
         "checked-in",
         "receiving",
         "received",
         "closed",
       ],
+      amazon_sales_channel: ["FBA", "FBM", "AWD_TRANSFER"],
       amazon_shipment_status: [
         "WORKING",
         "READY_TO_SHIP",
@@ -5135,6 +7373,15 @@ export const Constants = {
         "packaging",
         "labeling",
       ],
+      document_source_type: ["purchase-order", "inspection", "transfer"],
+      fee_allocation_method: ["direct", "prorate_quantity", "prorate_value"],
+      fee_attribution_level: ["order_item", "shipment", "product", "account"],
+      generated_document_type: [
+        "purchase-order-pdf",
+        "inspection-brief",
+        "shipping-manifest",
+        "packing-list",
+      ],
       inspection_decision_status: ["pending", "scheduled", "not-needed"],
       inspection_message_direction: ["outbound", "inbound", "note"],
       inspection_photo_type: ["defect", "product", "packaging"],
@@ -5150,7 +7397,18 @@ export const Constants = {
         "pending-rework",
         "re-inspection",
       ],
-      invoice_creation_method: ["manual", "automatic"],
+      inventory_loss_type: [
+        "damaged_inbound",
+        "damaged_warehouse",
+        "damaged_customer",
+        "lost_inbound",
+        "lost_warehouse",
+        "disposed",
+        "expired",
+        "recalled",
+        "write_off",
+      ],
+      invoice_creation_method: ["manual", "automatic", "from-pi-approval"],
       invoice_type: [
         "product",
         "shipping",
@@ -5226,6 +7484,13 @@ export const Constants = {
       product_status: ["active", "inactive", "archived"],
       product_type: ["simple", "component", "finished_good"],
       reconciliation_status: ["matched", "discrepancy"],
+      reimbursement_status: [
+        "none",
+        "pending",
+        "partial",
+        "complete",
+        "denied",
+      ],
       rework_status: ["pending", "in-progress", "completed"],
       shipping_invoice_status: ["received", "approved", "paid"],
       shipping_method: [
@@ -5335,89 +7600,251 @@ export const Constants = {
   },
 } as const
 
-// ============================================================================
-// Type Aliases for Convenience
-// These provide shorter names for commonly used database types
-// ============================================================================
+// =============================================================================
+// Custom Type Aliases for backwards compatibility
+// =============================================================================
 
-// Table Row Types
-export type DbBatch = Database["public"]["Tables"]["batches"]["Row"]
-export type DbBatchStageHistory = Database["public"]["Tables"]["batch_stage_history"]["Row"]
-export type DbBatchAttachment = Database["public"]["Tables"]["batch_attachments"]["Row"]
-export type DbBrand = Database["public"]["Tables"]["brands"]["Row"]
-export type DbProduct = Database["public"]["Tables"]["products"]["Row"]
-export type DbProductSku = Database["public"]["Tables"]["product_skus"]["Row"]
-export type DbProductSpecSheet = Database["public"]["Tables"]["product_spec_sheets"]["Row"]
-export type DbSupplier = Database["public"]["Tables"]["suppliers"]["Row"]
-export type DbLocation = Database["public"]["Tables"]["locations"]["Row"]
-export type DbPurchaseOrder = Database["public"]["Tables"]["purchase_orders"]["Row"]
-export type DbPOLineItem = Database["public"]["Tables"]["po_line_items"]["Row"]
-export type DbPOStatusHistory = Database["public"]["Tables"]["po_status_history"]["Row"]
-export type DbPOMessage = Database["public"]["Tables"]["po_messages"]["Row"]
-export type DbPaymentTermsTemplate = Database["public"]["Tables"]["payment_terms_templates"]["Row"]
-export type DbInvoice = Database["public"]["Tables"]["invoices"]["Row"]
-export type DbInvoicePayment = Database["public"]["Tables"]["invoice_payments"]["Row"]
-export type DbInvoicePaymentScheduleItem = Database["public"]["Tables"]["invoice_payment_schedule_items"]["Row"]
-export type DbInvoicePaymentAttachment = Database["public"]["Tables"]["invoice_payment_attachments"]["Row"]
-export type DbStockLedgerEntry = Database["public"]["Tables"]["stock_ledger_entries"]["Row"]
-export type DbTransfer = Database["public"]["Tables"]["transfers"]["Row"]
-export type DbTransferLineItem = Database["public"]["Tables"]["transfer_line_items"]["Row"]
-export type DbInspection = Database["public"]["Tables"]["inspections"]["Row"]
-export type DbInspectionLineItem = Database["public"]["Tables"]["inspection_line_items"]["Row"]
-export type DbInspectionDefect = Database["public"]["Tables"]["inspection_defects"]["Row"]
-export type DbInspectionMeasurement = Database["public"]["Tables"]["inspection_measurements"]["Row"]
-export type DbInspectionPhoto = Database["public"]["Tables"]["inspection_photos"]["Row"]
-export type DbReworkRequest = Database["public"]["Tables"]["rework_requests"]["Row"]
-export type DbInspectionMessage = Database["public"]["Tables"]["inspection_messages"]["Row"]
-export type DbInspectionMessageAttachment = Database["public"]["Tables"]["inspection_message_attachments"]["Row"]
-export type DbInspectionAgent = Database["public"]["Tables"]["inspection_agents"]["Row"]
-export type DbPOAttachment = Database["public"]["Tables"]["po_attachments"]["Row"]
-export type DbPODocument = Database["public"]["Tables"]["po_documents"]["Row"]
-export type DbBOM = Database["public"]["Tables"]["boms"]["Row"]
-export type DbBOMLineItem = Database["public"]["Tables"]["bom_line_items"]["Row"]
-export type DbBOMHistory = Database["public"]["Tables"]["bom_history"]["Row"]
-export type DbWorkOrder = Database["public"]["Tables"]["work_orders"]["Row"]
-export type DbWorkOrderComponent = Database["public"]["Tables"]["work_order_components"]["Row"]
-export type DbWorkOrderCost = Database["public"]["Tables"]["work_order_costs"]["Row"]
-export type DbWorkOrderStatusHistory = Database["public"]["Tables"]["work_order_status_history"]["Row"]
+// Batch types
+export type DbBatch = Database['public']['Tables']['batches']['Row']
+export type DbBatchInsert = Database['public']['Tables']['batches']['Insert']
+export type DbBatchUpdate = Database['public']['Tables']['batches']['Update']
 
-// Insert Types
-export type DbBatchInsert = Database["public"]["Tables"]["batches"]["Insert"]
-export type DbBrandInsert = Database["public"]["Tables"]["brands"]["Insert"]
-export type DbProductInsert = Database["public"]["Tables"]["products"]["Insert"]
-export type DbSupplierInsert = Database["public"]["Tables"]["suppliers"]["Insert"]
-export type DbLocationInsert = Database["public"]["Tables"]["locations"]["Insert"]
-export type DbPurchaseOrderInsert = Database["public"]["Tables"]["purchase_orders"]["Insert"]
-export type DbInspectionAgentInsert = Database["public"]["Tables"]["inspection_agents"]["Insert"]
+// Product types
+export type DbProduct = Database['public']['Tables']['products']['Row']
+export type DbProductInsert = Database['public']['Tables']['products']['Insert']
+export type DbProductUpdate = Database['public']['Tables']['products']['Update']
 
-// Enum Types
-export type BatchStage = Database["public"]["Enums"]["batch_stage"]
-export type BrandStatus = Database["public"]["Enums"]["brand_status"]
-export type ProductStatus = Database["public"]["Enums"]["product_status"]
-export type SkuCondition = Database["public"]["Enums"]["sku_condition"]
-export type SupplierStatus = Database["public"]["Enums"]["supplier_status"]
-export type LocationType = Database["public"]["Enums"]["location_type"]
-export type POStatus = Database["public"]["Enums"]["po_status"]
-export type PaymentStatus = Database["public"]["Enums"]["payment_status"]
-export type InvoiceType = Database["public"]["Enums"]["invoice_type"]
-export type LinkedEntityType = Database["public"]["Enums"]["linked_entity_type"]
-export type StockMovementType = Database["public"]["Enums"]["stock_movement_type"]
-export type TransferStatus = Database["public"]["Enums"]["transfer_status"]
-export type InspectionStatus = Database["public"]["Enums"]["inspection_status"]
-export type ProductType = Database["public"]["Enums"]["product_type"]
-export type WorkOrderStatus = Database["public"]["Enums"]["work_order_status"]
-export type WorkOrderCostType = Database["public"]["Enums"]["work_order_cost_type"]
-export type MessageDirection = Database["public"]["Enums"]["message_direction"]
-export type PaymentMethod = Database["public"]["Enums"]["payment_method"]
-export type PaymentMilestoneTrigger = Database["public"]["Enums"]["payment_milestone_trigger"]
-export type PaymentTriggerStatus = Database["public"]["Enums"]["payment_trigger_status"]
-export type InvoiceCreationMethod = Database["public"]["Enums"]["invoice_creation_method"]
+// Product SKU types
+export type DbProductSku = Database['public']['Tables']['product_skus']['Row']
+export type DbProductSkuInsert = Database['public']['Tables']['product_skus']['Insert']
+export type DbProductSkuUpdate = Database['public']['Tables']['product_skus']['Update']
 
-// Alternate name aliases (for backwards compatibility)
-export type DbProductSKU = Database["public"]["Tables"]["product_skus"]["Row"]
+// Supplier types
+export type DbSupplier = Database['public']['Tables']['suppliers']['Row']
+export type DbSupplierInsert = Database['public']['Tables']['suppliers']['Insert']
+export type DbSupplierUpdate = Database['public']['Tables']['suppliers']['Update']
 
-// View Types
-export type DbFinancialSummary = Database["public"]["Views"]["financial_summary"]["Row"]
-export type DbStockByLocation = Database["public"]["Views"]["stock_by_location"]["Row"]
-export type DbStockPosition = Database["public"]["Views"]["stock_positions"]["Row"]
-export type DbStockByProduct = Database["public"]["Views"]["stock_by_product"]["Row"]
+// Purchase Order types
+export type DbPurchaseOrder = Database['public']['Tables']['purchase_orders']['Row']
+export type DbPurchaseOrderInsert = Database['public']['Tables']['purchase_orders']['Insert']
+export type DbPurchaseOrderUpdate = Database['public']['Tables']['purchase_orders']['Update']
+
+// PO Line Item types
+export type DbPOLineItem = Database['public']['Tables']['po_line_items']['Row']
+export type DbPOLineItemInsert = Database['public']['Tables']['po_line_items']['Insert']
+export type DbPOLineItemUpdate = Database['public']['Tables']['po_line_items']['Update']
+
+// Transfer types
+export type DbTransfer = Database['public']['Tables']['transfers']['Row']
+export type DbTransferInsert = Database['public']['Tables']['transfers']['Insert']
+export type DbTransferUpdate = Database['public']['Tables']['transfers']['Update']
+
+// Transfer Line Item types
+export type DbTransferLineItem = Database['public']['Tables']['transfer_line_items']['Row']
+export type DbTransferLineItemInsert = Database['public']['Tables']['transfer_line_items']['Insert']
+export type DbTransferLineItemUpdate = Database['public']['Tables']['transfer_line_items']['Update']
+
+// Work Order types
+export type DbWorkOrder = Database['public']['Tables']['work_orders']['Row']
+export type DbWorkOrderInsert = Database['public']['Tables']['work_orders']['Insert']
+export type DbWorkOrderUpdate = Database['public']['Tables']['work_orders']['Update']
+
+// Work Order Cost types
+export type DbWorkOrderCost = Database['public']['Tables']['work_order_costs']['Row']
+export type DbWorkOrderCostInsert = Database['public']['Tables']['work_order_costs']['Insert']
+export type DbWorkOrderCostUpdate = Database['public']['Tables']['work_order_costs']['Update']
+
+// Work Order Component types
+export type DbWorkOrderComponent = Database['public']['Tables']['work_order_components']['Row']
+export type DbWorkOrderComponentInsert = Database['public']['Tables']['work_order_components']['Insert']
+export type DbWorkOrderComponentUpdate = Database['public']['Tables']['work_order_components']['Update']
+
+// Location types
+export type DbLocation = Database['public']['Tables']['locations']['Row']
+export type DbLocationInsert = Database['public']['Tables']['locations']['Insert']
+export type DbLocationUpdate = Database['public']['Tables']['locations']['Update']
+
+// Amazon Order types
+export type DbAmazonOrder = Database['public']['Tables']['amazon_orders']['Row']
+export type DbAmazonOrderInsert = Database['public']['Tables']['amazon_orders']['Insert']
+export type DbAmazonOrderUpdate = Database['public']['Tables']['amazon_orders']['Update']
+
+// Amazon Order Item types
+export type DbAmazonOrderItem = Database['public']['Tables']['amazon_order_items']['Row']
+export type DbAmazonOrderItemInsert = Database['public']['Tables']['amazon_order_items']['Insert']
+export type DbAmazonOrderItemUpdate = Database['public']['Tables']['amazon_order_items']['Update']
+
+// Amazon Fee types
+export type DbAmazonFee = Database['public']['Tables']['amazon_fees']['Row']
+export type DbAmazonFeeInsert = Database['public']['Tables']['amazon_fees']['Insert']
+export type DbAmazonFeeUpdate = Database['public']['Tables']['amazon_fees']['Update']
+
+// Amazon Fee Allocation types
+export type DbAmazonFeeAllocation = Database['public']['Tables']['amazon_fee_allocations']['Row']
+export type DbAmazonFeeAllocationInsert = Database['public']['Tables']['amazon_fee_allocations']['Insert']
+export type DbAmazonFeeAllocationUpdate = Database['public']['Tables']['amazon_fee_allocations']['Update']
+
+// Inventory Loss types
+export type DbInventoryLoss = Database['public']['Tables']['inventory_losses']['Row']
+export type DbInventoryLossInsert = Database['public']['Tables']['inventory_losses']['Insert']
+export type DbInventoryLossUpdate = Database['public']['Tables']['inventory_losses']['Update']
+
+// COGS Settings types
+export type DbCOGSSettings = Database['public']['Tables']['cogs_settings']['Row']
+export type DbCOGSSettingsInsert = Database['public']['Tables']['cogs_settings']['Insert']
+export type DbCOGSSettingsUpdate = Database['public']['Tables']['cogs_settings']['Update']
+
+// Sales Batch Attribution types
+export type DbSalesBatchAttribution = Database['public']['Tables']['sales_batch_attributions']['Row']
+export type DbSalesBatchAttributionInsert = Database['public']['Tables']['sales_batch_attributions']['Insert']
+export type DbSalesBatchAttributionUpdate = Database['public']['Tables']['sales_batch_attributions']['Update']
+
+// Inspection types
+export type DbInspection = Database['public']['Tables']['inspections']['Row']
+export type DbInspectionInsert = Database['public']['Tables']['inspections']['Insert']
+export type DbInspectionUpdate = Database['public']['Tables']['inspections']['Update']
+
+// Inspection Line Item types
+export type DbInspectionLineItem = Database['public']['Tables']['inspection_line_items']['Row']
+export type DbInspectionLineItemInsert = Database['public']['Tables']['inspection_line_items']['Insert']
+export type DbInspectionLineItemUpdate = Database['public']['Tables']['inspection_line_items']['Update']
+
+// Inspection Agent types
+export type DbInspectionAgent = Database['public']['Tables']['inspection_agents']['Row']
+export type DbInspectionAgentInsert = Database['public']['Tables']['inspection_agents']['Insert']
+export type DbInspectionAgentUpdate = Database['public']['Tables']['inspection_agents']['Update']
+
+// BOM types
+export type DbBOM = Database['public']['Tables']['boms']['Row']
+export type DbBOMInsert = Database['public']['Tables']['boms']['Insert']
+export type DbBOMUpdate = Database['public']['Tables']['boms']['Update']
+
+// BOM Line Item types
+export type DbBOMLineItem = Database['public']['Tables']['bom_line_items']['Row']
+export type DbBOMLineItemInsert = Database['public']['Tables']['bom_line_items']['Insert']
+export type DbBOMLineItemUpdate = Database['public']['Tables']['bom_line_items']['Update']
+
+// Invoice types
+export type DbInvoice = Database['public']['Tables']['invoices']['Row']
+export type DbInvoiceInsert = Database['public']['Tables']['invoices']['Insert']
+export type DbInvoiceUpdate = Database['public']['Tables']['invoices']['Update']
+
+// Invoice Payments types
+export type DbInvoicePayment = Database['public']['Tables']['invoice_payments']['Row']
+export type DbInvoicePaymentInsert = Database['public']['Tables']['invoice_payments']['Insert']
+export type DbInvoicePaymentUpdate = Database['public']['Tables']['invoice_payments']['Update']
+
+// Batch Stage History types
+export type DbBatchStageHistory = Database['public']['Tables']['batch_stage_history']['Row']
+export type DbBatchStageHistoryInsert = Database['public']['Tables']['batch_stage_history']['Insert']
+export type DbBatchStageHistoryUpdate = Database['public']['Tables']['batch_stage_history']['Update']
+
+// Batch Attachments types
+export type DbBatchAttachment = Database['public']['Tables']['batch_attachments']['Row']
+export type DbBatchAttachmentInsert = Database['public']['Tables']['batch_attachments']['Insert']
+export type DbBatchAttachmentUpdate = Database['public']['Tables']['batch_attachments']['Update']
+
+// Brand types
+export type DbBrand = Database['public']['Tables']['brands']['Row']
+export type DbBrandInsert = Database['public']['Tables']['brands']['Insert']
+export type DbBrandUpdate = Database['public']['Tables']['brands']['Update']
+
+// Enum types
+export type BatchStage = Database['public']['Enums']['batch_stage']
+export type POStatus = Database['public']['Enums']['po_status']
+export type TransferStatus = Database['public']['Enums']['transfer_status']
+export type WorkOrderStatus = Database['public']['Enums']['work_order_status']
+export type WorkOrderCostType = Database['public']['Enums']['work_order_cost_type']
+export type AmazonFeeType = Database['public']['Enums']['amazon_fee_type']
+export type FeeAttributionLevel = Database['public']['Enums']['fee_attribution_level']
+export type InventoryLossType = Database['public']['Enums']['inventory_loss_type']
+export type ReimbursementStatus = Database['public']['Enums']['reimbursement_status']
+export type ProductType = Database['public']['Enums']['product_type']
+export type BrandStatus = Database['public']['Enums']['brand_status']
+export type InspectionStatus = Database['public']['Enums']['inspection_status']
+export type LocationType = Database['public']['Enums']['location_type']
+export type ProductStatus = Database['public']['Enums']['product_status']
+export type MessageDirection = Database['public']['Enums']['message_direction']
+
+// Additional table types
+export type DbInspectionDefect = Database['public']['Tables']['inspection_defects']['Row']
+export type DbInspectionDefectInsert = Database['public']['Tables']['inspection_defects']['Insert']
+export type DbInspectionDefectUpdate = Database['public']['Tables']['inspection_defects']['Update']
+
+export type DbInspectionMeasurement = Database['public']['Tables']['inspection_measurements']['Row']
+export type DbInspectionMeasurementInsert = Database['public']['Tables']['inspection_measurements']['Insert']
+export type DbInspectionMeasurementUpdate = Database['public']['Tables']['inspection_measurements']['Update']
+
+export type DbInspectionPhoto = Database['public']['Tables']['inspection_photos']['Row']
+export type DbInspectionPhotoInsert = Database['public']['Tables']['inspection_photos']['Insert']
+export type DbInspectionPhotoUpdate = Database['public']['Tables']['inspection_photos']['Update']
+
+export type DbReworkRequest = Database['public']['Tables']['rework_requests']['Row']
+export type DbReworkRequestInsert = Database['public']['Tables']['rework_requests']['Insert']
+export type DbReworkRequestUpdate = Database['public']['Tables']['rework_requests']['Update']
+
+export type DbInspectionMessage = Database['public']['Tables']['inspection_messages']['Row']
+export type DbInspectionMessageInsert = Database['public']['Tables']['inspection_messages']['Insert']
+export type DbInspectionMessageUpdate = Database['public']['Tables']['inspection_messages']['Update']
+
+export type DbInspectionMessageAttachment = Database['public']['Tables']['inspection_message_attachments']['Row']
+export type DbInspectionMessageAttachmentInsert = Database['public']['Tables']['inspection_message_attachments']['Insert']
+export type DbInspectionMessageAttachmentUpdate = Database['public']['Tables']['inspection_message_attachments']['Update']
+
+export type DbInvoicePaymentScheduleItem = Database['public']['Tables']['invoice_payment_schedule_items']['Row']
+export type DbInvoicePaymentScheduleItemInsert = Database['public']['Tables']['invoice_payment_schedule_items']['Insert']
+export type DbInvoicePaymentScheduleItemUpdate = Database['public']['Tables']['invoice_payment_schedule_items']['Update']
+
+export type DbInvoicePaymentAttachment = Database['public']['Tables']['invoice_payment_attachments']['Row']
+export type DbInvoicePaymentAttachmentInsert = Database['public']['Tables']['invoice_payment_attachments']['Insert']
+export type DbInvoicePaymentAttachmentUpdate = Database['public']['Tables']['invoice_payment_attachments']['Update']
+
+export type DbPaymentTermsTemplate = Database['public']['Tables']['payment_terms_templates']['Row']
+export type DbPaymentTermsTemplateInsert = Database['public']['Tables']['payment_terms_templates']['Insert']
+export type DbPaymentTermsTemplateUpdate = Database['public']['Tables']['payment_terms_templates']['Update']
+
+export type DbPOMessage = Database['public']['Tables']['po_messages']['Row']
+export type DbPOMessageInsert = Database['public']['Tables']['po_messages']['Insert']
+export type DbPOMessageUpdate = Database['public']['Tables']['po_messages']['Update']
+
+export type DbPOAttachment = Database['public']['Tables']['po_attachments']['Row']
+export type DbPOAttachmentInsert = Database['public']['Tables']['po_attachments']['Insert']
+export type DbPOAttachmentUpdate = Database['public']['Tables']['po_attachments']['Update']
+
+export type DbPOStatusHistory = Database['public']['Tables']['po_status_history']['Row']
+export type DbPOStatusHistoryInsert = Database['public']['Tables']['po_status_history']['Insert']
+export type DbPOStatusHistoryUpdate = Database['public']['Tables']['po_status_history']['Update']
+
+export type DbProductSpecSheet = Database['public']['Tables']['product_spec_sheets']['Row']
+export type DbProductSpecSheetInsert = Database['public']['Tables']['product_spec_sheets']['Insert']
+export type DbProductSpecSheetUpdate = Database['public']['Tables']['product_spec_sheets']['Update']
+
+// Alias for compatibility
+export type DbProductSKU = Database['public']['Tables']['product_skus']['Row']
+export type DbProductSKUInsert = Database['public']['Tables']['product_skus']['Insert']
+export type DbProductSKUUpdate = Database['public']['Tables']['product_skus']['Update']
+
+// Additional table types
+export type DbPODocument = Database['public']['Tables']['po_documents']['Row']
+export type DbPODocumentInsert = Database['public']['Tables']['po_documents']['Insert']
+export type DbPODocumentUpdate = Database['public']['Tables']['po_documents']['Update']
+
+export type DbStockLedgerEntry = Database['public']['Tables']['stock_ledger_entries']['Row']
+export type DbStockLedgerEntryInsert = Database['public']['Tables']['stock_ledger_entries']['Insert']
+export type DbStockLedgerEntryUpdate = Database['public']['Tables']['stock_ledger_entries']['Update']
+
+// View types (for read-only access)
+export type DbFinancialSummary = Database['public']['Views']['financial_summary']['Row']
+export type DbStockByLocation = Database['public']['Views']['stock_by_location']['Row']
+export type DbStockByProduct = Database['public']['Views']['stock_by_product']['Row']
+
+// Additional enum types
+export type StockMovementType = Database['public']['Enums']['stock_movement_type']
+export type SupplierStatus = Database['public']['Enums']['supplier_status']
+export type InvoiceType = Database['public']['Enums']['invoice_type']
+export type PaymentStatus = Database['public']['Enums']['payment_status']
+export type LinkedEntityType = Database['public']['Enums']['linked_entity_type']
+export type PaymentMethod = Database['public']['Enums']['payment_method']
+export type InvoiceCreationMethod = Database['public']['Enums']['invoice_creation_method']
+export type PaymentTriggerStatus = Database['public']['Enums']['payment_trigger_status']
+export type PaymentMilestoneTrigger = Database['public']['Enums']['payment_milestone_trigger']
