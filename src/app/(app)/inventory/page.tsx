@@ -3,7 +3,7 @@
 import { useState, useCallback, useMemo, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
-import { Package, LayoutGrid, List, Plus, RefreshCw, Link2, ShoppingCart, GitBranch, CheckSquare } from 'lucide-react'
+import { Package, LayoutGrid, List, Plus, RefreshCw, Link2, ShoppingCart, CheckSquare } from 'lucide-react'
 import { useBatches } from '@/lib/supabase/hooks/useBatches'
 import { useStockLedger } from '@/lib/supabase/hooks/useStockLedger'
 import { useAmazonConnection } from '@/lib/supabase/hooks/useAmazonConnection'
@@ -21,17 +21,15 @@ import {
   AmazonConnectCard,
   AmazonInventoryTable,
   AmazonSkuMappingModal,
-  ChangeLogTable,
 } from '@/sections/inventory/components'
 import { TransferForm } from '@/sections/transfers/components'
 import { SHIPPING_METHOD_OPTIONS } from '@/sections/transfers/types'
-import { useChangeLog } from '@/lib/supabase/hooks/useChangeLog'
 import type { Batch } from '@/sections/inventory/types'
 import type { AmazonInventoryItem } from '@/lib/supabase/hooks/useAmazonInventory'
 import type { TransferFormData } from '@/sections/transfers/components/TransferForm'
 
 type ViewMode = 'kanban' | 'table'
-type TabType = 'pipeline' | 'changelog' | 'amazon'
+type TabType = 'pipeline' | 'amazon-connect' | 'amazon'
 
 export default function InventoryPage() {
   const [activeTab, setActiveTab] = useState<TabType>('pipeline')
@@ -67,13 +65,6 @@ export default function InventoryPage() {
   // Products for SKU mapping
   const { products } = useProducts()
 
-  // Change log
-  const {
-    entries: changeLogEntries,
-    loading: changeLogLoading,
-    refetch: refetchChangeLog,
-  } = useChangeLog()
-
   // Amazon hooks
   const {
     connection,
@@ -106,13 +97,6 @@ export default function InventoryPage() {
 
   const { locations } = useLocations()
   const { shippingAgents } = useShippingAgents()
-
-  // Auto-refresh changelog when switching to that tab
-  useEffect(() => {
-    if (activeTab === 'changelog') {
-      refetchChangeLog()
-    }
-  }, [activeTab, refetchChangeLog])
 
   // Fetch available stock on mount to show draft allocations
   useEffect(() => {
@@ -351,14 +335,13 @@ export default function InventoryPage() {
               <button
                 onClick={() => {
                   if (activeTab === 'pipeline') refetch()
-                  else if (activeTab === 'changelog') refetchChangeLog()
                   else syncFromAmazon()
                 }}
-                disabled={loading || syncing || changeLogLoading}
+                disabled={loading || syncing}
                 className="p-2 text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200 hover:bg-stone-100 dark:hover:bg-stone-700 rounded-lg transition-colors disabled:opacity-50"
-                title={activeTab === 'pipeline' ? 'Refresh' : activeTab === 'changelog' ? 'Refresh Change Log' : 'Sync from Amazon'}
+                title={activeTab === 'pipeline' ? 'Refresh' : 'Sync from Amazon'}
               >
-                <RefreshCw className={`w-5 h-5 ${(loading || syncing || changeLogLoading) ? 'animate-spin' : ''}`} />
+                <RefreshCw className={`w-5 h-5 ${(loading || syncing) ? 'animate-spin' : ''}`} />
               </button>
 
               {activeTab === 'pipeline' && (
@@ -429,15 +412,20 @@ export default function InventoryPage() {
               Pipeline
             </button>
             <button
-              onClick={() => setActiveTab('changelog')}
+              onClick={() => setActiveTab('amazon-connect')}
               className={`flex items-center gap-2 px-4 py-2.5 text-sm font-medium border-b-2 transition-colors ${
-                activeTab === 'changelog'
+                activeTab === 'amazon-connect'
                   ? 'border-lime-600 text-lime-600 dark:text-lime-400'
                   : 'border-transparent text-stone-500 hover:text-stone-700 dark:text-stone-400 dark:hover:text-stone-200'
               }`}
             >
-              <GitBranch className="w-4 h-4" />
-              Change Log
+              <Link2 className="w-4 h-4" />
+              Amazon Connect
+              {!isConnected && (
+                <span className="px-1.5 py-0.5 text-xs bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded">
+                  Not Connected
+                </span>
+              )}
             </button>
             <button
               onClick={() => setActiveTab('amazon')}
@@ -449,11 +437,6 @@ export default function InventoryPage() {
             >
               <ShoppingCart className="w-4 h-4" />
               Amazon FBA
-              {!isConnected && (
-                <span className="px-1.5 py-0.5 text-xs bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 rounded">
-                  Not Connected
-                </span>
-              )}
             </button>
           </div>
 
@@ -713,46 +696,34 @@ export default function InventoryPage() {
           </>
         )}
 
-        {/* Change Log Tab */}
-        {activeTab === 'changelog' && (
-          <ChangeLogTable
-            entries={changeLogEntries}
-            loading={changeLogLoading}
-            onRefresh={refetchChangeLog}
+        {/* Amazon Connect Tab */}
+        {activeTab === 'amazon-connect' && (
+          <AmazonConnectCard
+            connection={connection}
+            isConnected={isConnected}
+            needsReauth={needsReauth}
+            loading={connectionLoading}
+            isConnecting={isConnecting}
+            lastSyncAt={lastSyncAt}
+            onConnect={handleConnect}
+            onDisconnect={disconnect}
+            onSync={syncFromAmazon}
+            syncing={syncing}
           />
         )}
 
-        {/* Amazon Tab */}
+        {/* Amazon FBA Tab */}
         {activeTab === 'amazon' && (
-          <div className="space-y-6">
-            {/* Connection Card */}
-            <AmazonConnectCard
-              connection={connection}
-              isConnected={isConnected}
-              needsReauth={needsReauth}
-              loading={connectionLoading}
-              isConnecting={isConnecting}
-              lastSyncAt={lastSyncAt}
-              onConnect={handleConnect}
-              onDisconnect={disconnect}
-              onSync={syncFromAmazon}
-              syncing={syncing}
-            />
-
-            {/* Inventory Table (only if connected) */}
-            {isConnected && (
-              <AmazonInventoryTable
-                inventory={amazonInventory}
-                summary={amazonSummary}
-                loading={amazonLoading}
-                syncing={syncing}
-                lastSyncAt={lastSyncAt}
-                onSync={syncFromAmazon}
-                onMapSku={handleMapSku}
-                onUnmapSku={handleUnmapSku}
-              />
-            )}
-          </div>
+          <AmazonInventoryTable
+            inventory={amazonInventory}
+            summary={amazonSummary}
+            loading={amazonLoading}
+            syncing={syncing}
+            lastSyncAt={lastSyncAt}
+            onSync={syncFromAmazon}
+            onMapSku={handleMapSku}
+            onUnmapSku={handleUnmapSku}
+          />
         )}
       </div>
 
