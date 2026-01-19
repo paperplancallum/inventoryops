@@ -1,7 +1,6 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
-import { createClient } from '../client'
 
 export type BatchChangeType = 'split' | 'merge' | 'quantity_adjustment' | 'cost_adjustment' | 'stage_change'
 
@@ -73,52 +72,25 @@ function transformChangeLog(row: DbChangeLogRow): BatchChangeLogEntry {
   }
 }
 
+/**
+ * @deprecated batch_change_log table was removed - use useActivityLog instead
+ * This hook returns empty data for backwards compatibility
+ */
 export function useChangeLog() {
   const [entries, setEntries] = useState<BatchChangeLogEntry[]>([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [error] = useState<Error | null>(null)
 
-  const supabase = createClient()
-
+  // Note: batch_change_log table was removed and replaced by activity_log
+  // This hook is deprecated - use useActivityLog instead for audit trail
   const fetchChangeLog = useCallback(async () => {
-    setLoading(true)
-    setError(null)
+    setEntries([])
+  }, [])
 
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('batch_change_log')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100)
-
-      if (fetchError) throw fetchError
-
-      const transformed = (data || []).map(transformChangeLog)
-      setEntries(transformed)
-    } catch (err) {
-      setError(err instanceof Error ? err : new Error('Failed to fetch change log'))
-    } finally {
-      setLoading(false)
-    }
-  }, [supabase])
-
-  // Fetch entries for a specific batch
-  const fetchEntriesForBatch = useCallback(async (batchId: string): Promise<BatchChangeLogEntry[]> => {
-    try {
-      const { data, error: fetchError } = await supabase
-        .from('batch_change_log')
-        .select('*')
-        .or(`batch_id.eq.${batchId},related_batch_ids.cs.{${batchId}}`)
-        .order('created_at', { ascending: false })
-
-      if (fetchError) throw fetchError
-
-      return (data || []).map(transformChangeLog)
-    } catch (err) {
-      console.error('Failed to fetch batch change log:', err)
-      return []
-    }
-  }, [supabase])
+  // Fetch entries for a specific batch - returns empty for backwards compatibility
+  const fetchEntriesForBatch = useCallback(async (_batchId: string): Promise<BatchChangeLogEntry[]> => {
+    return []
+  }, [])
 
   useEffect(() => {
     fetchChangeLog()

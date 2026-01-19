@@ -21,6 +21,7 @@ import {
   FileSpreadsheet,
   Factory,
   Tag,
+  DollarSign,
 } from 'lucide-react'
 import { AppShell } from './AppShell'
 import { useTheme } from '@/providers/ThemeProvider'
@@ -45,6 +46,7 @@ const navigationItems: NavigationItem[] = [
   { label: 'Documents', href: '/documents', icon: <Files className="w-5 h-5" /> },
   { label: 'Inbox', href: '/inbox', icon: <Inbox className="w-5 h-5" /> },
   { label: 'Supplier Invoices', href: '/supplier-invoices', icon: <FileSpreadsheet className="w-5 h-5" /> },
+  { label: 'Settlements', href: '/settlements', icon: <DollarSign className="w-5 h-5" /> },
 ]
 
 const utilityItems: NavigationItem[] = [
