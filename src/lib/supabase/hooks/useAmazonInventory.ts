@@ -236,7 +236,7 @@ export function useAmazonInventory() {
       const { data, error: recError } = await supabase
         .from('amazon_reconciliations')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('reconciled_at', { ascending: false })
 
       if (recError) {
         // Silently ignore if table is empty or has no data

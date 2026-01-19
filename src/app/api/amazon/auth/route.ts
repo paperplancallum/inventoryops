@@ -21,12 +21,20 @@ export async function GET() {
     // Generate state for CSRF protection
     const state = crypto.randomUUID()
 
+    // Check if app is in draft/beta mode (not published yet)
+    const isDraftApp = process.env.AMAZON_APP_DRAFT === 'true'
+
     // Build authorization URL
     const params = new URLSearchParams({
       application_id: clientId,
       state,
       redirect_uri: redirectUri,
     })
+
+    // For draft apps, add version=beta to allow authorization before publishing
+    if (isDraftApp) {
+      params.set('version', 'beta')
+    }
 
     const authUrl = `${AMAZON_AUTH_URL}?${params.toString()}`
 
