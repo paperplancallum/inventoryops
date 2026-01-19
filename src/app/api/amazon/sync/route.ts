@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { createClient } from '@/lib/supabase/server'
+import { createServiceClient } from '@/lib/supabase/server'
 
 const AMAZON_SP_API_BASE = 'https://sellingpartnerapi-na.amazon.com'
 
@@ -27,7 +27,7 @@ interface AmazonInventoryItem {
 // POST - Sync inventory from Amazon SP-API
 export async function POST() {
   try {
-    const supabase = await createClient()
+    const supabase = createServiceClient()
 
     // TODO: Re-enable auth check in production
     // const { data: { user } } = await supabase.auth.getUser()
@@ -93,7 +93,19 @@ export async function POST() {
 
     // Fetch inventory from Amazon SP-API
     // Using FBA Inventory API
-    const marketplaceIds = connection.marketplaces || ['ATVPDKIKX0DER'] // US marketplace
+    // Map country codes to Amazon marketplace IDs
+    const marketplaceIdMap: Record<string, string> = {
+      'US': 'ATVPDKIKX0DER',
+      'CA': 'A2EUQ1WTGCTBG2',
+      'MX': 'A1AM78C64UM0Y8',
+      'UK': 'A1F83G8C2ARO7P',
+      'DE': 'A1PA6795UKMFR9',
+      'FR': 'A13V1IB3VIYBER',
+      'IT': 'APJ6JRA9NG5V4',
+      'ES': 'A1RKKUPIHCS9HS',
+    }
+    const storedMarketplaces = connection.marketplaces || ['US']
+    const marketplaceIds = storedMarketplaces.map((m: string) => marketplaceIdMap[m] || m)
     const granularityType = 'Marketplace'
 
     const inventoryUrl = new URL(`${AMAZON_SP_API_BASE}/fba/inventory/v1/summaries`)
