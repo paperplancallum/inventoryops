@@ -53,6 +53,10 @@ interface InvoicesPaymentsViewProps {
   onDeletePayment?: (invoiceId: string, paymentId: string) => Promise<boolean>
   onViewLinkedEntity?: (type: LinkedEntityType, id: string) => void
   onRefresh?: () => void
+  /** Hide the header when embedded in a parent with its own header */
+  hideHeader?: boolean
+  /** Section title to show when embedded */
+  sectionTitle?: string
 }
 
 export function InvoicesPaymentsView({
@@ -70,6 +74,8 @@ export function InvoicesPaymentsView({
   onAddPaymentAttachments,
   onDeletePayment,
   onViewLinkedEntity,
+  hideHeader = false,
+  sectionTitle,
 }: InvoicesPaymentsViewProps) {
   const [activeTab, setActiveTab] = useState<ActiveTab>('invoices')
   const [searchQuery, setSearchQuery] = useState('')
@@ -254,23 +260,30 @@ export function InvoicesPaymentsView({
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
-      {/* Header */}
+    <div className={hideHeader ? '' : 'min-h-screen bg-slate-50 dark:bg-slate-900'}>
+      {/* Header - conditionally shown */}
       <div className="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700">
         <div className="px-6 py-5">
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
-                Invoices & Payments
-              </h1>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Track invoices and manage payments
-              </p>
+          {!hideHeader && (
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
+                  Invoices & Payments
+                </h1>
+                <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+                  Track invoices and manage payments
+                </p>
+              </div>
             </div>
-          </div>
+          )}
+          {sectionTitle && (
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white mb-4">
+              {sectionTitle}
+            </h2>
+          )}
 
           {/* Summary Cards */}
-          <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
+          <div className={`${hideHeader && !sectionTitle ? '' : 'mt-6'} grid grid-cols-2 gap-4 lg:grid-cols-4`}>
             <div className="bg-slate-50 dark:bg-slate-700/50 rounded-lg px-4 py-3">
               <div className="flex items-center gap-2">
                 <div className="p-1.5 bg-slate-200 dark:bg-slate-600 rounded-lg text-slate-600 dark:text-slate-300">
