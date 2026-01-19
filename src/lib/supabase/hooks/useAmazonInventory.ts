@@ -51,6 +51,8 @@ interface DbAmazonReconciliation {
   notes: string | null
 }
 
+export type ProductStatus = 'active' | 'inactive' | 'archived'
+
 export interface AmazonInventoryItem {
   id: string
   asin: string
@@ -68,11 +70,14 @@ export interface AmazonInventoryItem {
   awdQuantity: number
   awdInboundQuantity: number
   totalFba: number
+  totalStock: number // Total across all FBA + AWD quantities
   lastSyncedAt: string
   // Mapping info (if mapped)
   mappingStatus?: AmazonMappingStatus
   internalSkuId?: string
   internalProductId?: string
+  // Product status (if mapped to a product)
+  productStatus?: ProductStatus
 }
 
 export interface AmazonInventorySummary {
@@ -81,7 +86,7 @@ export interface AmazonInventorySummary {
   totalFbaReserved: number
   totalFbaInbound: number
   totalFbaUnfulfillable: number
-  totalAwd: number
+  totalAwdOnhand: number
   totalAwdInbound: number
   mappedCount: number
   unmappedCount: number
@@ -112,13 +117,20 @@ export interface AmazonReconciliation {
 
 function transformInventoryItem(
   dbItem: DbAmazonInventory,
-  mapping?: DbAmazonSkuMapping | null
+  mapping?: DbAmazonSkuMapping | null,
+  productStatus?: ProductStatus
 ): AmazonInventoryItem {
-  const totalFba = (dbItem.fba_fulfillable || 0) +
-    (dbItem.fba_reserved || 0) +
-    (dbItem.fba_inbound_working || 0) +
-    (dbItem.fba_inbound_shipped || 0) +
-    (dbItem.fba_inbound_receiving || 0)
+  const fbaFulfillable = dbItem.fba_fulfillable || 0
+  const fbaReserved = dbItem.fba_reserved || 0
+  const fbaInboundWorking = dbItem.fba_inbound_working || 0
+  const fbaInboundShipped = dbItem.fba_inbound_shipped || 0
+  const fbaInboundReceiving = dbItem.fba_inbound_receiving || 0
+  const fbaUnfulfillable = dbItem.fba_unfulfillable || 0
+  const awdQuantity = dbItem.awd_quantity || 0
+  const awdInboundQuantity = dbItem.awd_inbound_quantity || 0
+
+  const totalFba = fbaFulfillable + fbaReserved + fbaInboundWorking + fbaInboundShipped + fbaInboundReceiving
+  const totalStock = fbaFulfillable + fbaReserved + fbaInboundWorking + fbaInboundShipped + fbaInboundReceiving + fbaUnfulfillable + awdQuantity + awdInboundQuantity
 
   return {
     id: dbItem.id,
@@ -128,19 +140,21 @@ function transformInventoryItem(
     productName: dbItem.product_name,
     condition: dbItem.condition,
     marketplace: dbItem.marketplace,
-    fbaFulfillable: dbItem.fba_fulfillable || 0,
-    fbaReserved: dbItem.fba_reserved || 0,
-    fbaInboundWorking: dbItem.fba_inbound_working || 0,
-    fbaInboundShipped: dbItem.fba_inbound_shipped || 0,
-    fbaInboundReceiving: dbItem.fba_inbound_receiving || 0,
-    fbaUnfulfillable: dbItem.fba_unfulfillable || 0,
-    awdQuantity: dbItem.awd_quantity || 0,
-    awdInboundQuantity: dbItem.awd_inbound_quantity || 0,
+    fbaFulfillable,
+    fbaReserved,
+    fbaInboundWorking,
+    fbaInboundShipped,
+    fbaInboundReceiving,
+    fbaUnfulfillable,
+    awdQuantity,
+    awdInboundQuantity,
     totalFba,
+    totalStock,
     lastSyncedAt: dbItem.last_synced_at,
     mappingStatus: mapping ? 'mapped' : 'unmapped',
     internalSkuId: mapping?.internal_sku_id || undefined,
     internalProductId: mapping?.internal_product_id || undefined,
+    productStatus,
   }
 }
 
@@ -209,10 +223,36 @@ export function useAmazonInventory() {
         mappingLookup.set(m.amazon_seller_sku, m)
       }
 
-      // Transform inventory with mapping info
-      const transformedInventory = (inventoryData || []).map(item =>
-        transformInventoryItem(item, mappingLookup.get(item.seller_sku))
-      )
+      // Get unique product IDs from mappings to fetch their status
+      const productIds = [...new Set(
+        (mappingsData || [])
+          .filter(m => m.internal_product_id)
+          .map(m => m.internal_product_id as string)
+      )]
+
+      // Fetch product statuses
+      const productStatusLookup = new Map<string, ProductStatus>()
+      if (productIds.length > 0) {
+        const { data: productsData } = await supabase
+          .from('products')
+          .select('id, status')
+          .in('id', productIds)
+
+        if (productsData) {
+          for (const p of productsData) {
+            productStatusLookup.set(p.id, p.status as ProductStatus)
+          }
+        }
+      }
+
+      // Transform inventory with mapping info and product status
+      const transformedInventory = (inventoryData || []).map(item => {
+        const mapping = mappingLookup.get(item.seller_sku)
+        const productStatus = mapping?.internal_product_id
+          ? productStatusLookup.get(mapping.internal_product_id)
+          : undefined
+        return transformInventoryItem(item, mapping, productStatus)
+      })
 
       setInventory(transformedInventory)
       setMappings((mappingsData || []).map(transformMapping))
@@ -392,7 +432,7 @@ export function useAmazonInventory() {
       totalFbaInbound: inventory.reduce((sum, i) =>
         sum + i.fbaInboundWorking + i.fbaInboundShipped + i.fbaInboundReceiving, 0),
       totalFbaUnfulfillable: inventory.reduce((sum, i) => sum + i.fbaUnfulfillable, 0),
-      totalAwd: inventory.reduce((sum, i) => sum + i.awdQuantity, 0),
+      totalAwdOnhand: inventory.reduce((sum, i) => sum + i.awdQuantity, 0),
       totalAwdInbound: inventory.reduce((sum, i) => sum + i.awdInboundQuantity, 0),
       mappedCount: mappedItems.length,
       unmappedCount: unmappedItems.length,
