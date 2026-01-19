@@ -82,6 +82,7 @@ export interface AmazonInventorySummary {
   totalFbaInbound: number
   totalFbaUnfulfillable: number
   totalAwd: number
+  totalAwdInbound: number
   mappedCount: number
   unmappedCount: number
 }
@@ -391,7 +392,8 @@ export function useAmazonInventory() {
       totalFbaInbound: inventory.reduce((sum, i) =>
         sum + i.fbaInboundWorking + i.fbaInboundShipped + i.fbaInboundReceiving, 0),
       totalFbaUnfulfillable: inventory.reduce((sum, i) => sum + i.fbaUnfulfillable, 0),
-      totalAwd: inventory.reduce((sum, i) => sum + i.awdQuantity + i.awdInboundQuantity, 0),
+      totalAwd: inventory.reduce((sum, i) => sum + i.awdQuantity, 0),
+      totalAwdInbound: inventory.reduce((sum, i) => sum + i.awdInboundQuantity, 0),
       mappedCount: mappedItems.length,
       unmappedCount: unmappedItems.length,
     }

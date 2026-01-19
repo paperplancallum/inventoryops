@@ -55,7 +55,7 @@ export function AmazonInventoryTable({
   return (
     <div className="space-y-4">
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
         <div className="bg-white dark:bg-stone-800 rounded-lg px-4 py-3 border border-stone-200 dark:border-stone-700">
           <p className="text-xs font-medium text-stone-500 dark:text-stone-400 uppercase">Total Items</p>
           <p className="mt-1 text-xl font-semibold text-stone-900 dark:text-white">{formatNumber(summary.totalItems)}</p>
@@ -69,8 +69,16 @@ export function AmazonInventoryTable({
           <p className="mt-1 text-xl font-semibold text-amber-700 dark:text-amber-300">{formatNumber(summary.totalFbaReserved)}</p>
         </div>
         <div className="bg-blue-50 dark:bg-blue-900/20 rounded-lg px-4 py-3 border border-blue-200 dark:border-blue-800">
-          <p className="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase">Inbound</p>
+          <p className="text-xs font-medium text-blue-600 dark:text-blue-400 uppercase">FBA Inbound</p>
           <p className="mt-1 text-xl font-semibold text-blue-700 dark:text-blue-300">{formatNumber(summary.totalFbaInbound)}</p>
+        </div>
+        <div className="bg-violet-50 dark:bg-violet-900/20 rounded-lg px-4 py-3 border border-violet-200 dark:border-violet-800">
+          <p className="text-xs font-medium text-violet-600 dark:text-violet-400 uppercase">AWD Total</p>
+          <p className="mt-1 text-xl font-semibold text-violet-700 dark:text-violet-300">{formatNumber(summary.totalAwd)}</p>
+        </div>
+        <div className="bg-violet-50 dark:bg-violet-900/20 rounded-lg px-4 py-3 border border-violet-200 dark:border-violet-800">
+          <p className="text-xs font-medium text-violet-600 dark:text-violet-400 uppercase">AWD Inbound</p>
+          <p className="mt-1 text-xl font-semibold text-violet-700 dark:text-violet-300">{formatNumber(summary.totalAwdInbound)}</p>
         </div>
         <div className="bg-lime-50 dark:bg-lime-900/20 rounded-lg px-4 py-3 border border-lime-200 dark:border-lime-800">
           <p className="text-xs font-medium text-lime-600 dark:text-lime-400 uppercase">Mapped</p>
@@ -183,6 +191,7 @@ export function AmazonInventoryTable({
                   <th className="py-3 px-4 text-right">Reserved</th>
                   <th className="py-3 px-4 text-right">Inbound</th>
                   <th className="py-3 px-4 text-right">Unfulfillable</th>
+                  <th className="py-3 px-4 text-right">AWD</th>
                   <th className="py-3 px-4 text-center">Mapping</th>
                 </tr>
               </thead>
@@ -218,6 +227,15 @@ export function AmazonInventoryTable({
                       {item.fbaUnfulfillable > 0 ? (
                         <span className="text-sm text-red-600 dark:text-red-400">
                           {formatNumber(item.fbaUnfulfillable)}
+                        </span>
+                      ) : (
+                        <span className="text-sm text-stone-400">0</span>
+                      )}
+                    </td>
+                    <td className="py-3 px-4 text-right tabular-nums">
+                      {(item.awdQuantity + item.awdInboundQuantity) > 0 ? (
+                        <span className="text-sm text-violet-600 dark:text-violet-400">
+                          {formatNumber(item.awdQuantity + item.awdInboundQuantity)}
                         </span>
                       ) : (
                         <span className="text-sm text-stone-400">0</span>
