@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation'
 import { ArrowLeft, Edit, FileDown, Link2, Boxes, ArrowRightLeft, MapPin, Calendar, Package, DollarSign, Clock, FileText, Check, ChevronLeft, ChevronRight, XCircle, Receipt, Eye, ClipboardCheck } from 'lucide-react'
 import Link from 'next/link'
 import { usePurchaseOrders, useBatches, useMagicLinks, useSendPO, useSupplierInvoiceSubmissions, useInvoices } from '@/lib/supabase/hooks'
+import { createClient } from '@/lib/supabase/client'
 import type { SupplierInvoiceSubmission, SubmissionReviewStatus } from '@/lib/supabase/hooks'
 import type { Invoice, PaymentScheduleItem } from '@/sections/invoices-payments/types'
 import { SubmissionReviewPanel } from '@/sections/supplier-submissions/components/SubmissionReviewPanel'
@@ -319,10 +320,55 @@ export default function PurchaseOrderDetailPage() {
   const poSubmission = submissions.find(s => s.purchaseOrderId === poId)
 
   // Invoice state - fetch linked invoice for this PO
-  const { invoices, loading: invoicesLoading, refetch: refetchInvoices } = useInvoices()
+  const { invoices, loading: invoicesLoading, refetch: refetchInvoices, createInvoice } = useInvoices()
+  const [creatingInvoice, setCreatingInvoice] = useState(false)
   const poInvoice = invoices.find((inv: Invoice) =>
     inv.linkedEntityType === 'purchase-order' && inv.linkedEntityId === poId
   )
+
+  // Handler to create invoice for this PO
+  const handleCreateInvoice = useCallback(async () => {
+    if (!purchaseOrder || creatingInvoice) return
+    setCreatingInvoice(true)
+    console.log('Creating invoice for PO:', {
+      poNumber: purchaseOrder.poNumber,
+      paymentTerms: purchaseOrder.paymentTerms,
+      paymentTermsTemplateId: purchaseOrder.paymentTermsTemplateId,
+    })
+    try {
+      // Try to get template ID, or look it up by name as fallback
+      let templateId = purchaseOrder.paymentTermsTemplateId || null
+      if (!templateId && purchaseOrder.paymentTerms) {
+        // Fallback: look up template by name
+        const { data: matchingTemplate } = await createClient()
+          .from('payment_terms_templates')
+          .select('id')
+          .eq('name', purchaseOrder.paymentTerms)
+          .eq('is_active', true)
+          .single()
+        templateId = matchingTemplate?.id || null
+        console.log('Fallback template lookup:', { paymentTerms: purchaseOrder.paymentTerms, foundId: templateId })
+      }
+
+      const invoice = await createInvoice({
+        invoiceDate: new Date().toISOString().split('T')[0],
+        description: `Product cost - ${purchaseOrder.poNumber}`,
+        type: 'product',
+        linkedEntityType: 'purchase-order',
+        linkedEntityId: purchaseOrder.id,
+        linkedEntityName: `${purchaseOrder.poNumber} - ${purchaseOrder.supplierName}`,
+        amount: purchaseOrder.total,
+        paymentTermsTemplateId: templateId,
+      })
+      if (invoice) {
+        await refetchInvoices()
+      }
+    } catch (err) {
+      console.error('Failed to create invoice:', err)
+    } finally {
+      setCreatingInvoice(false)
+    }
+  }, [purchaseOrder, creatingInvoice, createInvoice, refetchInvoices])
 
   // Find the PO from the list
   useEffect(() => {
@@ -518,6 +564,32 @@ export default function PurchaseOrderDetailPage() {
                   Add to Inspection
                 </button>
               )}
+              {/* Invoice link - always visible */}
+              {poInvoice ? (
+                <Link
+                  href={`/invoices-and-payments?invoice=${poInvoice.id}`}
+                  className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-900/30 hover:bg-emerald-100 dark:hover:bg-emerald-900/50 rounded-lg transition-colors"
+                >
+                  <Receipt className="w-4 h-4" />
+                  Invoice
+                  {poInvoice.status === 'paid' && (
+                    <Check className="w-3.5 h-3.5" />
+                  )}
+                </Link>
+              ) : !invoicesLoading && (
+                <button
+                  onClick={handleCreateInvoice}
+                  disabled={creatingInvoice}
+                  className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-amber-700 dark:text-amber-300 bg-amber-50 dark:bg-amber-900/30 hover:bg-amber-100 dark:hover:bg-amber-900/50 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {creatingInvoice ? (
+                    <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Receipt className="w-4 h-4" />
+                  )}
+                  {creatingInvoice ? 'Creating...' : 'Create Invoice'}
+                </button>
+              )}
               <button
                 onClick={() => setIsMagicLinkModalOpen(true)}
                 className="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-900/30 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 rounded-lg transition-colors"
@@ -597,6 +669,39 @@ export default function PurchaseOrderDetailPage() {
             updating={updatingStatus || sendingToSupplier}
             isCancelled={effectiveStatus === 'cancelled'}
           />
+
+          {/* No Invoice Warning - show when PO has no linked invoice */}
+          {!invoicesLoading && !poInvoice && effectiveStatus !== 'draft' && effectiveStatus !== 'cancelled' && (
+            <div className="bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-amber-100 dark:bg-amber-900/40 flex items-center justify-center">
+                    <Receipt className="w-5 h-5 text-amber-600 dark:text-amber-400" />
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                      No Invoice Linked
+                    </h3>
+                    <p className="text-xs text-slate-600 dark:text-slate-400">
+                      This purchase order doesn&apos;t have a linked invoice for payment tracking.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={handleCreateInvoice}
+                  disabled={creatingInvoice}
+                  className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {creatingInvoice ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <Receipt className="w-4 h-4" />
+                  )}
+                  {creatingInvoice ? 'Creating...' : 'Create Invoice'}
+                </button>
+              </div>
+            </div>
+          )}
 
           {/* Invoice Submitted Section - show when there's a submission for this PO */}
           {poSubmission && (

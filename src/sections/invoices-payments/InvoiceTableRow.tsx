@@ -92,7 +92,9 @@ export function InvoiceTableRow({
     return paymentMethods.find(m => m.id === methodId)?.label || methodId
   }
 
-  const hasSchedule = invoice.paymentSchedule.length > 1 || invoice.payments.length > 0
+  // Always allow expanding to see milestones (even if empty, shows option to add)
+  const canExpand = true
+  const hasSchedule = invoice.paymentSchedule.length > 0 || invoice.payments.length > 0
 
   // Find payment that paid a specific milestone
   const getPaymentForMilestone = (milestoneId: string) => {
@@ -119,7 +121,7 @@ export function InvoiceTableRow({
         {/* Invoice # / Description */}
         <td className="px-4 py-3">
           <div className="flex items-center gap-2">
-            {hasSchedule && (
+            {canExpand && (
               <button
                 onClick={() => setExpanded(!expanded)}
                 className={`p-0.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-transform ${expanded ? 'rotate-180' : ''}`}
@@ -211,10 +213,27 @@ export function InvoiceTableRow({
       </tr>
 
       {/* Expanded Payment Schedule */}
-      {expanded && hasSchedule && (
+      {expanded && canExpand && (
         <tr className="bg-slate-50 dark:bg-slate-800/50">
           <td colSpan={10} className="px-4 py-3">
             <div className="ml-8 space-y-3">
+              {/* Empty state - no milestones */}
+              {!hasSchedule && (
+                <div className="text-center py-4">
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    No payment milestones configured for this invoice.
+                  </p>
+                  {onEditMilestones && (
+                    <button
+                      onClick={onEditMilestones}
+                      className="mt-2 text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
+                    >
+                      + Add Payment Milestones
+                    </button>
+                  )}
+                </div>
+              )}
+
               {/* Payment Schedule - Milestone Tracking */}
               {invoice.paymentSchedule.length > 0 && (
                 <div>

@@ -199,6 +199,10 @@ export function useInvoices() {
 
   // Create invoice (manual creation)
   const createInvoice = useCallback(async (data: InvoiceFormData): Promise<Invoice | null> => {
+    console.log('createInvoice called with:', {
+      linkedEntityName: data.linkedEntityName,
+      paymentTermsTemplateId: data.paymentTermsTemplateId,
+    })
     try {
       const { data: newInvoice, error: invoiceError } = await supabase
         .from('invoices')
@@ -221,6 +225,85 @@ export function useInvoices() {
         .single()
 
       if (invoiceError) throw invoiceError
+
+      // Create payment schedule items from template or default
+      let scheduleItems: Array<{
+        invoice_id: string
+        milestone_name: string
+        percentage: number
+        amount: number
+        trigger: string
+        trigger_status: string
+        trigger_date: string | null
+        due_date: string | null
+        offset_days: number
+        sort_order: number
+      }> = []
+
+      if (data.paymentTermsTemplateId) {
+        // Fetch the payment terms template
+        const { data: template } = await supabase
+          .from('payment_terms_templates')
+          .select('milestones')
+          .eq('id', data.paymentTermsTemplateId)
+          .single()
+
+        if (template?.milestones && Array.isArray(template.milestones)) {
+          const milestones = template.milestones as Array<{
+            name: string
+            percentage: number
+            trigger: string
+            offsetDays: number
+          }>
+
+          scheduleItems = milestones.map((m, index) => {
+            // Determine if milestone should be triggered immediately
+            const isTriggeredNow = m.trigger === 'upfront' || m.trigger === 'po_confirmed'
+            const now = new Date()
+            const dueDate = isTriggeredNow
+              ? new Date(now.getTime() + (m.offsetDays || 0) * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+              : null
+
+            return {
+              invoice_id: newInvoice.id,
+              milestone_name: m.name,
+              percentage: m.percentage,
+              amount: data.amount * m.percentage / 100,
+              trigger: m.trigger,
+              trigger_status: isTriggeredNow ? 'triggered' : 'pending',
+              trigger_date: isTriggeredNow ? now.toISOString() : null,
+              due_date: dueDate,
+              offset_days: m.offsetDays || 0,
+              sort_order: index + 1,
+            }
+          })
+        }
+      }
+
+      // Fallback to default 100% Full Payment if no template or milestones
+      if (scheduleItems.length === 0) {
+        scheduleItems = [{
+          invoice_id: newInvoice.id,
+          milestone_name: 'Full Payment',
+          percentage: 100,
+          amount: data.amount,
+          trigger: 'manual',
+          trigger_status: 'triggered',
+          trigger_date: new Date().toISOString(),
+          due_date: data.dueDate || null,
+          offset_days: 0,
+          sort_order: 1,
+        }]
+      }
+
+      const { error: scheduleError } = await supabase
+        .from('invoice_payment_schedule_items')
+        .insert(scheduleItems)
+
+      if (scheduleError) {
+        console.error('Failed to create payment schedule:', scheduleError)
+        // Don't throw - invoice was still created successfully
+      }
 
       // Refetch to get full details
       const freshInvoice = await fetchInvoice(newInvoice.id)
